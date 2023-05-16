@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "*": ["node_modules/*", "src/*"]
+        },
+        "module": "ES2022"
+    }
+}

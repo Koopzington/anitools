@@ -1,0 +1,57 @@
+/* stylelint-disable selector-class-pattern */
+.tagify {
+    --placeholder-color: var(--lm-input-placeholder-text-color);
+    --placeholder-color-focus: var(--lm-input-placeholder-text-color);
+    --tag-bg: var(--lm-badge-success-bg-color);
+    --tag-hover: var(--lm-badge-success-bg-color);
+    --tag-text-color: var(--lm-badge-success-text-color);
+    --tags-border-color: var(--lm-input-border-color);
+}
+
+.dark-mode .tagify {
+    --placeholder-color: var(--dm-input-placeholder-text-color);
+    --placeholder-color-focus: var(--dm-input-placeholder-text-color);
+    --tag-bg: var(--dm-badge-success-bg-color);
+    --tag-hover: var(--dm-badge-success-bg-color);
+    --tag-text-color: var(--dm-badge-success-text-color);
+    --tags-border-color: var(--dm-input-border-color);
+}
+
+/*
+ * Because the dev was so clever to use :root for defining CSS variables it'd mean loading an additional
+ * CSS file when dark mode is enabled to override the :root block that would be defined here. So instead
+ * we'll just bypass the stupid variables.
+ */
+.tagify__dropdown[position='text'] {
+    box-shadow: 0 0 0 3px rgba(var(--lm-primary-color) / 10%);
+}
+
+.dark-mode .tagify__dropdown[position='text'] {
+    box-shadow: 0 0 0 3px rgba(var(--dm-primary-color) / 10%);
+}
+
+.tagify__dropdown__wrapper {
+    background: var(--lm-input-bg-color);
+    border-color: var(--lm-primary-color);
+}
+
+.dark.mode .tagify__dropdown__wrapper {
+    background: var(--dm-input-bg-color);
+    border-color: var(--dm-primary-color);
+}
+
+.tagify__dropdown__item--active {
+    background: var(--lm-primary-color);
+    color: #fff;
+}
+
+.dark-mode .tagify__dropdown__item--active {
+    background: var(--dm-primary-color);
+    color: #fff;
+}
+
+/* Halfmoon gives inputs a fixed height which needs to get reverted for tagify */
+.tagify.form-control {
+    height: auto;
+}
+/* stylelint-enable selector-class-pattern */

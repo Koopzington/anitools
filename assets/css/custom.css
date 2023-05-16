@@ -1,0 +1,176 @@
+:root {
+    --base-font-size: 1.2rem;
+    --content-and-card-spacing: 1rem;
+}
+
+/* Halfmoon only supports left sided sidebars but we want to give users the ability to choose */
+html.sidebar-right .sidebar {
+    right: 0;
+    left: auto;
+    border-left: var(--sidebar-border-width) solid var(--lm-sidebar-border-color);
+    border-right: none;
+    
+}
+
+html.sidebar-right .page-wrapper.with-sidebar[data-sidebar-hidden] > .sidebar {
+    left: auto;
+    right: -100%;
+}
+
+html.sidebar-right .page-wrapper.with-transitions.with-sidebar > .sidebar {
+    transition: right .4s cubic-bezier(.25,.8,.25,1);
+}
+
+html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
+    left: 0;
+    right: var(--sidebar-width);
+}
+
+@media (min-width: 577px) {
+    html.sidebar-right nav.navbar .navbar-content:first-child {
+        order: 1;
+    }
+}
+
+@media (max-width: 576px) {
+    html.sidebar-right nav.navbar {
+        flex-direction: row-reverse;
+        justify-content: space-between;
+    }
+}
+
+/* mfw shit on half screen of 4k display barely readable */
+@media (min-width: 1279px) {
+    html.i-wanna-read-on-4k-halfsize {
+        font-size: var(--base-html-font-size-1600);
+    }
+}
+
+.fat-free {
+    --sidebar-width: 20rem;
+    --sidebar-content-margin: 1rem;
+    --sidebar-menu-vertical-margin: 1rem;
+    --input-height: 2.5rem;
+    --button-height: 2.5rem;
+    --navbar-height: 4rem;
+}
+
+/* stylelint-disable selector-class-pattern */
+.fat-free table.dataTable tbody th,
+.fat-free table.dataTable tbody td {
+    padding: 4px 10px;
+}
+/* stylelint-enable selector-class-pattern */
+
+.custom-tooltip {
+    position: relative;
+}
+
+.custom-tooltip::after {
+    content: attr(data-title);
+    visibility: hidden;
+    width: 120px;
+    white-space: normal;
+    background-color: var(--lm-base-body-bg-color);
+    color: var(--lm-base-text-color);
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    right: 105%;
+}
+
+.dark-mode .custom-tooltip::after {
+    background-color: var(--dm-base-body-bg-color);
+    color: var(--dm-base-text-color);
+}
+
+.custom-tooltip:hover::after {
+    visibility: visible;
+}
+
+.warning {
+    height: 18px;
+    width: 18px;
+    vertical-align: middle;
+}
+
+.copy-me {
+    vertical-align: middle;
+}
+
+.page-wrapper.with-sidebar[data-sidebar-type~='overlayed-all']
+    > .sidebar-overlay {
+    background-color: unset;
+}
+
+#filters {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Change Icon in Light/Dark-Mode toggler depending on current mode */
+.dark-mode-toggler i::before {
+    content: '\f59a';
+}
+
+.dark-mode .dark-mode-toggler i::before {
+    content: '\f7ba';
+    color: #ff0;
+}
+
+#staff-filter {
+    display: inline-block;
+    margin-right: -36px;
+}
+
+.navbar {
+    gap: 1rem;
+}
+
+#logo-letter {
+    fill: #333 !important;
+}
+
+.dark-mode #logo-letter {
+    fill: #fff !important;
+}
+
+.list-select {
+    min-width: 200px;
+    margin-right: var(--form-inline-horizontal-margin);
+}
+
+/* TODO: override default choices classNames */
+/* stylelint-disable selector-class-pattern */
+
+/* 2 column formatting of list select */
+.list-select .choices__list .choices__item {
+    display: flex;
+}
+
+.list-select .choices__list--dropdown .choices__item {
+    padding: 1rem;
+}
+
+.list-select .choices__list .choices__item div {
+    width: 100%;
+    display: flex;
+    white-space: nowrap;
+}
+
+.list-select .choices__list .choices__item .ch-completion {
+    justify-content: flex-end;
+    text-align: right;
+    margin-left: var(--form-inline-horizontal-margin);
+}
+
+.list-select .choices__list--dropdown {
+    width: fit-content;
+}
+/* stylelint-enable selector-class-pattern */

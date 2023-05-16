@@ -1,0 +1,30 @@
+/* stylelint-disable selector-class-pattern */
+.noUi-horizontal {
+    height: 16px;
+}
+
+.noUi-horizontal .noUi-handle {
+    width: 24px;
+    height: 20px;
+    right: -12px;
+    top: -3px;
+}
+
+.noUi-handle::after,
+.noUi-handle::before {
+    left: 9px;
+    top: 2px;
+}
+
+.noUi-handle::after {
+    left: 12px;
+}
+
+.noUi-connect {
+    background-color: var(--lm-primary-color);
+}
+
+.dark-mode .noUi-connect {
+    background-color: var(--dm-primary-color);
+}
+/* stylelint-enable selector-class-pattern */

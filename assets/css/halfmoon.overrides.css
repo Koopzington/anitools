@@ -1,0 +1,61 @@
+:root {
+    --light-color: var(--white-bg-color);
+    --light-color-light: var(--white-bg-color);
+    --light-color-dark: var(--white-bg-color);
+    --dm-primary-color: #1890ff;
+    --lm-primary-color: #1890ff;
+    --lm-primary-color-light: var(--primary-color-light);
+    --dm-primary-color-light: var(--primary-color-light);
+    --lm-link-text-color: var(--lm-primary-color);
+    --dm-link-text-color: var(--dm-primary-color);
+    --lm-button-link-text-color: var(--lm-primary-color);
+    --dm-button-link-text-color: var(--dm-primary-color);
+    --lm-button-primary-bg-color: var(--lm-primary-color);
+    --lm-button-primary-border-color: var(--lm-primary-color);
+    --lm-button-primary-border-color-hover: var(--lm-primary-color-light);
+    --dm-button-primary-border-color-hover: var(--dm-primary-color-light);
+    --dm-button-primary-bg-color: var(--dm-primary-color);
+    --lm-button-primary-bg-color-hover: var(--lm-primary-color-light);
+    --dm-button-primary-bg-color-hover: var(--dm-primary-color-light);
+    --dm-button-primary-border-color: var(--dm-primary-color);
+    --dm-table-primary-text-color: var(--dm-primary-color);
+    --lm-checkbox-bg-color-checked: var(--lm-primary-color);
+    --lm-checkbox-border-color-checked: var(--lm-primary-color);
+    --dm-checkbox-bg-color-checked: var(--dm-primary-color);
+    --dm-checkbox-border-color-checked: var(--dm-primary-color);
+    --lm-radio-bg-color-checked: var(--lm-primary-color);
+    --lm-radio-border-color-checked: var(--lm-primary-color);
+    --dm-radio-bg-color-checked: var(--dm-primary-color);
+    --dm-radio-border-color-checked: var(--dm-primary-color);
+    --lm-switch-bg-color-checked: var(--lm-primary-color);
+    --lm-switch-border-color-checked: var(--lm-primary-color);
+    --dm-switch-bg-color-checked: var(--dm-primary-color);
+    --dm-switch-border-color-checked: var(--dm-primary-color);
+    --lm-alert-primary-border-color: var(--lm-primary-color);
+    --dm-alert-primary-text-color: var(--dm-primary-color);
+    --lm-alert-filled-primary-bg-color: var(--lm-primary-color);
+    --lm-alert-filled-primary-border-color: var(--lm-primary-color);
+    --dm-alert-filled-primary-bg-color: var(--dm-primary-color);
+    --dm-alert-filled-primary-border-color: var(--dm-primary-color);
+    --lm-navbar-link-text-color-hover: var(--lm-primary-color);
+    --dm-navbar-link-text-color-hover: var(--dm-primary-color);
+    --lm-navbar-link-active-text-color: var(--lm-primary-color);
+    --dm-navbar-link-active-text-color: var(--dm-primary-color);
+    --lm-sidebar-link-text-color-active: var(--lm-primary-color);
+    --dm-sidebar-link-text-color-active: var(--dm-primary-color);
+    --lm-badge-primary-bg-color: var(--lm-primary-color);
+    --lm-badge-primary-border-color: var(--lm-primary-color);
+    --dm-badge-primary-bg-color: var(--dm-primary-color);
+    --dm-badge-primary-border-color: var(--dm-primary-color);
+    --lm-progress-bar-bg-color: var(--lm-primary-color);
+    --dm-input-bg-color: var(--dark-color-light);
+    --lm-input-bg-color: var(--light-color);
+}
+
+.dark-mode select.form-control:not([multiple]) > option {
+    background-color: var(--dm-input-bg-color);
+}
+
+.navbar-brand:not(:first-child), .navbar-nav:not(:first-child), .navbar-text:not(:first-child), .navbar-content:not(:first-child), .navbar > .form-inline:not(:first-child) {
+    margin-left: inherit;
+}

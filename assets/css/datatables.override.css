@@ -1,0 +1,67 @@
+/* stylelint-disable selector-class-pattern */
+
+/* The "Show X entries" select is too small */
+.dataTables_wrapper .dataTables_length select {
+    width: 55px;
+}
+
+table.dataTable tbody tr {
+    background-color: inherit;
+}
+
+/* Sticky table header */
+#table thead tr {
+    position: sticky;
+    top: 0;
+    background-color: var(--lm-base-body-bg-color);
+}
+
+.dark-mode #table thead tr {
+    background-color: var(--dm-base-body-bg-color);
+}
+
+table.dataTable thead th,
+table.dataTable thead th:last-child {
+    border-color: var(--lm-table-border-color);
+}
+
+.dark-mode table.dataTable thead th,
+.dark-mode table.dataTable thead th:last-child {
+    border-color: var(--dm-table-border-color);
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+    color: inherit;
+}
+
+.dataTables_wrapper .dataTables_info {
+    padding-top: inherit;
+}
+
+/* Styling the info row above the table */
+.dataTables_wrapper .row:first-child {
+    align-items: center;
+    gap: var(--form-inline-horizontal-margin);
+    justify-content: space-between;
+}
+
+/* Move pagination buttons to the right */
+.dataTables_wrapper .row:last-child {
+    justify-content: flex-end;
+}
+
+/* Make the input end with the rest of the content */
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 0;
+}
+
+#table td {
+    text-align: right;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+/* stylelint-enable selector-class-pattern */

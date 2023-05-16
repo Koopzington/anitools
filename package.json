@@ -1,0 +1,60 @@
+{
+  "name": "anitools",
+  "version": "1.0.0",
+  "author": "koopzington@gmail.com",
+  "license": "GPL-3.0-or-later",
+  "description": "All sorts of shenanigans possibly helpful for AWC Challenges ( ͡° ͜ʖ ͡°)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cs-check": "standard src/",
+    "cs-fix": "standard --fix src/",
+    "css-check": "stylelint assets/css/ public/themes/",
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "standard": {
+    "globals": []
+  },
+  "stylelint": {
+    "extends": [
+      "stylelint-config-standard"
+    ],
+    "rules": {
+      "no-descending-specificity": true,
+      "block-no-empty": true,
+      "comment-no-empty": true,
+      "no-empty-source": true,
+      "color-no-invalid-hex": true,
+      "function-calc-no-unspaced-operator": true,
+      "keyframe-declaration-no-important": true,
+      "no-invalid-double-slash-comments": true,
+      "string-no-newline": true,
+      "color-named": "never"
+    }
+  },
+  "browserslist": [
+    "last 1 Chrome version"
+  ],
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "@popperjs/core": "^2.11",
+    "@types/wnumb": "^1.2.1",
+    "@yaireo/tagify": "^4.17",
+    "choices.js": "^10.2",
+    "datatables.net": "^1.13",
+    "datatables.net-colreorder": "^1.6",
+    "datatables.net-dt": "^1.13.4",
+    "halfmoon": "^1.1.1",
+    "jquery": "^3.7",
+    "nouislider": "^15.7",
+    "standard": "*",
+    "wnumb": "^1.2.0"
+  },
+  "devDependencies": {
+    "stylelint": "^15.6.0",
+    "stylelint-config-standard": "^33.0.0",
+    "vite": "^4.3"
+  }
+}
