@@ -1,6 +1,6 @@
 interface Tool {
-    load(): void
-    unload(): void
+  load: () => void
+  unload: () => void
 }
 
 export default Tool

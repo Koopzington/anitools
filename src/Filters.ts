@@ -3,12 +3,12 @@ import Tagify from '@yaireo/tagify'
 import noUiSlider from 'nouislider'
 import wNumb from 'wnumb'
 import Settings from './Settings'
+import { handleError } from './commonLib'
 
 class Filters extends EventTarget {
-  private filterContainer: HTMLDivElement = document?.querySelector('#filters')
-  private mediaTypeSelect: HTMLSelectElement = document?.querySelector('.media-type')
-  private listSelect: HTMLSelectElement = document?.querySelector('#list')
-  private ATSettings: Settings
+  private readonly filterContainer: HTMLDivElement = document?.querySelector('#filters')
+  private readonly mediaTypeSelect: HTMLSelectElement = document?.querySelector('.media-type')
+  private readonly ATSettings: Settings
 
   // Object to hold all added filters
   private filters: Object = {}
@@ -16,17 +16,17 @@ class Filters extends EventTarget {
   // We cache tags on initialization so the user can switch between grouped and non-grouped mode on the filter
   private tagCache: Object
 
-  constructor(settings: Settings) {
+  constructor (settings: Settings) {
     super()
     settings.addEventListener('tag-grouping-updated', this.updateTagFilter)
     this.ATSettings = settings
   }
 
   // Function to setup all filters
-  public insertFilters = (userListChoice: Choices = undefined) => {
+  public insertFilters = () => {
     this.filterContainer.innerHTML = ''
 
-    const clearBtn = document.createElement('button');
+    const clearBtn = document.createElement('button')
     clearBtn.classList.add('btn', 'btn-primary')
     clearBtn.innerText = 'Clear filters'
     this.filterContainer.insertAdjacentElement('beforeend', clearBtn)
@@ -66,12 +66,8 @@ class Filters extends EventTarget {
           f[1].value = ''
         }
       })
-    });
+    })
 
-    if (userListChoice) {
-      this.filters['userList'] = userListChoice 
-    }
-    
     this.addText('title_like', 'Title')
     this.addSel('format', 'Format', [], 'OR')
     this.addSel('source', 'Source', [], 'OR')
@@ -89,11 +85,11 @@ class Filters extends EventTarget {
     this.addCheckbox('showAdult', 'Show Adult entries')
   }
 
-  private filterChangeCallback = () => {
+  private readonly filterChangeCallback = () => {
     this.dispatchEvent(new Event('filter-changed'))
   }
 
-  private addText(col: string, label: string) {
+  private addText (col: string, label: string) {
     const input = document.createElement('input')
     input.classList.add('columnFilter', 'form-control')
     input.dataset.column = col
@@ -104,7 +100,7 @@ class Filters extends EventTarget {
   }
 
   // Function to add a Choices type filter
-  private addSel = (col: string, label: string, values: Array<string> | Object, logic: string, shouldSort: boolean = true) => {
+  private readonly addSel = (col: string, label: string, values: string[] | Object, logic: string, shouldSort: boolean = true) => {
     const select = document.createElement('select')
     select.multiple = true
     select.classList.add('columnFilter', 'form-control')
@@ -138,12 +134,12 @@ class Filters extends EventTarget {
       placeholderValue: label,
       removeItemButton: true,
       shouldSort,
-      allowHTML: false,
+      allowHTML: false
     })
   }
 
   // Function to add a Tagify type filter
-  private addTagify = (col: string, label: string, url: string) => {
+  private readonly addTagify = (col: string, label: string, url: string) => {
     const container = document.createElement('div')
     const field = document.createElement('input')
     field.setAttribute('placeholder', label)
@@ -165,9 +161,9 @@ class Filters extends EventTarget {
         highlightFirst: true
       },
       hooks: {
-        beforePaste: function (_tagify, pastedText) {
+        beforePaste: async function (_tagify, pastedText) {
           // It wants a promise? It get's a promise
-          return new Promise(function (resolve) {
+          return await new Promise(function (resolve) {
             tagifyInputHandler(pastedText.pastedText)
             resolve()
           })
@@ -189,11 +185,12 @@ class Filters extends EventTarget {
         return
       }
       fetch(import.meta.env.VITE_API_URL + url + '?q=' + value, { signal: controller.signal })
-        .then(response => response.json())
+        .then(async response => await response.json())
         .then((newWhitelist) => {
           tagify.whitelist = newWhitelist // update whitelist Array in-place
           tagify.loading(false).dropdown.show(value) // render the suggestions dropdown
         })
+        .catch(handleError)
     }
 
     tagify.on('input', (e) => {
@@ -203,7 +200,7 @@ class Filters extends EventTarget {
     this.filters[col] = tagify
   }
 
-  private addCheckbox = (col: string, label: string) => {
+  private readonly addCheckbox = (col: string, label: string): void => {
     const cswitch = document.createElement('div')
     cswitch.classList.add('custom-switch')
     const labelElement: HTMLLabelElement = document.createElement('label')
@@ -222,7 +219,7 @@ class Filters extends EventTarget {
     this.filterContainer.insertAdjacentElement('beforeend', cswitch)
   }
 
-  private addRange = (col: string, label: string) => {
+  private readonly addRange = (col: string, label: string): void => {
     const formInline = document.createElement('div')
     formInline.classList.add('form-inline')
 
@@ -277,19 +274,19 @@ class Filters extends EventTarget {
     })
   }
 
-  private getValues = (data: Array<string>) => {
-    const v = []
+  private readonly getValues = (data: string[]): any[] => {
+    const v: any[] = []
     data.forEach((e) => v.push({ value: e, label: e }))
 
     return v
   }
 
-  private updateTagFilter = () => {
-    if (! this.tagCache) {
-      return;
+  private readonly updateTagFilter = (): void => {
+    if (!this.tagCache) {
+      return
     }
     if (this.ATSettings.shouldGroupTags()) {
-      const values = []
+      const values: any[] = []
       Object.entries(this.tagCache).forEach((group) => {
         values.push({
           label: group[0],
@@ -303,26 +300,35 @@ class Filters extends EventTarget {
       Object.entries(this.tagCache).forEach((group) => {
         group[1].forEach((t: string) => { values.push(t) })
       })
-      values.sort()
+      values.sort(undefined)
       this.filters['tags'].setChoices(this.getValues(values), 'value', 'label', true)
     }
   }
 
   // Function that updates the available options in the filters using the data the API returned
-  public updateFilters = async () => {
+  public updateFilters = async (userListChoice: Choices | undefined = undefined): Promise<void> => {
     const response = await fetch(import.meta.env.VITE_API_URL + '/filterValues?media_type=' + this.mediaTypeSelect.value)
     const filterValues = await response.json()
     this.tagCache = filterValues.tags
     this.filters['format'].setChoices(this.getValues(filterValues.format), 'value', 'label', true)
     this.filters['genres'].setChoices(this.getValues(filterValues.genres), 'value', 'label', true)
-    this.updateTagFilter()
     this.filters['country'].setChoices(this.getValues(filterValues.country_of_origin), 'value', 'label', true)
     this.filters['externalLinks'].setChoices(this.getValues(filterValues.external_links), 'value', 'label', true)
     this.filters['season'].setChoices(this.getValues(filterValues.season), 'value', 'label', true)
     this.filters['year'].setChoices(this.getValues(filterValues.season_year), 'value', 'label', true)
     this.filters['source'].setChoices(this.getValues(filterValues.source), 'value', 'label', true)
     this.filters['airStatus'].setChoices(this.getValues(filterValues.status), 'value', 'label', true)
+    this.updateTagFilter()
 
+    if (userListChoice !== undefined) {
+      this.filters['userList'] = userListChoice
+    } else {
+      // Remove the userList filter if it exists but wasn't passed with the method call
+      if (Object.hasOwn(this.filters, 'userList')) {
+        delete this.filters['userList']
+      }
+    }
+    
     // Prepare options object to update episode filter
     const e = filterValues.episodes
     const options = {
@@ -335,49 +341,54 @@ class Filters extends EventTarget {
 
     // Calculate steps
     for (let i = 0; i < e.length - 1; ++i) {
-      options.range[(e[i] / e[e.length - 1]) * 100 + '%'] = e[i]
+      options.range[((e[i] / e[e.length - 1]) * 100).toString() + '%'] = e[i]
     }
     this.filters['episodes'].updateOptions(options, false)
   }
 
-  public getFilters = () => this.filters
+  public getFilters = (): any => this.filters
 
   // Function returning an object of params that can be used for requests to the AniTools Backend
-  public getFilterParams = () => {
-    let params = {
-        mediaType: this.mediaTypeSelect.value,
+  public getFilterParams = (): any => {
+    const params = {
+      mediaType: this.mediaTypeSelect.value
     }
 
     Object.entries(this.filters).forEach((f) => {
       // Handle Choices
-      if (f[1] instanceof Choices && f[1].getValue(true) && f[1].getValue(true).length > 0) {
-        const v = []
+      if (f[1] instanceof Choices) {
+        const v: string[] = []
         // Choices.getValue() can return a string or string[] depending on single or multi value mode
-        const choiceValue = f[1].getValue(true);
+        const choiceValue = f[1].getValue(true)
+        if (choiceValue.length === 0) {
+          return
+        }
+
         if (choiceValue instanceof Array) {
           choiceValue.forEach((value) => {
             v.push(value)
-          });
-        } else {
+          })
+        }
+        if (typeof choiceValue === 'string') {
           v.push(choiceValue)
         }
         const logic = f[1].passedElement.element.dataset.logic ?? 'AND'
         params[f[0]] = {}
         params[f[0]][logic.toLowerCase()] = v
 
-        return;
+        return
       }
       // Handle Tagify instances
       if (f[1] instanceof Tagify && f[1].value.length > 0) {
         params[f[0]] = {}
         const logic = f[1].DOM.originalInput.dataset.logic ?? 'AND'
-        const v = []
+        const v: string[] = []
         f[1].value.forEach((p) => {
           v.push(p.value)
         })
         params[f[0]][logic.toLowerCase()] = v
 
-        return;
+        return
       }
       // Handle Checkbox instances
       if (f[1]?.tagName === 'INPUT' && f[1].type === 'checkbox') {
@@ -388,12 +399,10 @@ class Filters extends EventTarget {
         params[f[0] + 'Min'] = f[1].get(true)[0]
         params[f[0] + 'Max'] = f[1].get(true)[1]
 
-        return;
+        return
       }
       if (f[1]?.tagName === 'INPUT' && f[1].type === 'text' && f[1].value.length > 0) {
         params[f[0]] = f[1].value
-
-        return;
       }
     })
 

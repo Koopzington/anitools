@@ -9,7 +9,7 @@ html.sidebar-right .sidebar {
     left: auto;
     border-left: var(--sidebar-border-width) solid var(--lm-sidebar-border-color);
     border-right: none;
-    
+
 }
 
 html.sidebar-right .page-wrapper.with-sidebar[data-sidebar-hidden] > .sidebar {
@@ -26,13 +26,13 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
     right: var(--sidebar-width);
 }
 
-@media (min-width: 577px) {
+@media (width >= 577px) {
     html.sidebar-right nav.navbar .navbar-content:first-child {
         order: 1;
     }
 }
 
-@media (max-width: 576px) {
+@media (width <= 576px) {
     html.sidebar-right nav.navbar {
         flex-direction: row-reverse;
         justify-content: space-between;
@@ -40,7 +40,7 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
 }
 
 /* mfw shit on half screen of 4k display barely readable */
-@media (min-width: 1279px) {
+@media (width >= 1279px) {
     html.i-wanna-read-on-4k-halfsize {
         font-size: var(--base-html-font-size-1600);
     }

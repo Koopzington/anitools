@@ -1,34 +1,35 @@
 import $ from 'jquery'
-import { on } from '../commonLib'
 import Columns from '../Columns'
 import Tool from '../Interfaces/Tool'
 import Filters from 'Filters'
 import { Api, ConfigColumnDefsSingle } from 'datatables.net'
 
 class BetterBrowse implements Tool {
-  private Filters: Filters
-  private Columns: Columns
-  private mediaTypeSelect: HTMLSelectElement = document?.querySelector('.media-type')
-  private table: Api<HTMLTableElement>
+  private readonly Filters: Filters
+  private readonly Columns: Columns
+  private readonly mediaTypeSelect: HTMLSelectElement = document?.querySelector('.media-type')
+  private table: Api<HTMLTableElement> | undefined
 
   constructor (filters: Filters, columns: Columns) {
     this.Filters = filters
     this.Columns = columns
   }
 
-  colVisibilityHandler = (ev) => {
-    const col = this.table.column(ev.target.dataset.column + ':name')
-    col.visible(!col.visible())
+  colVisibilityHandler = (ev: Event): void => {
+    if (this.table !== undefined) {
+      const col = this.table.column(ev.target.dataset.column + ':name')
+      col.visible(!col.visible())
+    }
   }
 
-  private mediaTypeChangeHandler = () => {
-    if (this.table) {
+  private readonly mediaTypeChangeHandler = (): void => {
+    if (this.table !== undefined) {
       this.table.draw()
     }
   }
 
   // Function that adds the filter values to the data that will get sent to the API
-  private getParams = (params, settings) => {
+  private readonly getParams = (params, settings): any => {
     for (let i = 0; i < params.columns.length; ++i) {
       // Get rid of unneeded default params
       delete params.columns[i].orderable
@@ -38,17 +39,17 @@ class BetterBrowse implements Tool {
       // Set visibility for the backend
       params.columns[i].visible = settings.aoColumns.filter((c: ConfigColumnDefsSingle) => c.name === params.columns[i].name)[0].bVisible
     }
-  
+
     // Translate column number into name so we don't have to do it in the backend
     if (Object.hasOwn(params, 'order')) {
       params.order.forEach((o, i) => {
         params.order[i].column = params.columns[o.column].name
       })
     }
-  
+
     // Get the values of the filters
     params.filter = this.Filters.getFilterParams()
-  
+
     // Add the search text when filled out
     if (params.search.value.length > 0) {
       params.filter.and.title_like = params.search.value
@@ -58,19 +59,19 @@ class BetterBrowse implements Tool {
     return params
   }
 
-  private statsHandler = (_ev, _settings, json: MediaSearchResult) => {
+  private readonly statsHandler = (_ev, _settings, json: MediaSearchResult): void => {
     let data: string
     if (this.mediaTypeSelect.value === 'ANIME') {
-      data = json.total_runtime + ' minutes'
+      data = json.total_runtime.toString() + ' minutes'
     } else if (this.mediaTypeSelect.value === 'MANGA') {
-      data = json.total_episodes + ' chapters, ' + json.total_volumes + ' volumes'
+      data = json.total_episodes.toString() + ' chapters, ' + json.total_volumes.toString() + ' volumes'
     }
 
     document.querySelector('#stats').innerHTML = data + ' in total'
   }
 
-  updateTable = () => {
-    if (this.table) {
+  updateTable = (): void => {
+    if (this.table !== undefined) {
       this.table.ajax.reload()
 
       return
@@ -98,7 +99,7 @@ class BetterBrowse implements Tool {
         document.querySelector('.dataTables_length').classList.add('form-inline')
         document.querySelector('.dataTables_length select').classList.add('form-control')
         document.querySelector('#table_filter input').classList.add('form-control')
-        const tableSearchInput: HTMLInputElement = document.querySelector('#table_filter input');
+        const tableSearchInput: HTMLInputElement = document.querySelector('#table_filter input')
         tableSearchInput.classList.add('form-control')
         // Replace label with Placeholder
         document.querySelector('#table_filter label').childNodes[0].remove()
@@ -141,7 +142,11 @@ class BetterBrowse implements Tool {
     this.table.on('xhr.dt', this.statsHandler)
   }
 
-  public load = () => {
+  private readonly filterChangeHandler = (): void => {
+    this.table.draw()
+  }
+
+  public load = async (): Promise<void> => {
     // Create <table>
     const t: HTMLTableElement = document.createElement('table')
     t.id = 'table'
@@ -159,19 +164,17 @@ class BetterBrowse implements Tool {
     if (Object.keys(this.Filters.getFilters()).length === 0) {
       this.Filters.insertFilters()
     }
-    this.Filters.updateFilters()
+    await this.Filters.updateFilters()
 
     // Column filters
-    this.Filters.addEventListener('filter-changed', () => {
-      this.table.draw()
-    })
+    this.Filters.addEventListener('filter-changed', this.filterChangeHandler)
 
     this.updateTable()
     console.log('Module BetterBrowse loaded.')
   }
 
-  public unload = () => {
-    if (this.table) {
+  public unload = (): void => {
+    if (this.table !== undefined) {
       this.table.destroy()
       this.table = undefined
     }
@@ -183,11 +186,7 @@ class BetterBrowse implements Tool {
     })
 
     // Column filters
-    this.Filters.removeEventListener('filter-changed', () => {
-      this.table.draw()
-    })
-
-    document.querySelector('#filters').innerHTML = ''
+    this.Filters.removeEventListener('filter-changed', this.filterChangeHandler)
 
     this.mediaTypeSelect.removeEventListener('change', this.mediaTypeChangeHandler)
 

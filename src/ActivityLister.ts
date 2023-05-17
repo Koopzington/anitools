@@ -1,9 +1,9 @@
 import $ from 'jquery'
-import { Api } from "datatables.net";
+import { Api } from 'datatables.net'
 
 class ActivityLister {
-  private url = 'https://graphql.anilist.co';
-  private activityQuery = `
+  private readonly url = 'https://graphql.anilist.co'
+  private readonly activityQuery = `
     query ($page: Int $userId: Int $mediaId: Int) {
       Page (page: $page) {
         pageInfo {
@@ -23,33 +23,33 @@ class ActivityLister {
           }
         }
       }
-    }`;
+    }`
 
-  private options = {
+  private readonly options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-  };
+      Accept: 'application/json'
+    }
+  }
 
-  private activityTable: Api<any>
+  private activityTable: Api<any> | undefined
   private activityData = []
 
-  private updateActivityTable = (id: number) => {
-    if (this.activityTable) {
+  private readonly updateActivityTable = (id: number): void => {
+    if (this.activityTable !== undefined) {
       this.activityTable.destroy()
       this.activityTable = undefined
     }
     if (!this.activityData[0]) {
-      document.querySelector('#activity-media-title').innerHTML = "No data!";
+      document.querySelector('#activity-media-title').innerHTML = 'No data!'
       return false
     }
-    document.querySelector('#activity-media-title').innerHTML = this.activityData[0].title;
-    document.querySelector('#activity-media-title').href = 'https://anilist.co/anime/' + id;
+    document.querySelector('#activity-media-title').innerHTML = this.activityData[0].title
+    document.querySelector('#activity-media-title').href = 'https://anilist.co/anime/' + id.toString()
     this.activityTable = $('#activities').DataTable({
       data: this.activityData,
-      dom: "<tr>",
+      dom: '<tr>',
       paging: false,
       searching: false,
       info: false,
@@ -57,72 +57,72 @@ class ActivityLister {
       columns: [
         {
           title: 'Progress',
-          data: 'progress',
+          data: 'progress'
         },
         {
           title: 'Date',
           data: 'created',
           render: {
-            _: (data, type, row) => '<a href="https://anilist.co/activity/' + row.id + '">' + data + '</a>',
-            sort: data => data,
+            _: (data: string, _type, row: ALActivity) => '<a href="https://anilist.co/activity/' + row.id.toString() + '">' + data + '</a>',
+            sort: (data: string) => data
           }
-        },
+        }
       ],
       order: [
-        [1, 'desc'],
-      ],
-    });
-  };
-
-  private getDateString = (utcTimestamp: number) => {
-    const d = new Date(utcTimestamp * 1000)
-
-    return d.getFullYear() + '-'
-      + (d.getMonth() + 1).toString().padStart(2,'0') + '-'
-      + d.getDate().toString().padStart(2,'0') + ' '
-      + d.getHours().toString().padStart(2, '0') + ':'
-      + d.getMinutes().toString().padStart(2, '0') + ':'
-      + d.getSeconds().toString().padStart(2, '0')
+        [1, 'desc']
+      ]
+    })
   }
 
-  private handleActivity = (data: Array<ALActivity>) => {
+  private readonly getDateString = (utcTimestamp: number): string => {
+    const d = new Date(utcTimestamp * 1000)
+
+    return d.getFullYear().toString() + '-' +
+      (d.getMonth() + 1).toString().padStart(2, '0') + '-' +
+      d.getDate().toString().padStart(2, '0') + ' ' +
+      d.getHours().toString().padStart(2, '0') + ':' +
+      d.getMinutes().toString().padStart(2, '0') + ':' +
+      d.getSeconds().toString().padStart(2, '0')
+  }
+
+  private readonly handleActivity = (data: ALActivity[]): void => {
     data.forEach((a) => {
       if (a.progress !== null) {
         this.activityData.push({
           id: a.id,
           progress: a.progress,
           title: a.media.title.romaji,
-          created: this.getDateString(a.createdAt),
-        });
+          created: this.getDateString(a.createdAt)
+        })
       } else {
         this.activityData.push({
           id: a.id,
           progress: a.status.toUpperCase(),
           title: a.media.title.romaji,
-          created: this.getDateString(a.createdAt),
+          created: this.getDateString(a.createdAt)
         })
       }
-    });
-  };
+    })
+  }
 
-  public getActivities = async (user: string, anime: number) => {
-    let variables = {
+  public getActivities = async (user: string, anime: number): Promise<void> => {
+    const variables = {
       page: 1,
       userId: user,
-      mediaId: anime,
+      mediaId: anime
     }
 
-    this.activityData = [];
+    this.activityData = []
 
     // Make the HTTP Api request
-    let options = JSON.parse(JSON.stringify(this.options));
-    let hasNextPage = true;
+    const options = JSON.parse(JSON.stringify(this.options))
+    let hasNextPage = true
 
-    while (hasNextPage === true) {
+    while (hasNextPage) {
       options.body = JSON.stringify({
         query: this.activityQuery,
-        variables: variables,
-      });
+        variables
+      })
       const result = await fetch(this.url, options)
       const data = await result.json()
       this.handleActivity(data.data.Page.activities)
@@ -130,8 +130,8 @@ class ActivityLister {
       variables.page++
     }
 
-    this.updateActivityTable(anime);
-  };
+    this.updateActivityTable(anime)
+  }
 }
 
 export default ActivityLister

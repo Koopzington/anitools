@@ -1,32 +1,32 @@
 import $ from 'jquery'
 
-const handleResponse = (response) => {
-  return response.json().then(function (json) {
-    return response.ok ? json : Promise.reject(json)
-  })
+const handleResponse = async (response: Response): Promise<any> => {
+  const json = await response.json()
+
+  return response.ok ? json : await Promise.reject(json)
 }
 
-const handleError = (error) => {
+const handleError = (error: Error): void => {
   if (error.name !== 'AbortError') {
     console.error(error)
   }
 }
 
 // Function for eventlistener delegation. For cases where you want to listen to an event on elemens that might not exist yet
-const on = function (wrapperSelector: string, eventName: string, targetSelector: string, fn: Function) {
+const on = function (wrapperSelector: string, eventName: string, targetSelector: string, fn: Function): EventListener {
   const element = document.querySelector(wrapperSelector)
 
-  const handler = function (event: Event) {
+  const handler: EventListener = function (event: Event) {
     const possibleTargets = element.querySelectorAll(targetSelector)
     const target = event.target
-    let el
-    let p
+    let el: EventTarget | null
+    let p: Element
 
     for (let i = 0, l = possibleTargets.length; i < l; i++) {
       el = target
       p = possibleTargets[i]
 
-      while (el && el !== element) {
+      while (el !== null && el !== element) {
         if (el === p) {
           return fn.call(p, event)
         }
@@ -48,7 +48,7 @@ $.fn.dataTableExt.oPagination.halfmoon = {
     const oSettings = e.data.oSettings
     const sPage = e.data.sPage
 
-    if ($(this).is('[disabled]')) {
+    if ($(this).is('[disabled]') === true) {
       return false
     }
 
@@ -59,9 +59,7 @@ $.fn.dataTableExt.oPagination.halfmoon = {
   },
   // fnInit is called once for each instance of pager
   fnInit: function (oSettings, nPager, fnCallbackDraw) {
-    const that = this
-
-    const iShowPages = oSettings.oInit.iShowPages || 5
+    const iShowPages: number = oSettings.oInit.iShowPages ?? 5
     const iShowPagesHalf = Math.floor(iShowPages / 2)
 
     $.extend(oSettings, {
@@ -73,8 +71,8 @@ $.fn.dataTableExt.oPagination.halfmoon = {
     const oNumbers = $('<span class="page-numbers"></span>')
     const oNext = $('<li class="page-item page-next"><a class="page-link" href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a></li>')
 
-    oPrevious.click({ fnCallbackDraw, oSettings, sPage: 'previous' }, that.fnClickHandler)
-    oNext.click({ fnCallbackDraw, oSettings, sPage: 'next' }, that.fnClickHandler)
+    oPrevious.click({ fnCallbackDraw, oSettings, sPage: 'previous' }, this.fnClickHandler)
+    oNext.click({ fnCallbackDraw, oSettings, sPage: 'next' }, this.fnClickHandler)
 
     // Draw
     nPager.insertAdjacentElement('beforeEnd', oPrevious[0])
@@ -83,8 +81,6 @@ $.fn.dataTableExt.oPagination.halfmoon = {
   },
   // fnUpdate is only called once while table is rendered
   fnUpdate: function (oSettings, fnCallbackDraw) {
-    const that = this
-
     const tableWrapper = oSettings.nTableWrapper
 
     // Update stateful properties
@@ -107,9 +103,7 @@ $.fn.dataTableExt.oPagination.halfmoon = {
     oNumbers.html('')
 
     // First page if not rendered by loop
-    if (oSettings._iFirstPage > 1) {
-
-    }
+    // if (oSettings._iFirstPage > 1) {}
 
     for (i = oSettings._iFirstPage; i <= oSettings._iLastPage; i++) {
       oNumber = $('<li class="page-item"><a class="page-link" href="#">' + oSettings.fnFormatNumber(i) + '</a>')
@@ -117,7 +111,7 @@ $.fn.dataTableExt.oPagination.halfmoon = {
       if (oSettings._iCurrentPage === i) {
         oNumber[0].classList.add('active')
       } else {
-        oNumber.click({ fnCallbackDraw, oSettings, sPage: i - 1 }, that.fnClickHandler)
+        oNumber.click({ fnCallbackDraw, oSettings, sPage: i - 1 }, this.fnClickHandler)
       }
 
       // Draw
@@ -127,7 +121,7 @@ $.fn.dataTableExt.oPagination.halfmoon = {
     // Add ellipses
     if (oSettings._iFirstPage > 1) {
       oNumber = $('<li class="page-item" data-page="1"><a class="page-link" href="#">' + oSettings.fnFormatNumber(1) + '</a>')
-      oNumber.click({ fnCallbackDraw, oSettings, sPage: 'first' }, that.fnClickHandler)
+      oNumber.click({ fnCallbackDraw, oSettings, sPage: 'first' }, this.fnClickHandler)
       oNumbers.prepend(oNumber)
       if (oSettings._iFirstPage > 2) {
         oNumber[0].insertAdjacentHTML('afterEnd', '<li class="page-item ellipsis"></li>')
@@ -139,15 +133,15 @@ $.fn.dataTableExt.oPagination.halfmoon = {
         oNumbers.append('<li class="page-item ellipsis"></li>')
       }
       oNumber = $('<li class="page-item" data-page="' + oSettings._iTotalPages + '"><a class="page-link" href="#">' + oSettings.fnFormatNumber(oSettings._iTotalPages) + '</a>')
-      oNumber.click({ fnCallbackDraw, oSettings, sPage: 'last' }, that.fnClickHandler)
+      oNumber.click({ fnCallbackDraw, oSettings, sPage: 'last' }, this.fnClickHandler)
       oNumbers.append(oNumber)
     }
   },
   // fnUpdateState used to be part of fnUpdate
   // The reason for moving is so we can access current state info before fnUpdate is called
   fnUpdateState: function (oSettings) {
-    const iCurrentPage = Math.ceil((oSettings._iDisplayStart + 1) / oSettings._iDisplayLength)
-    const iTotalPages = Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
+    const iCurrentPage: number = Math.ceil((oSettings._iDisplayStart + 1) / oSettings._iDisplayLength)
+    const iTotalPages: number = Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
     let iFirstPage = iCurrentPage - oSettings._iShowPagesHalf
     let iLastPage = iCurrentPage + oSettings._iShowPagesHalf
 

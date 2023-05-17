@@ -13,11 +13,11 @@ import BetterBrowse from './Tools/BetterBrowse'
 
 class AniTools {
   // Tools which can be loaded and unloaded
-  private Tools = {}
-  private activeModule: string
-  private moduleSelect: HTMLSelectElement
+  private readonly Tools = {}
+  private activeModule: string | undefined
+  private readonly moduleSelect: HTMLSelectElement
 
-  constructor () {
+  public init (): void {
     // Check for stored username and replace default value if it exists
     const userName = localStorage.getItem('userName')
     if (userName !== null) {
@@ -32,19 +32,18 @@ class AniTools {
     // Basic stuff that needs to run on page load
     const settings = new Settings()
     const filters = new Filters(settings)
-    const columns = new Columns();
-    this.Tools["BetterList"] = new BetterList(settings, filters, columns)
-    this.Tools["BetterBrowse"] = new BetterBrowse(filters, columns)
-    
+    const columns = new Columns()
+    this.Tools.BetterList = new BetterList(settings, filters, columns)
+    this.Tools.BetterBrowse = new BetterBrowse(filters, columns)
+
     settings.initSettings()
     columns.initToggles()
     this.handleInputs()
     this.initModuleSelect()
     this.route()
-    this.enableShortcuts()
   }
 
-  private initModuleSelect = () => {
+  private readonly initModuleSelect = (): void => {
     Object.keys(this.Tools).forEach((m) => {
       const o = document.createElement('option')
       o.value = m
@@ -58,7 +57,7 @@ class AniTools {
     })
   }
 
-  private getHashParams = () => {
+  private readonly getHashParams = (): any => {
     const hash = window.location.hash.substring(1)
 
     const result = hash.split('&').reduce(function (res, item) {
@@ -70,12 +69,12 @@ class AniTools {
     return result
   }
 
-  private getHashParam = (param) => {
+  private readonly getHashParam = (param): string => {
     const params = this.getHashParams()
     return params[param] ?? false
   }
 
-  private route = (target = null) => {
+  private readonly route = (target: any = null): void => {
     if (target === null) {
       target = this.getHashParam('module')
       if (target === false) {
@@ -86,7 +85,7 @@ class AniTools {
     }
 
     if (target && Object.hasOwn(this.Tools, target)) {
-      if (this.activeModule) {
+      if (this.activeModule !== undefined) {
         this.Tools[this.activeModule].unload()
       }
 
@@ -95,47 +94,8 @@ class AniTools {
     }
   }
 
-  private enableShortcuts = () => {
-    document.addEventListener('DOMContentLoaded', function () {
-      // Handle keydown events (overridden)
-      halfmoon.keydownHandler = function (event) {
-        event = event || window.event
-        // Shortcuts are triggered only if no input, textarea, select or slider has focus
-        if (!(document.querySelector('input:focus') ||
-              document.querySelector('textarea:focus') ||
-              document.querySelector('select:focus') ||
-              document.activeElement.classList.contains('noUi-handle') ||
-              document.activeElement.hasAttribute('contenteditable'))
-        ) {
-          // Open Sidebar containing the filters
-          if (event.key === 'r') {
-            document.querySelector('#load').dispatchEvent(new Event('click'))
-            event.preventDefault()
-            // Open the settings menu
-          } else if (event.key === 's') {
-            halfmoon.toggleModal('settings-modal')
-            event.preventDefault()
-            // Pagination
-          } else if (event.key === 'ArrowLeft') {
-            const e = document.querySelector('.page-previous')
-            if (e) {
-              e.dispatchEvent(new Event('click'))
-            }
-            event.preventDefault()
-          } else if (event.key === 'ArrowRight') {
-            const e = document.querySelector('.page-next')
-            if (e) {
-              e.dispatchEvent(new Event('click'))
-            }
-            event.preventDefault()
-          }
-        }
-      }
-    })
-  }
-
   // Function moving elements around depending on screen width
-  private handleInputs = () => {
+  private readonly handleInputs = (): void => {
     if (window.innerWidth >= 768) {
       return
     }
@@ -146,4 +106,6 @@ class AniTools {
   }
 }
 
-const anitools = new AniTools()
+// Stupid rules say i can't have unused variables so i moved the contructor code to init()
+const aniTools = new AniTools()
+aniTools.init()

@@ -7,15 +7,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cs-check": "standard src/",
-    "cs-fix": "standard --fix src/",
+    "cs-check": "standard",
+    "cs-fix": "standard --fix",
     "css-check": "stylelint assets/css/ public/themes/",
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "standard": {
-    "globals": []
+  "ts-standard": {
+    "project": "./tsconfig.json"
   },
   "stylelint": {
     "extends": [
@@ -49,12 +49,13 @@
     "halfmoon": "^1.1.1",
     "jquery": "^3.7",
     "nouislider": "^15.7",
-    "standard": "*",
     "wnumb": "^1.2.0"
   },
   "devDependencies": {
+    "standard": "^17.0.0",
     "stylelint": "^15.6.0",
     "stylelint-config-standard": "^33.0.0",
+    "ts-standard": "^12.0.2",
     "vite": "^4.3"
   }
 }

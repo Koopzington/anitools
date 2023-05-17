@@ -4,7 +4,7 @@ class Settings extends EventTarget {
   private useTagGroups: boolean
   private useEmbedsForCodeCopy: boolean
 
-  public initSettings () {
+  public initSettings (): void {
     this.initFatFreeMode()
     this.initIWannaReadOn4kHalfsize()
     this.initTheme()
@@ -13,7 +13,7 @@ class Settings extends EventTarget {
     this.initCodeCopyBehaviour()
   }
 
-  private initFatFreeMode = () => {
+  private readonly initFatFreeMode = (): void => {
     document.querySelector('#fat-free-toggle').addEventListener('click', () => {
       document.querySelector('html').classList.toggle('fat-free')
       const state = document.querySelector('html').classList.contains('fat-free')
@@ -27,7 +27,7 @@ class Settings extends EventTarget {
     }
   }
 
-  private initIWannaReadOn4kHalfsize = () => {
+  private readonly initIWannaReadOn4kHalfsize = (): void => {
     document.querySelector('#four-k-halfsize-toggle').addEventListener('click', () => {
       document.querySelector('html').classList.toggle('i-wanna-read-on-4k-halfsize')
       const state = document.querySelector('html').classList.contains('i-wanna-read-on-4k-halfsize')
@@ -41,9 +41,9 @@ class Settings extends EventTarget {
     }
   }
 
-  private initTheme = () => {
+  private readonly initTheme = (): void => {
     const siteThemeSelect: HTMLSelectElement = document.querySelector('#site-theme')
-    const enableTheme = (theme) => {
+    const enableTheme = (theme: string): void => {
       const link = document.createElement('link')
       link.rel = 'stylesheet'
       link.classList.add('site-theme')
@@ -70,9 +70,9 @@ class Settings extends EventTarget {
     }
   }
 
-  private initSideBarPosition = () => {
+  private readonly initSideBarPosition = (): void => {
     const sideBarPositionSelect: HTMLSelectElement = document.querySelector('#sidebar-position')
-    const moveSideBarToRightSide = () => {
+    const moveSideBarToRightSide = (): void => {
       document.querySelector('html').classList.toggle('sidebar-right', sideBarPositionSelect.value === 'right')
     }
 
@@ -88,7 +88,7 @@ class Settings extends EventTarget {
     moveSideBarToRightSide()
   }
 
-  private initTagGroups = () => {
+  private readonly initTagGroups = (): void => {
     this.useTagGroups = localStorage.getItem('settings-use-tag-groups') === 'true'
 
     document.querySelector('#use-tag-groups').addEventListener('click', () => {
@@ -100,9 +100,9 @@ class Settings extends EventTarget {
     document.querySelector('#use-tag-groups').classList.toggle('btn-primary', this.useTagGroups)
   }
 
-  public shouldGroupTags = () => this.useTagGroups
+  public shouldGroupTags = (): boolean => this.useTagGroups
 
-  private initCodeCopyBehaviour = () => {
+  private readonly initCodeCopyBehaviour = (): void => {
     this.useEmbedsForCodeCopy = localStorage.getItem('settings-use-embeds-for-code-copy') === 'true'
 
     document.querySelector('#use-embeds-for-code-copy').addEventListener('click', () => {
@@ -113,7 +113,7 @@ class Settings extends EventTarget {
     document.querySelector('#use-embeds-for-code-copy').classList.toggle('btn-primary', this.useEmbedsForCodeCopy)
   }
 
-  public shouldUseEmbedsForCodeCopy = () => this.useEmbedsForCodeCopy
+  public shouldUseEmbedsForCodeCopy = (): boolean => this.useEmbedsForCodeCopy
 }
 
 export default Settings

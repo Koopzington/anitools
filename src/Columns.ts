@@ -14,18 +14,18 @@ class Columns {
     'format'
   ]
 
-  constructor() {
+  constructor () {
     this.warning.classList.add('fa', 'fa-triangle-exclamation', 'text-danger')
     this.warning.title = 'Start date is after Completion date!'
   }
 
-  public initToggles = () => {
+  public initToggles = (): void => {
     document.querySelectorAll('.toggle-column').forEach((b: HTMLButtonElement) => {
       const check = localStorage.getItem('col-' + b.dataset.column)
       if (check !== null) {
         b.classList.toggle('btn-primary', check === 'true')
       } else {
-        if (this.defaultCols.indexOf(b.dataset.column) > -1) {
+        if (this.defaultCols.includes(b.dataset.column)) {
           b.classList.add('btn-primary')
         }
       }
@@ -38,57 +38,57 @@ class Columns {
     })
   }
 
-  public getColumns = (cols) => {
+  public getColumns = (cols): any[] => {
     const columnDefs = this.getColumnDefs()
     // Add 'visible' property to all column configs
     Object.keys(columnDefs).forEach((c) => {
       const btn = document.querySelector('.toggle-column[data-column="' + c + '"]')
-      if (btn) {
+      if (btn != null) {
         columnDefs[c].visible = btn.classList.contains('btn-primary')
       }
     })
 
     const columns = []
     cols.forEach((k) => {
-      if (Object.prototype.hasOwnProperty.call(columnDefs, k)) {
+      if (Object.hasOwn(columnDefs, k)) {
         columns.push(columnDefs[k])
       }
     })
 
     return columns
   }
-  
-  private getColumnDefs = () => {
+
+  private readonly getColumnDefs = (): any => {
     return {
       title: {
         name: 'title',
         title: 'Title',
         data: 'title',
-        render: (data, type, row) => {
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id + '" >' + data + '</a>'
+        render: (data: string, _type, row: Media) => {
+          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '" >' + data + '</a>'
         }
       },
       titleEng: {
         name: 'titleEng',
         title: 'English Title',
         data: 'titleEng',
-        render: (data, type, row) => {
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id + '" >' + (data ?? row.title) + '</a>'
+        render: (data: string, _type, row: Media) => {
+          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '" >' + (data ?? row.title) + '</a>'
         }
       },
       titleNat: {
         name: 'titleNat',
         title: 'Native Title',
         data: 'titleNat',
-        render: (data, type, row) => {
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id + '" >' + data + '</a>'
+        render: (data: string, _type, row: Media) => {
+          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '" >' + data + '</a>'
         }
       },
       id: {
         name: 'id',
         title: 'ID',
         data: 'id',
-        render: data => '<span title="Click to copy" class="copy-me">' + data + '</span>'
+        render: (data: number) => '<span title="Click to copy" class="copy-me">' + data.toString() + '</span>'
       },
       seasonYear: {
         name: 'seasonYear',
@@ -129,7 +129,7 @@ class Columns {
         name: 'format',
         title: 'Format',
         data: 'format',
-        render: data => data !== null ? data.charAt(0).toUpperCase() + data.slice(1) : null
+        render: (data: string | null) => data !== null ? data.charAt(0).toUpperCase() + data.slice(1) : null
       },
       country: {
         name: 'country',
@@ -174,7 +174,7 @@ class Columns {
         name: 'started',
         title: 'Started',
         data: 'started',
-        render: (data, type, row) => {
+        render: (data: string | null, _type, row: Media) => {
           if (data === null) {
             return null
           } else {
@@ -190,7 +190,7 @@ class Columns {
         name: 'completed',
         title: 'Completed',
         data: 'completed',
-        render: data => data === null ? null : '<span title="Click to copy" class="copy-me">' + data + '</span>'
+        render: (data: string | null) => data === null ? null : '<span title="Click to copy" class="copy-me">' + data + '</span>'
       },
       episodes: {
         name: 'episodes',
@@ -283,7 +283,7 @@ class Columns {
         name: 'hasReview',
         title: 'Has review',
         data: 'hasReview',
-        render: data => data === 1 ? '✓' : '✗'
+        render: (data: number) => data === 1 ? '✓' : '✗'
       },
       notes: {
         name: 'notes',
@@ -294,28 +294,28 @@ class Columns {
         name: 'isAdult',
         title: 'R18',
         data: 'isAdult',
-        render: data => data === 1 ? '✓' : '✗'
+        render: (data: number) => data === 1 ? '✓' : '✗'
       },
       references: {
         name: 'references',
         title: '# References',
         data: 'references',
         render: {
-          _: (data) => {
-            return '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + (data.length) + '</span>'
+          _: (data: string[]) => {
+            return '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
           },
-          sort: data => data.length
+          sort: (data: string[]) => data.length
         }
       },
       activity: {
         name: 'activity',
         title: 'Activities',
-        render: (data, type, row) => '<a role="button" href="#activity-modal" data-id="' + row.id + '" class="btn btn-sm show-activity">Show Activity</button>'
+        render: (_data, _type, row: Media) => '<a role="button" href="#activity-modal" data-id="' + row.id.toString() + '" class="btn btn-sm show-activity">Show Activity</button>'
       },
       code: {
         name: 'code',
         title: 'Challenge Code',
-        render: (data, type, row) => '<button data-id="' + row.id + '" class="btn btn-sm copy-code">Copy Code</button>'
+        render: (_data, _type, row: Media) => '<button data-id="' + row.id.toString() + '" class="btn btn-sm copy-code">Copy Code</button>'
       },
       externalLinks: {
         name: 'externalLinks',
