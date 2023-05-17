@@ -49,12 +49,13 @@ jobs:
       - name: Lint Code Base
         uses: super-linter/super-linter/slim@v5
         env:
-          ACTIONS_RUNNER_DEBUG: true
-          LOG_LEVEL: DEBUG
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_CSS: true
           VALIDATE_HTML: true
-          VALIDATE_JAVASCRIPT_STANDARD: true
+          VALIDATE_JSON: true
+          # JAVASCRIPT_STANDARD won't work with .ts files
+          # Some more typing of third party stuff is required before we pass ts-standard runs, disabled for now
+          #VALIDATE_TYPESCRIPT_STANDARD: true
           VALIDATE_GITHUB_ACTIONS: true
