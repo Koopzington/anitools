@@ -3,6 +3,7 @@
 class Settings extends EventTarget {
   private useTagGroups: boolean
   private useEmbedsForCodeCopy: boolean
+  private htmlTag: HTMLHtmlElement = document.querySelector('html')
 
   public initSettings (): void {
     this.initFatFreeMode()
@@ -11,34 +12,50 @@ class Settings extends EventTarget {
     this.initSideBarPosition()
     this.initTagGroups()
     this.initCodeCopyBehaviour()
+    this.initShowCoversOnTitleHover()
+  }
+
+  private readonly initShowCoversOnTitleHover = (): void => {
+    const btn = document.querySelector('#show-covers-on-title-hover')
+    const settingName = 'settings-show-covers-on-title-hover'
+    btn?.addEventListener('click', () => {
+      this.htmlTag.classList.toggle('show-covers-on-title-hover')
+      const state = this.htmlTag.classList.contains('show-covers-on-title-hover')
+      btn.classList.toggle('btn-primary', state)
+      localStorage.setItem(settingName, state.toString())
+    })
+
+    const settingState = localStorage.getItem(settingName) === 'true'
+    this.htmlTag.classList.toggle('fat-free', settingState)
+    btn?.classList.toggle('btn-primary', settingState)
   }
 
   private readonly initFatFreeMode = (): void => {
-    document.querySelector('#fat-free-toggle').addEventListener('click', () => {
-      document.querySelector('html').classList.toggle('fat-free')
-      const state = document.querySelector('html').classList.contains('fat-free')
-      document.querySelector('#fat-free-toggle').classList.toggle('btn-primary', state)
-      localStorage.setItem('settings-fat-free', state.toString())
+    const btn = document.querySelector('#fat-free-toggle')
+    const settingName = 'settings-fat-free'
+    btn?.addEventListener('click', () => {
+      this.htmlTag.classList.toggle('fat-free')
+      const state = this.htmlTag.classList.contains('fat-free')
+      btn.classList.toggle('btn-primary', state)
+      localStorage.setItem(settingName, state.toString())
     })
-    const fatFreeEnabled = localStorage.getItem('settings-fat-free')
-    if (fatFreeEnabled !== null) {
-      document.querySelector('html').classList.toggle('fat-free', fatFreeEnabled === 'true')
-      document.querySelector('#fat-free-toggle').classList.toggle('btn-primary', fatFreeEnabled === 'true')
-    }
+    const settingState = localStorage.getItem(settingName) === 'true'
+    this.htmlTag.classList.toggle('fat-free', settingState)
+    btn?.classList.toggle('btn-primary', settingState)
   }
 
   private readonly initIWannaReadOn4kHalfsize = (): void => {
-    document.querySelector('#four-k-halfsize-toggle').addEventListener('click', () => {
-      document.querySelector('html').classList.toggle('i-wanna-read-on-4k-halfsize')
-      const state = document.querySelector('html').classList.contains('i-wanna-read-on-4k-halfsize')
-      document.querySelector('#four-k-halfsize-toggle').classList.toggle('btn-primary', state)
-      localStorage.setItem('settings-4k-halfsize', state.toString())
+    const btn = document.querySelector('#four-k-halfsize-toggle')
+    const settingName = 'settings-4k-halfsize'
+    btn?.addEventListener('click', () => {
+      this.htmlTag.classList.toggle('i-wanna-read-on-4k-halfsize')
+      const state = this.htmlTag.classList.contains('i-wanna-read-on-4k-halfsize')
+      btn?.classList.toggle('btn-primary', state)
+      localStorage.setItem(settingName, state.toString())
     })
-    const fourkhalfsize = localStorage.getItem('settings-4k-halfsize')
-    if (fourkhalfsize !== null) {
-      document.querySelector('html').classList.toggle('i-wanna-read-on-4k-halfsize', fourkhalfsize === 'true')
-      document.querySelector('#four-k-halfsize-toggle').classList.toggle('btn-primary', fourkhalfsize === 'true')
-    }
+    const fourkhalfsize = localStorage.getItem(settingName) === 'true'
+    this.htmlTag.classList.toggle('i-wanna-read-on-4k-halfsize', fourkhalfsize)
+    btn?.classList.toggle('btn-primary', fourkhalfsize)
   }
 
   private readonly initTheme = (): void => {
@@ -73,7 +90,7 @@ class Settings extends EventTarget {
   private readonly initSideBarPosition = (): void => {
     const sideBarPositionSelect: HTMLSelectElement = document.querySelector('#sidebar-position')
     const moveSideBarToRightSide = (): void => {
-      document.querySelector('html').classList.toggle('sidebar-right', sideBarPositionSelect.value === 'right')
+      this.htmlTag.classList.toggle('sidebar-right', sideBarPositionSelect.value === 'right')
     }
 
     sideBarPositionSelect.addEventListener('change', () => {
@@ -90,27 +107,28 @@ class Settings extends EventTarget {
 
   private readonly initTagGroups = (): void => {
     this.useTagGroups = localStorage.getItem('settings-use-tag-groups') === 'true'
+    const btn = document.querySelector('#use-tag-groups')
 
-    document.querySelector('#use-tag-groups').addEventListener('click', () => {
+    btn?.addEventListener('click', () => {
       this.useTagGroups = !this.useTagGroups
-      document.querySelector('#use-tag-groups').classList.toggle('btn-primary', this.useTagGroups)
+      btn?.classList.toggle('btn-primary', this.useTagGroups)
       localStorage.setItem('settings-use-tag-groups', this.useTagGroups.toString())
       this.dispatchEvent(new Event('tag-grouping-updated'))
     })
-    document.querySelector('#use-tag-groups').classList.toggle('btn-primary', this.useTagGroups)
+    btn?.classList.toggle('btn-primary', this.useTagGroups)
   }
 
   public shouldGroupTags = (): boolean => this.useTagGroups
 
   private readonly initCodeCopyBehaviour = (): void => {
     this.useEmbedsForCodeCopy = localStorage.getItem('settings-use-embeds-for-code-copy') === 'true'
-
-    document.querySelector('#use-embeds-for-code-copy').addEventListener('click', () => {
+    const btn = document.querySelector('#use-embeds-for-code-copy')
+    btn?.addEventListener('click', () => {
       this.useEmbedsForCodeCopy = !this.useEmbedsForCodeCopy
-      document.querySelector('#use-embeds-for-code-copy').classList.toggle('btn-primary', this.useEmbedsForCodeCopy)
+      btn?.classList.toggle('btn-primary', this.useEmbedsForCodeCopy)
       localStorage.setItem('settings-use-embeds-for-code-copy', this.useEmbedsForCodeCopy.toString())
     })
-    document.querySelector('#use-embeds-for-code-copy').classList.toggle('btn-primary', this.useEmbedsForCodeCopy)
+    btn?.classList.toggle('btn-primary', this.useEmbedsForCodeCopy)
   }
 
   public shouldUseEmbedsForCodeCopy = (): boolean => this.useEmbedsForCodeCopy

@@ -65,7 +65,7 @@ class Columns {
         title: 'Title',
         data: 'title',
         render: (data: string, _type, row: Media) => {
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '" >' + data + '</a>'
+          return '<a class="title-link" target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '" style="--cover: url(\'' + row.cover_image + '\')" >' + data + '</a>'
         }
       },
       titleEng: {
@@ -73,7 +73,7 @@ class Columns {
         title: 'English Title',
         data: 'titleEng',
         render: (data: string, _type, row: Media) => {
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '" >' + (data ?? row.title) + '</a>'
+          return '<a class="title-link" target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '" >' + (data ?? row.title) + '</a>'
         }
       },
       titleNat: {
@@ -81,7 +81,7 @@ class Columns {
         title: 'Native Title',
         data: 'titleNat',
         render: (data: string, _type, row: Media) => {
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '" >' + data + '</a>'
+          return '<a class="title-link" target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '" >' + data + '</a>'
         }
       },
       id: {

@@ -62,7 +62,25 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
 }
 /* stylelint-enable selector-class-pattern */
 
-.custom-tooltip {
+html.show-covers-on-title-hover a.title-link::after {
+    content: "";
+    width: 140px;
+    background-image: var(--cover);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    visibility: hidden;
+    height: 200px;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: -60px;
+    margin-left: 10px;
+    box-shadow: 0 2px 20px #3136444d;
+}
+
+.custom-tooltip, html.show-covers-on-title-hover .title-link {
     position: relative;
 }
 
@@ -89,7 +107,7 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
     color: var(--dm-base-text-color);
 }
 
-.custom-tooltip:hover::after {
+.custom-tooltip:hover::after, html.show-covers-on-title-hover .title-link:hover::after {
     visibility: visible;
 }
 
