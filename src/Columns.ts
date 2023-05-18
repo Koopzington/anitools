@@ -241,13 +241,15 @@ class Columns {
         name: 'studios',
         title: 'Studios',
         data: 'studios',
-        render: data => data.join(', ')
+        render: data => data.join(', '),
+        sortable: false
       },
       producers: {
         name: 'producers',
         title: 'Producers',
         data: 'producers',
-        render: data => data.join(', ')
+        render: data => data.join(', '),
+        sortable: false
       },
       statusCurrent: {
         name: 'statusCurrent',
@@ -300,12 +302,7 @@ class Columns {
         name: 'references',
         title: '# References',
         data: 'references',
-        render: {
-          _: (data: string[]) => {
-            return '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
-          },
-          sort: (data: string[]) => data.length
-        }
+        render: (data: string[]) => '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
       },
       activity: {
         name: 'activity',
@@ -322,7 +319,8 @@ class Columns {
         title: '',
         data: 'externalLinks',
         visible: false,
-        render: data => data.join(', ')
+        render: data => data.join(', '),
+        sortable: false
       }
     }
   }
