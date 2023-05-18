@@ -26,7 +26,7 @@ class Settings extends EventTarget {
     })
 
     const settingState = localStorage.getItem(settingName) === 'true'
-    this.htmlTag.classList.toggle('fat-free', settingState)
+    this.htmlTag.classList.toggle('show-covers-on-title-hover', settingState)
     btn?.classList.toggle('btn-primary', settingState)
   }
 
