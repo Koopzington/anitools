@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "koopzington@gmail.com",
   "license": "GPL-3.0-or-later",
-  "description": "All sorts of shenanigans possibly helpful for AWC Challenges ( ͡° ͜ʖ ͡°)",
+  "description": "All sorts of shenanigans possibly helpful for AWC Challenges",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -31,7 +31,13 @@
       "keyframe-declaration-no-important": true,
       "no-invalid-double-slash-comments": true,
       "string-no-newline": true,
-      "color-named": "never"
+      "color-named": "never",
+      "selector-type-no-unknown": [
+        true,
+        {
+          "ignoreTypes": ["/tag/"]
+        }
+      ]
     }
   },
   "browserslist": [

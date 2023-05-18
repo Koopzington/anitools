@@ -69,18 +69,21 @@ class Filters extends EventTarget {
     })
 
     this.addText('title_like', 'Title')
-    this.addSel('format', 'Format', [], 'OR')
-    this.addSel('source', 'Source', [], 'OR')
-    this.addSel('country', 'Country', [], 'OR')
-    this.addSel('airStatus', 'Airing Status', [], 'OR')
-    this.addSel('genres', 'Genres', [], 'AND')
-    this.addSel('tags', 'Tags', [], 'AND')
-    this.addSel('season', 'Season', [], 'OR')
-    this.addSel('year', 'Year', [], 'OR', false)
-    this.addSel('externalLinks', 'Available On', [], 'AND')
-    this.addTagify('staff', 'Staff (ID)', '/staff')
-    this.addTagify('studio', 'Studio', '/studio')
-    this.addTagify('producer', 'Producer', '/studio')
+    this.addTagify('format', 'Format', [], 'OR')
+    this.addTagify('source', 'Source', [], 'OR')
+    this.addTagify('country', 'Country', [], 'OR')
+    this.addTagify('airStatus', 'Airing Status', [], 'OR')
+    this.addTagify('genres', 'Genres', [], 'AND')
+    this.addTagify('tags', 'Tags', [], 'AND')
+    // Backup the dropdown rendering function to switch between the custom one for tag groups and the normal one
+    this.filters['tags'].dropdown.createListHTMLoriginal = this.filters['tags'].dropdown.createListHTML
+    this.addTagify('season', 'Season', [], 'OR')
+    this.addTagify('year', 'Year', [], 'OR')
+    this.addTagify('externalLinks', 'Available On', [], 'AND')
+    this.addTagify('voiceActor', 'Voice Actor (ID)', '/staff', 'AND')
+    this.addTagify('staff', 'Staff (ID)', '/staff', 'AND')
+    this.addTagify('studio', 'Studio', '/studio', 'AND')
+    this.addTagify('producer', 'Producer', '/studio', 'AND')
     this.addRange('episodes', 'Episodes')
     this.addCheckbox('showAdult', 'Show Adult entries')
   }
@@ -99,52 +102,13 @@ class Filters extends EventTarget {
     input.addEventListener('keyup', this.filterChangeCallback)
   }
 
-  // Function to add a Choices type filter
-  private readonly addSel = (col: string, label: string, values: string[] | Object, logic: string, shouldSort: boolean = true) => {
-    const select = document.createElement('select')
-    select.multiple = true
-    select.classList.add('columnFilter', 'form-control')
-    select.dataset.column = col
-    select.dataset.logic = logic
-    select.addEventListener('change', this.filterChangeCallback)
-    if (Array.isArray(values)) {
-      for (let i = 0; i < values.length; ++i) {
-        const o = document.createElement('option')
-        o.text = values[i]
-        o.value = values[i]
-        select.add(o)
-      }
-    } else {
-      const optgroups = Object.keys(values)
-      optgroups.forEach((g) => {
-        const og = document.createElement('optgroup')
-        og.label = g
-
-        values[g].forEach((v) => {
-          const o = document.createElement('option')
-          o.text = v
-          o.value = v
-          og.insertAdjacentElement('beforeend', o)
-        })
-        select.add(og)
-      })
-    }
-    this.filterContainer.insertAdjacentElement('beforeend', select)
-    this.filters[col] = new Choices(select, {
-      placeholderValue: label,
-      removeItemButton: true,
-      shouldSort,
-      allowHTML: false
-    })
-  }
-
   // Function to add a Tagify type filter
-  private readonly addTagify = (col: string, label: string, url: string) => {
+  private readonly addTagify = (col: string, label: string, urlOrData: string[] | string, logic: string) => {
     const container = document.createElement('div')
     const field = document.createElement('input')
     field.setAttribute('placeholder', label)
     field.classList.add('columnFilter', 'form-control')
-    field.dataset.logic = 'AND'
+    field.dataset.logic = logic
     field.addEventListener('change', this.filterChangeCallback)
     container.insertAdjacentElement('beforeend', field)
     this.filterContainer.insertAdjacentElement('beforeend', container)
@@ -154,48 +118,65 @@ class Filters extends EventTarget {
       whitelist: [],
       tagTextProp: 'text',
       pasteAsTags: false,
+      editTags: false,
       dropdown: {
-        enabled: 1,
+        enabled: typeof urlOrData === 'string' ? 1 : 0,
         searchKeys: ['value', 'text'],
         mapValueTo: 'text',
-        highlightFirst: true
+        highlightFirst: true,
+        closeOnSelect: typeof urlOrData === 'string'
       },
-      hooks: {
-        beforePaste: async function (_tagify, pastedText) {
-          // It wants a promise? It get's a promise
-          return await new Promise(function (resolve) {
-            tagifyInputHandler(pastedText.pastedText)
-            resolve()
-          })
-        }
+      transformTag: (tagData) => {
+        tagData.exclude = false
       }
     })
-    let controller: AbortController
 
-    const tagifyInputHandler = (value: string) => {
-      tagify.whitelist = null // reset the whitelist
-
-      controller && controller.abort()
-      controller = new AbortController()
-
-      // show loading animation and hide the suggestions dropdown
-      tagify.loading(true).dropdown.hide()
-      if (value.length === 0) {
-        tagify.loading(false)
-        return
-      }
-      fetch(import.meta.env.VITE_API_URL + url + '?q=' + value, { signal: controller.signal })
-        .then(async response => await response.json())
-        .then((newWhitelist) => {
-          tagify.whitelist = newWhitelist // update whitelist Array in-place
-          tagify.loading(false).dropdown.show(value) // render the suggestions dropdown
+    // We received an URL for fetching tags remotely
+    if (typeof urlOrData === 'string') {
+      // Trigger the InputHandler when somebody pastes into the field
+      tagify.settings.hooks.beforePaste = async function (_tagify, pastedText) {
+        // It wants a promise? It get's a promise
+        return await new Promise(function (resolve) {
+          tagifyInputHandler(pastedText.pastedText)
+          resolve()
         })
-        .catch(handleError)
+      }
+
+      let controller: AbortController
+      const tagifyInputHandler = (value: string) => {
+        tagify.whitelist = null // reset the whitelist
+
+        controller && controller.abort()
+        controller = new AbortController()
+
+        // show loading animation and hide the suggestions dropdown
+        tagify.loading(true).dropdown.hide()
+        if (value.length === 0) {
+          tagify.loading(false)
+          return
+        }
+        fetch(import.meta.env.VITE_API_URL + urlOrData + '?q=' + value, { signal: controller.signal })
+          .then(async response => await response.json())
+          .then((newWhitelist) => {
+            tagify.whitelist = newWhitelist // update whitelist Array in-place
+            tagify.loading(false).dropdown.show(value) // render the suggestions dropdown
+          })
+          .catch(handleError)
+      }
+
+      tagify.on('input', (e) => {
+        tagifyInputHandler(e.detail.tagify.state.inputText)
+      })    
     }
 
-    tagify.on('input', (e) => {
-      tagifyInputHandler(e.detail.tagify.state.inputText)
-    })
+    // TODO: Change when making filter logic configurable by user
+    if (logic === 'AND') {
+      tagify.on('click', (e) => {
+        const {tag:tagElm, data:tagData} = e.detail;
+        tagData.exclude = tagData.exclude !== true
+        tagify.replaceTag(tagElm, tagData)
+      })
+    }
 
     this.filters[col] = tagify
   }
@@ -274,34 +255,56 @@ class Filters extends EventTarget {
     })
   }
 
-  private readonly getValues = (data: string[]): any[] => {
-    const v: any[] = []
-    data.forEach((e) => v.push({ value: e, label: e }))
-
-    return v
-  }
-
   private readonly updateTagFilter = (): void => {
     if (!this.tagCache) {
       return
     }
-    if (this.ATSettings.shouldGroupTags()) {
-      const values: any[] = []
-      Object.entries(this.tagCache).forEach((group) => {
+    const values: any[] = []
+    Object.entries(this.tagCache).forEach((group) => {
+      group[1].forEach((tag: string) => {
         values.push({
-          label: group[0],
-          disabled: false,
-          choices: this.getValues(group[1])
+          category: group[0],
+          value: tag
         })
       })
-      this.filters['tags'].setChoices(values, 'value', 'label', true)
+    })
+    this.filters['tags'].whitelist = values
+    this.filters['tags'].settings.dropdown.maxItems = values.length
+
+    if (this.ATSettings.shouldGroupTags()) {
+      this.filters['tags'].dropdown.createListHTML = (suggestionList) => {
+        const categories = suggestionList.reduce((acc, suggestion) => {
+          const category = suggestion.category || 'Not Assigned';
+            if( !acc[category] )
+                acc[category] = [suggestion]
+            else
+                acc[category].push(suggestion)
+    
+            return acc
+          }, {})
+      
+          const getUsersSuggestionsHTML = categories => categories.map((suggestion) => {
+              if( typeof suggestion == 'string' || typeof suggestion == 'number' )
+                  suggestion = {value:suggestion}
+      
+              var value = this.filters['tags'].dropdown.getMappedValue.call(this.filters['tags'], suggestion)
+      
+              suggestion.value = value
+      
+              return this.filters['tags'].settings.templates.dropdownItem.apply(this.filters['tags'], [suggestion]);
+          }).join("")
+
+          // assign the user to a group
+          return Object.entries(categories).map(([category, categories]) => {
+              return `<div class="tagify-dropdown-item-group" data-title="Team ${category}:">${getUsersSuggestionsHTML(categories)}</div>`
+          }).join("")
+      }
     } else {
-      const values = []
-      Object.entries(this.tagCache).forEach((group) => {
-        group[1].forEach((t: string) => { values.push(t) })
-      })
-      values.sort(undefined)
-      this.filters['tags'].setChoices(this.getValues(values), 'value', 'label', true)
+      // Sort values alphabetically
+      values.sort((x,y) => { if (x.value < y.value) { return -1 } if (x.value > y.value) { return 1 } return 0 } );
+      this.filters['tags'].whitelist = values
+      // Reset Dropdown rendering function to default
+      this.filters['tags'].dropdown.createListHTML = this.filters['tags'].dropdown.createListHTMLoriginal
     }
   }
 
@@ -310,14 +313,21 @@ class Filters extends EventTarget {
     const response = await fetch(import.meta.env.VITE_API_URL + '/filterValues?media_type=' + this.mediaTypeSelect.value)
     const filterValues = await response.json()
     this.tagCache = filterValues.tags
-    this.filters['format'].setChoices(this.getValues(filterValues.format), 'value', 'label', true)
-    this.filters['genres'].setChoices(this.getValues(filterValues.genres), 'value', 'label', true)
-    this.filters['country'].setChoices(this.getValues(filterValues.country_of_origin), 'value', 'label', true)
-    this.filters['externalLinks'].setChoices(this.getValues(filterValues.external_links), 'value', 'label', true)
-    this.filters['season'].setChoices(this.getValues(filterValues.season), 'value', 'label', true)
-    this.filters['year'].setChoices(this.getValues(filterValues.season_year), 'value', 'label', true)
-    this.filters['source'].setChoices(this.getValues(filterValues.source), 'value', 'label', true)
-    this.filters['airStatus'].setChoices(this.getValues(filterValues.status), 'value', 'label', true)
+    this.filters['format'].whitelist = filterValues.format
+    this.filters['genres'].whitelist = filterValues.genres
+    this.filters['genres'].settings.dropdown.maxItems = filterValues.genres.length
+    this.filters['country'].whitelist = filterValues.country_of_origin
+    this.filters['country'].settings.dropdown.maxItems = filterValues.country_of_origin.length
+    this.filters['externalLinks'].whitelist = filterValues.external_links
+    this.filters['externalLinks'].settings.dropdown.maxItems = filterValues.external_links.length
+    this.filters['season'].whitelist = filterValues.season
+    this.filters['season'].settings.dropdown.maxItems = filterValues.season.length
+    this.filters['year'].whitelist = filterValues.season_year.map(v => v.toString())
+    this.filters['year'].settings.dropdown.maxItems = filterValues.season_year.length
+    this.filters['source'].whitelist = filterValues.source
+    this.filters['source'].settings.dropdown.maxItems = filterValues.source.length
+    this.filters['airStatus'].whitelist = filterValues.status
+    this.filters['airStatus'].settings.dropdown.maxItems = filterValues.status.length
     this.updateTagFilter()
 
     if (userListChoice !== undefined) {
@@ -383,10 +393,19 @@ class Filters extends EventTarget {
         params[f[0]] = {}
         const logic = f[1].DOM.originalInput.dataset.logic ?? 'AND'
         const v: string[] = []
+        const not: string[] = []
         f[1].value.forEach((p) => {
-          v.push(p.value)
+          if (p.exclude === false) {
+            v.push(p.value)
+          } else {
+            not.push(p.value)
+          }
+          
         })
         params[f[0]][logic.toLowerCase()] = v
+        if (not.length > 0) {
+          params[f[0]]['not'] = not
+        }
 
         return
       }

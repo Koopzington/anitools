@@ -174,3 +174,21 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
     width: fit-content;
 }
 /* stylelint-enable selector-class-pattern */
+
+/* Tagify tags in "exclude mode" */
+tag[exclude="true"] {
+    --tag-bg: var(--lm-badge-danger-bg-color);
+    --tag-hover: var(--lm-badge-danger-bg-color);
+}
+
+/* display tag category above the tag group */
+.tagify-dropdown-item-group::before {
+    content: attr(data-title);
+    display: inline-block;
+    width: 100%;
+    color: #fff;
+    padding: 4px 6px;
+    font-style: bold;
+    background: var(--green-color);
+    font-weight: 600;
+}
