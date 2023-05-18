@@ -52,7 +52,9 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LINTER_RULES_PATH: /
           VALIDATE_CSS: true
+          CSS_FILE_NAME: .stylelintrc.json
           VALIDATE_HTML: true
           VALIDATE_JSON: true
           # JAVASCRIPT_STANDARD won't work with .ts files
