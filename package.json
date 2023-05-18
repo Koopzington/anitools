@@ -17,29 +17,6 @@
   "ts-standard": {
     "project": "./tsconfig.json"
   },
-  "stylelint": {
-    "extends": [
-      "stylelint-config-standard"
-    ],
-    "rules": {
-      "no-descending-specificity": true,
-      "block-no-empty": true,
-      "comment-no-empty": true,
-      "no-empty-source": true,
-      "color-no-invalid-hex": true,
-      "function-calc-no-unspaced-operator": true,
-      "keyframe-declaration-no-important": true,
-      "no-invalid-double-slash-comments": true,
-      "string-no-newline": true,
-      "color-named": "never",
-      "selector-type-no-unknown": [
-        true,
-        {
-          "ignoreTypes": ["/tag/"]
-        }
-      ]
-    }
-  },
   "browserslist": [
     "last 1 Chrome version"
   ],
