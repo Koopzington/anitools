@@ -84,6 +84,7 @@ class Filters extends EventTarget {
     this.addTagify('staff', 'Staff (ID)', '/staff', 'AND')
     this.addTagify('studio', 'Studio', '/studio', 'AND')
     this.addTagify('producer', 'Producer', '/studio', 'AND')
+    this.addTagify('awcCommunityList', 'Community List', [], 'AND')
     this.addRange('episodes', 'Episodes')
     this.addCheckbox('showAdult', 'Show Adult entries')
   }
@@ -328,6 +329,8 @@ class Filters extends EventTarget {
     this.filters['source'].settings.dropdown.maxItems = filterValues.source.length
     this.filters['airStatus'].whitelist = filterValues.status
     this.filters['airStatus'].settings.dropdown.maxItems = filterValues.status.length
+    this.filters['awcCommunityList'].whitelist = filterValues.awc_community_lists
+    this.filters['awcCommunityList'].settings.dropdown.maxItems = filterValues.awc_community_lists.length
     this.updateTagFilter()
 
     if (userListChoice !== undefined) {
