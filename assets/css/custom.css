@@ -62,7 +62,7 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
 }
 /* stylelint-enable selector-class-pattern */
 
-html.show-covers-on-title-hover a.title-link::after {
+html.show-covers-on-title-hover a[style]::after {
     content: "";
     width: 140px;
     background-image: var(--cover);
@@ -80,7 +80,7 @@ html.show-covers-on-title-hover a.title-link::after {
     box-shadow: 0 2px 20px #3136444d;
 }
 
-.custom-tooltip, html.show-covers-on-title-hover .title-link {
+.custom-tooltip, html.show-covers-on-title-hover a[style] {
     position: relative;
 }
 
@@ -107,7 +107,7 @@ html.show-covers-on-title-hover a.title-link::after {
     color: var(--dm-base-text-color);
 }
 
-.custom-tooltip:hover::after, html.show-covers-on-title-hover .title-link:hover::after {
+.custom-tooltip:hover::after, html.show-covers-on-title-hover a[style]:hover::after {
     visibility: visible;
 }
 

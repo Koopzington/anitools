@@ -40,6 +40,7 @@ interface Media {
   producers: string[]
   references: string[]
   externalLinks: string[]
+  coverImage: string
 }
 
 interface UserList {
