@@ -35,7 +35,7 @@
     border-color: var(--lm-primary-color);
 }
 
-.dark.mode .tagify__dropdown__wrapper {
+.dark-mode .tagify__dropdown__wrapper {
     background: var(--dm-input-bg-color);
     border-color: var(--dm-primary-color);
 }
