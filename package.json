@@ -7,9 +7,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cs-check": "standard",
-    "cs-fix": "standard --fix",
-    "css-check": "stylelint assets/css/ public/themes/",
+    "lint": "standard && stylelint assets/css/ public/themes/ && htmlhint",
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
@@ -36,6 +34,7 @@
     "wnumb": "^1.2.0"
   },
   "devDependencies": {
+    "htmlhint": "^1.1.4",
     "standard": "^17.0.0",
     "stylelint": "^15.6.2",
     "stylelint-config-standard": "^33.0.0",
