@@ -109,7 +109,9 @@ class AniTools {
 
   private readonly initChangelog = (): void => {
     document.querySelector('#show-changelog')?.addEventListener('click', async (): Promise<void> => {
-      const changelogRaw = await fetch('CHANGELOG.md')
+      // We need to import the markdown file as a module, otherwise it won't make it into the build
+      const changelogRawImport = await import('../CHANGELOG.md')
+      const changelogRaw = await fetch(changelogRawImport.default)
       document.querySelector('#changelog-content').innerHTML = marked.parse(await changelogRaw.text())
     });
   }
