@@ -4,6 +4,7 @@ import 'datatables.net-colreorder'
 import 'nouislider'
 import '@yaireo/tagify'
 import 'wnumb'
+import { marked } from 'marked'
 import './commonLib'
 import Columns from './Columns'
 import Settings from './Settings'
@@ -41,6 +42,7 @@ class AniTools {
     this.handleInputs()
     this.initModuleSelect()
     this.route()
+    this.initChangelog()
   }
 
   private readonly initModuleSelect = (): void => {
@@ -103,6 +105,13 @@ class AniTools {
     Object.values(document.querySelector('#navsidebar-nav').children).forEach((e) => {
       document.querySelector('#navsidebar-sidebar').insertAdjacentElement('beforeend', e)
     })
+  }
+
+  private readonly initChangelog = (): void => {
+    document.querySelector('#show-changelog')?.addEventListener('click', async (): Promise<void> => {
+      const changelogRaw = await fetch('CHANGELOG.md')
+      document.querySelector('#changelog-content').innerHTML = marked.parse(await changelogRaw.text())
+    });
   }
 }
 

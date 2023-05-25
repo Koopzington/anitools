@@ -30,6 +30,41 @@
         <link rel="stylesheet" href="assets/css/custom.css">
     </head>
     <body data-set-preferred-mode-onload="true">
+        <!-- Help Modal -->
+        <div class="modal" id="info-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="width: 50em;">
+                    <a href="#" class="close" role="button" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                    <h5 class="modal-title">Info</h5>
+                    <div>To get started with the BetterList tool, enter your <a href="https://anilist.co/">AniList</a> username in the respective field and press the load button</div>
+                    <h6>Things you might not know:</h6>
+                    <ul>
+                        <li>You can sort columns by clicking on their titles
+                            <br><img class="img-fluid" src="assets/img/sort.webp">
+                        </li>
+                        <li>You can change the column order by dragging them around using the column title as handle
+                            <br><img class="img-fluid" src="assets/img/reorder.webp">
+                        </li>
+                        <li>You can change filters to "exclude" mode by clicking on tags (turning them red)
+                            <br><img class="img-fluid" src="assets/img/exclude.webp">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Changelog Modal -->
+        <div class="modal" id="changelog-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="width: 50em;">
+                    <a href="#" class="close" role="button" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                    <div id="changelog-content"></div>
+                </div>
+            </div>
+        </div>
         <!-- Activity Modal -->
         <div class="modal" id="activity-modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
@@ -114,6 +149,7 @@
                         <button type="button" class="btn" id="use-embeds-for-code-copy" title="By default the 'Copy Code' button uses the [Media_Title](link) format. Enabling this will turn it into just the link so AL turns it into an embed.">Use embeds for 'Copy Code' button</button>
                         <button type="button" class="btn" id="show-covers-on-title-hover" title="">Show covers while hovering over titles</button>
                         <a class="btn" target="_blank" rel="noopener" href="%VITE_GITHUB_REPO%">Report issues/feature requests on <i class="fab fa-github"></i></a>
+                        <a class="btn" id="show-changelog" title="Show the Changelog" href="#changelog-modal">Show changelog</a>
                     </div>
                     <div class="form-row" style="gap: 1rem;">
                         <div class="w-200">
@@ -171,6 +207,9 @@
                     <input id="al-user" type="text" class="form-control" placeholder="AL Username" required="required">
                     <button id="load" class="btn btn-primary" type="button">Load</button>
                     <a class="btn btn-primary d-none d-xl-inline-block" href="#settings-modal">Settings</a>
+                    <a class="btn btn-action d-none d-xl-inline-block" href="#info-modal">
+                        <i class="fa fa-info-circle"></i>
+                    </a>
                 </form>
             </nav>
             <div class="sidebar">
@@ -179,6 +218,9 @@
                         <div id="navsidebar-sidebar" class="d-flex flex-wrap" style="gap: 0.5rem"></div>
                         <div class="mt-5 mb-5 d-flex d-xl-none" style="justify-content: space-between;">
                             <a class="btn btn-primary" href="#settings-modal">Settings</a>
+                            <a class="btn btn-action" href="#info-modal">
+                                <i class="fa fa-info-circle"></i>
+                            </a>
                             <button class="dark-mode-toggler btn btn-action" type="button" aria-label="Toggle dark mode">
                                 <i class="fa" aria-hidden="true"></i>
                             </button>

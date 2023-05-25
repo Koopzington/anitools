@@ -210,3 +210,22 @@ tag[exclude="true"] {
     background: var(--green-color);
     font-weight: 600;
 }
+
+/* Specific rules for displaying the changelog */
+#changelog-content h1 {
+    font-size: var(--modal-title-font-size);
+}
+
+#changelog-content h2 {
+    font-size: 1.8rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+#changelog-content li {
+    margin-bottom: 0;
+}
+
+#changelog-content ul ul {
+    margin-top: 0;
+}
