@@ -16,7 +16,7 @@ class AniTools {
   // Tools which can be loaded and unloaded
   private readonly Tools = {}
   private activeModule: string | undefined
-  private readonly moduleSelect: HTMLSelectElement
+  private readonly toolSelect: HTMLSelectElement
 
   public init (): void {
     // Check for stored username and replace default value if it exists
@@ -25,7 +25,7 @@ class AniTools {
       document.querySelector('#al-user').value = userName
     }
 
-    this.moduleSelect = document.querySelector('#tool-dropdown')
+    this.toolSelect = document.querySelector('#tool-dropdown')
     halfmoon.onDOMContentLoaded()
     document.querySelector('#toggle-sidebar-btn').addEventListener('click', () => { halfmoon.toggleSidebar() })
     document.querySelectorAll('.dark-mode-toggler').forEach((e) => e.addEventListener('click', () => { halfmoon.toggleDarkMode() }))
@@ -40,22 +40,22 @@ class AniTools {
     settings.initSettings()
     columns.initToggles()
     this.handleInputs()
-    this.initModuleSelect()
+    this.initToolSelect()
     this.route()
     this.initChangelog()
   }
 
-  private readonly initModuleSelect = (): void => {
+  private readonly initToolSelect = (): void => {
     Object.keys(this.Tools).forEach((m) => {
       const o = document.createElement('option')
       o.value = m
-      o.label = m
-      this.moduleSelect.insertAdjacentElement('beforeend', o)
+      o.innerText = m
+      this.toolSelect.insertAdjacentElement('beforeend', o)
     })
 
     // Sync value change with other select and route
-    this.moduleSelect.addEventListener('change', () => {
-      this.route(this.moduleSelect.value)
+    this.toolSelect.addEventListener('change', () => {
+      this.route(this.toolSelect.value)
     })
   }
 
@@ -80,9 +80,9 @@ class AniTools {
     if (target === null) {
       target = this.getHashParam('module')
       if (target === false) {
-        target = this.moduleSelect.value
+        target = this.toolSelect.value
       } else {
-        this.moduleSelect.value = target
+        this.toolSelect.value = target
       }
     }
 
