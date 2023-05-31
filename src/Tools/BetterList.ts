@@ -1,8 +1,8 @@
 /* global localStorage */
 
 import $ from 'jquery'
+import Tagify from '@yaireo/tagify'
 import { on, handleResponse, handleError } from '../commonLib'
-import Choices, { Choice } from 'choices.js'
 import Columns from '../Columns'
 import Tool from '../Interfaces/Tool'
 import Filters from '../Filters'
@@ -17,9 +17,9 @@ class BetterList implements Tool {
   private readonly ActivityLister: ActivityLister
   private readonly userNameField: HTMLInputElement = document?.querySelector('#al-user')
   private readonly mediaTypeSelect: HTMLSelectElement = document?.querySelector('.media-type')
-  private readonly listSelect: HTMLSelectElement = document?.querySelector('#list')
-  private listChoice: Choices
-  private lists: Choice[] = []
+  private readonly listInput: HTMLInputElement = document?.querySelector('#list')
+  private listTagify: Tagify
+  private lists = []
   private table: Api<HTMLTableElement> | undefined
   private currentPageData: Media[] = []
   private copyLinkHandler: EventListener
@@ -37,10 +37,11 @@ class BetterList implements Tool {
     // Reindex array and filter out empty lists
     this.lists = [...this.lists].sort(undefined).filter(a => a)
 
-    await this.listChoice.setChoices(this.lists)
-    this.listChoice.setValue([this.lists[0]])
+    this.listTagify.whitelist = this.lists
+    this.listTagify.addTags(this.lists[0].label)
 
-    this.listChoice.containerOuter.element.classList.remove('d-none')
+    this.listTagify.DOM.scope.classList.remove('d-none')
+    this.userListPosition = this.listTagify.DOM.scope.getBoundingClientRect()
   }
 
   colVisibilityHandler: EventListener = (ev): void => {
@@ -78,36 +79,39 @@ class BetterList implements Tool {
       b.addEventListener('click', this.colVisibilityHandler)
     })
 
-    this.listSelect.addEventListener('change', this.updateTable)
-
-    this.listChoice = new Choices(this.listSelect, {
-      shouldSort: false,
-      allowHTML: true,
-      classNames: {
-        containerOuter: 'choices list-select d-none'
+    this.listTagify = new Tagify(this.listInput, {
+      enforceWhiteList: true,
+      mode: 'select',
+      tagTextProp: 'label',
+      dropdown: {
+        classname: 'list-select-dropdown',
+        enabled: 0,
+        searchKeys: ['label'],
+        maxItems: Infinity
       },
-      callbackOnCreateTemplates: function (template) {
-        return {
-          choice: ({ classNames }, data: Choice) => {
-            return template(`<div class="${classNames.item} ${classNames.itemChoice}
-              ${data.disabled ? classNames.itemDisabled : classNames.itemSelectable}" 
-              data-select-text="${this.config.itemSelectText}" 
-              data-choice ${data.disabled ? 'data-choice-disabled aria-disabled="true"' : 'data-choice-selectable'}
-              data-id="${data.id}" 
-              data-value="${data.value}" 
-              ${data.groupId > 0 ? 'role="treeitem"' : 'role="option"'}>
-                  <div class="ch-label">${data.label}</div>
-                  <div class="ch-completion">${data.customProperties.completion}</div>
-              </div>`)
-          }
-        }
+      templates: {
+        dropdownItem: function (item) {
+          return `<div ${this.getAttributes(item)}
+          class='${this.settings.classNames.dropdownItem} ${item.class ? item.class : ""}'
+          tabindex="0"
+          role="option">
+            <div class="ch-label">${item.label}</div>
+            <div class="ch-completion">${item.customProperties.completion}</div>
+          </div>`
+        },
+      },
+      transformTag: (tagData) => {
+        tagData.exclude = false
       }
     })
+
+    this.listTagify.on('change', this.updateTable)
+
 
     if (Object.keys(this.Filters.getFilters()).length === 0) {
       this.Filters.insertFilters()
     }
-    await this.Filters.updateFilters(this.listChoice)
+    await this.Filters.updateFilters(this.listTagify)
 
     // Setup Copy-Links
     this.copyLinkHandler = on('#table', 'click', '.copy-me', async (e) => {
@@ -164,10 +168,7 @@ class BetterList implements Tool {
       this.table.draw()
     })
 
-    this.listChoice.destroy()
-
-    this.listSelect.removeEventListener('change', this.updateTable)
-    this.listSelect.classList.add('d-none')
+    this.listTagify.DOM.scope.classList.add('d-none')
 
     document.querySelector('#load').removeEventListener('click', this.request)
 

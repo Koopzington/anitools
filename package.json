@@ -7,7 +7,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "standard && stylelint assets/css/ public/themes/ && htmlhint",
+    "cs-check": "standard",
+    "css-check": "stylelint assets/css/ public/themes/",
+    "html-check": "htmlhint",
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
@@ -23,7 +25,6 @@
     "@popperjs/core": "^2.11",
     "@types/wnumb": "^1.2.1",
     "@yaireo/tagify": "^4.17",
-    "choices.js": "^10.2",
     "datatables.net": "^1.13",
     "datatables.net-colreorder": "^1.6",
     "datatables.net-dt": "^1.13.4",

@@ -1,8 +1,18 @@
 # Changelog
 
+## 2023-05-31
+- Fixed a bug causing user lists to not get replaced when changing media type and reloading [Commit]()
+- Removed Choices.js as a dependency [Commit]()
+
+## 2023-05-30
+- Updated dependencies
+  - @popperjs/core (2.11.7 to 2.11.8) [#20](https://github.com/Koopzington/anitools/pull/20)
+  - marked (5.0.2 to 5.0.3) [#19](https://github.com/Koopzington/anitools/pull/19)
+  - vite (4.3.8 to 4.3.9) [#18](https://github.com/Koopzington/anitools/pull/18)
+
 ## 2023-05-25
-- Added a button opening a dialog that showcases features which might not be obvious to users.
-- Added CHANGELOG.md containing all changes that were made to the project
+- Added a button opening a dialog that showcases features which might not be obvious to users. [Commit](https://github.com/Koopzington/anitools/commit/36e19d1b99209195699790c294800ccb336fcdfa)
+- Added CHANGELOG.md containing all changes that were made to the project [Commit](https://github.com/Koopzington/anitools/commit/36e19d1b99209195699790c294800ccb336fcdfa)
 
 ## 2023-05-23
 - Updated dependencies.

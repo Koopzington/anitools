@@ -53,5 +53,54 @@
 /* Halfmoon gives inputs a fixed height which needs to get reverted for tagify */
 .tagify.form-control {
     height: auto;
+    min-height: var(--input-height);
+}
+
+.tagify__input {
+    padding:  0.3em 0.35em;
+}
+
+.fat-free .tagify__input {
+    padding: 0 0.35em;
+}
+
+/* Align styling with normal selects */
+.navbar .tagify--select.form-control {
+    cursor: pointer;
+    padding-right: 2.5rem;
+}
+
+/* Hide the x button as users shouldn't actually leave the field empty. It's supposed to emulate a Select after all */
+.tagify--select .tagify__tag__removeBtn {
+    display: none;
+}
+
+.tagify--select .tagify__input {
+    padding-left: 0.35rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* override the caret to look the same as the default ones **/
+.tagify--select[aria-expanded="true"]::after {
+    transform: none;
+}
+
+.tagify--select::after {
+    content: " ";
+    position: absolute;
+    top: 0;
+    right: 1rem;
+    bottom: 0;
+    pointer-events: none;
+    background-image: var(--select-bg-image);
+    background-size: var(--select-bg-size);
+    background-repeat: var(--select-bg-repeat);
+    transform: none;
+    opacity: 1;
+    height: var(--input-height);
+    background-position: center;
+    width: 1rem;
 }
 /* stylelint-enable selector-class-pattern */

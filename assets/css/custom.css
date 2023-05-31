@@ -151,6 +151,15 @@ html.show-covers-on-title-hover a[style]::after {
     gap: 1rem;
 }
 
+.navbar #navsidebar-nav {
+    justify-content: flex-end;
+}
+
+.navbar #navsidebar-nav .form-control {
+    flex-grow: 0;
+}
+
+/* Make the A in the logo white or dark depending on light or dark mode is enabled */
 #logo-letter {
     fill: #333 !important;
 }
@@ -159,38 +168,38 @@ html.show-covers-on-title-hover a[style]::after {
     fill: #fff !important;
 }
 
-.list-select {
-    min-width: 200px;
-    margin-right: var(--form-inline-horizontal-margin);
-}
-
-/* TODO: override default choices classNames */
+/* TODO: override default Tagify classNames */
 /* stylelint-disable selector-class-pattern */
 
-/* 2 column formatting of list select */
-.list-select .choices__list .choices__item {
-    display: flex;
+/* Make the userlist select wider */
+.navbar #navsidebar-nav .tagify--select {
+    min-width: 16rem;
 }
 
-.list-select .choices__list--dropdown .choices__item {
-    padding: 1rem;
+/* 2 column formatting of userlist select */
+.list-select-dropdown .tagify__dropdown__wrapper .tagify__dropdown__item {
+    display: flex;
+    padding: 0.5rem;
 }
 
-.list-select .choices__list .choices__item div {
-    width: 100%;
-    display: flex;
+.list-select-dropdown .tagify__dropdown__wrapper .tagify__dropdown__item div {
+    display: inline-block;
     white-space: nowrap;
 }
 
-.list-select .choices__list .choices__item .ch-completion {
+.list-select-dropdown .tagify__dropdown__wrapper .tagify__dropdown__item .ch-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 2;
+}
+
+.list-select-dropdown .tagify__dropdown__wrapper .tagify__dropdown__item .ch-completion {
     justify-content: flex-end;
     text-align: right;
     margin-left: var(--form-inline-horizontal-margin);
+    flex: 1;
 }
 
-.list-select .choices__list--dropdown {
-    width: fit-content;
-}
 /* stylelint-enable selector-class-pattern */
 
 /* Tagify tags in "exclude mode" */
@@ -199,7 +208,7 @@ tag[exclude="true"] {
     --tag-hover: var(--lm-badge-danger-bg-color);
 }
 
-/* display tag category above the tag group */
+/* display tag category above the tag group for the Tag filter */
 .tagify-dropdown-item-group::before {
     content: attr(data-title);
     display: inline-block;

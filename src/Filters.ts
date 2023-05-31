@@ -1,4 +1,3 @@
-import Choices from 'choices.js'
 import Tagify from '@yaireo/tagify'
 import noUiSlider from 'nouislider'
 import wNumb from 'wnumb'
@@ -11,7 +10,25 @@ class Filters extends EventTarget {
   private readonly ATSettings: Settings
 
   // Object to hold all added filters
-  private filters: Object = {}
+  private filters: {
+    title_like: HTMLInputElement,
+    format: Tagify,
+    source: Tagify,
+    country: Tagify,
+    airStatus: Tagify,
+    genres: Tagify,
+    tags: Tagify,
+    season: Tagify,
+    year: Tagify,
+    externalLinks: Tagify,
+    voiceActor: Tagify,
+    staff: Tagify,
+    studio: Tagify,
+    producer: Tagify,
+    awcCommunityList: Tagify,
+    episodes: any,
+    showAdult: HTMLInputElement,
+  } = {}
 
   // We cache tags on initialization so the user can switch between grouped and non-grouped mode on the filter
   private tagCache: Object
@@ -39,12 +56,6 @@ class Filters extends EventTarget {
 
         if (f[1] instanceof Tagify) {
           f[1].removeAllTags()
-
-          return
-        }
-
-        if (f[1] instanceof Choices) {
-          f[1].removeActiveItems()
 
           return
         }
@@ -121,6 +132,7 @@ class Filters extends EventTarget {
       pasteAsTags: false,
       editTags: false,
       dropdown: {
+        maxItems: Infinity,
         enabled: typeof urlOrData === 'string' ? 1 : 0,
         searchKeys: ['value', 'text'],
         mapValueTo: 'text',
@@ -270,7 +282,6 @@ class Filters extends EventTarget {
       })
     })
     this.filters['tags'].whitelist = values
-    this.filters['tags'].settings.dropdown.maxItems = values.length
 
     if (this.ATSettings.shouldGroupTags()) {
       this.filters['tags'].dropdown.createListHTML = (suggestionList) => {
@@ -310,31 +321,23 @@ class Filters extends EventTarget {
   }
 
   // Function that updates the available options in the filters using the data the API returned
-  public updateFilters = async (userListChoice: Choices | undefined = undefined): Promise<void> => {
+  public updateFilters = async (userListTagify: Tagify | undefined = undefined): Promise<void> => {
     const response = await fetch(import.meta.env.VITE_API_URL + '/filterValues?media_type=' + this.mediaTypeSelect.value)
     const filterValues = await response.json()
     this.tagCache = filterValues.tags
     this.filters['format'].whitelist = filterValues.format
     this.filters['genres'].whitelist = filterValues.genres
-    this.filters['genres'].settings.dropdown.maxItems = filterValues.genres.length
     this.filters['country'].whitelist = filterValues.country_of_origin
-    this.filters['country'].settings.dropdown.maxItems = filterValues.country_of_origin.length
     this.filters['externalLinks'].whitelist = filterValues.external_links
-    this.filters['externalLinks'].settings.dropdown.maxItems = filterValues.external_links.length
     this.filters['season'].whitelist = filterValues.season
-    this.filters['season'].settings.dropdown.maxItems = filterValues.season.length
     this.filters['year'].whitelist = filterValues.season_year.map(v => v.toString())
-    this.filters['year'].settings.dropdown.maxItems = filterValues.season_year.length
     this.filters['source'].whitelist = filterValues.source
-    this.filters['source'].settings.dropdown.maxItems = filterValues.source.length
     this.filters['airStatus'].whitelist = filterValues.status
-    this.filters['airStatus'].settings.dropdown.maxItems = filterValues.status.length
     this.filters['awcCommunityList'].whitelist = filterValues.awc_community_lists
-    this.filters['awcCommunityList'].settings.dropdown.maxItems = filterValues.awc_community_lists.length
     this.updateTagFilter()
 
-    if (userListChoice !== undefined) {
-      this.filters['userList'] = userListChoice
+    if (userListTagify !== undefined) {
+      this.filters['userList'] = userListTagify
     } else {
       // Remove the userList filter if it exists but wasn't passed with the method call
       if (Object.hasOwn(this.filters, 'userList')) {
@@ -368,29 +371,6 @@ class Filters extends EventTarget {
     }
 
     Object.entries(this.filters).forEach((f) => {
-      // Handle Choices
-      if (f[1] instanceof Choices) {
-        const v: string[] = []
-        // Choices.getValue() can return a string or string[] depending on single or multi value mode
-        const choiceValue = f[1].getValue(true)
-        if (choiceValue.length === 0) {
-          return
-        }
-
-        if (choiceValue instanceof Array) {
-          choiceValue.forEach((value) => {
-            v.push(value)
-          })
-        }
-        if (typeof choiceValue === 'string') {
-          v.push(choiceValue)
-        }
-        const logic = f[1].passedElement.element.dataset.logic ?? 'AND'
-        params[f[0]] = {}
-        params[f[0]][logic.toLowerCase()] = v
-
-        return
-      }
       // Handle Tagify instances
       if (f[1] instanceof Tagify && f[1].value.length > 0) {
         params[f[0]] = {}
