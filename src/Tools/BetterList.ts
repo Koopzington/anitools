@@ -111,7 +111,6 @@ class BetterList implements Tool {
     if (Object.keys(this.Filters.getFilters()).length === 0) {
       this.Filters.insertFilters()
     }
-    await this.Filters.updateFilters(this.listTagify)
 
     // Setup Copy-Links
     this.copyLinkHandler = on('#table', 'click', '.copy-me', async (e) => {
@@ -193,6 +192,7 @@ class BetterList implements Tool {
       })
     }, this)
     await this.updateSelect()
+    await this.Filters.updateFilters(this.listTagify)
     this.updateTable()
   }
 

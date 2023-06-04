@@ -22,7 +22,8 @@ class BetterBrowse implements Tool {
     }
   }
 
-  private readonly mediaTypeChangeHandler = (): void => {
+  private readonly mediaTypeChangeHandler = async (): void => {
+    await this.Filters.updateFilters()
     if (this.table !== undefined) {
       this.table.draw()
     }
@@ -166,7 +167,6 @@ class BetterBrowse implements Tool {
     if (Object.keys(this.Filters.getFilters()).length === 0) {
       this.Filters.insertFilters()
     }
-    await this.Filters.updateFilters()
 
     // Column filters
     this.Filters.addEventListener('filter-changed', this.filterChangeHandler)
