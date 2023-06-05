@@ -1,10 +1,17 @@
 # Changelog
 
+## 2023-06-05
+- Increased the width of the user list dropdown on desktop mode
+
+## 2023-06-04
+- Fixed a bug that caused the filter values not to update when changing the media type [Commit](https://github.com/Koopzington/anitools/commit/0f9313fd591c5ef7852cae9738fe0e832c9a4be7)
+
 ## 2023-05-31
-- Fixed a bug causing user lists to not get replaced when changing media type and reloading [Commit]()
-- Removed Choices.js as a dependency [Commit]()
+- Fixed a bug causing user lists to not get replaced when changing media type and reloading [Commit](https://github.com/Koopzington/anitools/commit/3f4a2f749f13c8bb7f401c6ef2cddba7d338b92d)
+- Removed Choices.js as a dependency [Commit](https://github.com/Koopzington/anitools/commit/3f4a2f749f13c8bb7f401c6ef2cddba7d338b92d)
 
 ## 2023-05-30
+- Fixed a bug causing the Tool dropdown to not show values on Safari [Commit](https://github.com/Koopzington/anitools/commit/4901a5497d35604bf342794cd34445cb2fdf88c6)
 - Updated dependencies
   - @popperjs/core (2.11.7 to 2.11.8) [#20](https://github.com/Koopzington/anitools/pull/20)
   - marked (5.0.2 to 5.0.3) [#19](https://github.com/Koopzington/anitools/pull/19)

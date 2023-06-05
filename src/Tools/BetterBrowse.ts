@@ -167,6 +167,7 @@ class BetterBrowse implements Tool {
     if (Object.keys(this.Filters.getFilters()).length === 0) {
       this.Filters.insertFilters()
     }
+    await this.Filters.updateFilters()
 
     // Column filters
     this.Filters.addEventListener('filter-changed', this.filterChangeHandler)
