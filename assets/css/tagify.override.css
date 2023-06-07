@@ -103,4 +103,8 @@
     background-position: center;
     width: 1rem;
 }
+
+.tagify__tag>div {
+    background: var(--tag-bg);
+}
 /* stylelint-enable selector-class-pattern */
