@@ -37,7 +37,7 @@
   "devDependencies": {
     "htmlhint": "^1.1.4",
     "standard": "^17.0.0",
-    "stylelint": "^15.6.2",
+    "stylelint": "^15.7.0",
     "stylelint-config-standard": "^33.0.0",
     "ts-standard": "^12.0.2",
     "vite": "^4.3"
