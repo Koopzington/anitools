@@ -1,7 +1,21 @@
 # Changelog
 
+## 2023-06-09
+- Filters now got assigned to media types. Season, Studio, Producer and Voice Actor filters won't be shown while looking at Manga anymore. "Episodes" turns into "Chapters" as well when switching.
+- New Total Runtime filter for Anime
+- New experimental Publisher, Publication and "Fully Scanlated" filters for Manga which is based upon data from MangaUpdates. However only a third of the AL data is currently covered by MU data. Comes with a warning next to it for the time being.
+- BetterList now automatically reloads when switching between Manga and Anime
+- Fixed issues happening while switching between BetterList and BetterBrowse multiple times
+
+## 2023-06-07
+- Updated dependencies
+  - marked (5.0.3 to 5.0.4) [#24](https://github.com/Koopzington/anitools/pull/24)
+  - standard (17.0.0 to 17.0.1) [#23](https://github.com/Koopzington/anitools/pull/23)
+  - stylelint (15.6.2 to 15.7.0) [#22](https://github.com/Koopzington/anitools/pull/22)
+
 ## 2023-06-05
-- Increased the width of the user list dropdown on desktop mode
+- Fixed an issue where filter values didn't change while switching between media types [#21](https://github.com/Koopzington/anitools/issues/21)
+- Increased the width of the user list dropdown on desktop mode [Commit](https://github.com/Koopzington/anitools/commit/aff18375e48d7a9c50489cebcb05a97cdb8c2771)
 
 ## 2023-06-04
 - Fixed a bug that caused the filter values not to update when changing the media type [Commit](https://github.com/Koopzington/anitools/commit/0f9313fd591c5ef7852cae9738fe0e832c9a4be7)
