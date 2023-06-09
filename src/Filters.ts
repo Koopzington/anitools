@@ -9,25 +9,200 @@ class Filters extends EventTarget {
   private readonly mediaTypeSelect: HTMLSelectElement = document?.querySelector('.media-type')
   private readonly ATSettings: Settings
 
+  private readonly filterMap = {
+    MANGA: [
+      'titleLike',
+      'format',
+      'source',
+      'country',
+      'airStatus',
+      'genre',
+      'tag',
+      'year',
+      'externalLink',
+      'staff',
+      'episodes',
+      'volumes',
+      'muPublisher',
+      'muPublication',
+      'onlyScanlated',
+      'showAdult',
+    ],
+    ANIME: [
+      'titleLike',
+      'format',
+      'source',
+      'country',
+      'airStatus',
+      'genre',
+      'tag',
+      'season',
+      'year',
+      'externalLink',
+      'voiceActor',
+      'staff',
+      'studio',
+      'producer',
+      'awcCommunityList',
+      'episodes',
+      'totalRuntime',
+      'showAdult',
+    ],
+  }
+
+  private filterDefs = {
+    titleLike: {
+      type: 'text',
+      logic: 'AND',
+      label: 'Title',
+      urlOrData: [],
+    },
+    format: {
+      type: 'tagify',
+      logic: 'OR',
+      label: 'Format',
+      urlOrData: [],
+    },
+    source: {
+      type: 'tagify',
+      logic: 'OR',
+      label: 'Source',
+      urlOrData: [],
+    },
+    country: {
+      type: 'tagify',
+      logic: 'OR',
+      label: 'Country',
+      urlOrData: [],
+    },
+    airStatus: {
+      type: 'tagify',
+      logic: 'OR',
+      label: 'Airing Status',
+      urlOrData: [],
+    },
+    genre: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Genres',
+      urlOrData: [],
+    },
+    tag: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Tags',
+      urlOrData: [],
+    },
+    season: {
+      type: 'tagify',
+      logic: 'OR',
+      label: 'Season',
+      urlOrData: [],
+    },
+    year: {
+      type: 'tagify',
+      logic: 'OR',
+      label: 'Year',
+      urlOrData: [],
+    },
+    externalLink: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Available On',
+      urlOrData: [],
+    },
+    voiceActor: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Voice Actor (ID)',
+      urlOrData: '/staff',
+    },
+    staff: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Staff (ID)',
+      urlOrData: '/staff',
+    },
+    studio: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Studio',
+      urlOrData: '/studio',
+    },
+    producer: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Producer',
+      urlOrData: '/studio',
+    },
+    awcCommunityList: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Community List',
+      urlOrData: [],
+    },
+    totalRuntime: {
+      type: 'range',
+      label: 'Total Runtime'
+    },
+    episodes: {
+      type: 'range',
+      label: 'Episodes',
+    },
+    volumes: {
+      type: 'range',
+      label: 'Volumes',
+    },
+    showAdult: {
+      type: 'checkbox',
+      label: 'Show Adult entries',
+    },
+    muPublisher: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Publisher',
+      urlOrData: '/muPublisher',
+      experimental: true,
+    },
+    muPublication: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Publication',
+      urlOrData: '/muPublication',
+      experimental: true,
+    },
+    onlyScanlated: {
+      type: 'checkbox',
+      label: 'Only fully scanlated',
+      experimental: true,
+    },
+  }
+
   // Object to hold all added filters
   private filters: {
-    title_like: HTMLInputElement,
+    userList: Tagify | undefined,
+    titleLike: HTMLInputElement,
     format: Tagify,
     source: Tagify,
     country: Tagify,
     airStatus: Tagify,
-    genres: Tagify,
-    tags: Tagify,
-    season: Tagify,
+    genre: Tagify,
+    tag: Tagify,
+    season: Tagify | undefined,
     year: Tagify,
-    externalLinks: Tagify,
-    voiceActor: Tagify,
+    externalLink: Tagify,
+    voiceActor: Tagify | undefined,
     staff: Tagify,
-    studio: Tagify,
-    producer: Tagify,
-    awcCommunityList: Tagify,
-    episodes: any,
+    studio: Tagify | undefined,
+    producer: Tagify | undefined,
+    awcCommunityList: Tagify | undefined,
+    totalRuntime: HTMLInputElement,
+    episodes: HTMLInputElement,
+    volumes: HTMLInputElement,
     showAdult: HTMLInputElement,
+    muPublisher: Tagify | undefined,
+    muPublication: Tagify | undefined,
+    onlyScanlated: HTMLInputElement | undefined,
   } = {}
 
   // We cache tags on initialization so the user can switch between grouped and non-grouped mode on the filter
@@ -40,7 +215,30 @@ class Filters extends EventTarget {
   }
 
   // Function to setup all filters
-  public insertFilters = () => {
+  public insertFilters = async () => {
+    Object.entries(this.filters).forEach((filter) => {
+      if (filter[0] === 'userList') {
+        return
+      }
+
+      if (filter[1] instanceof Tagify) {
+        filter[1].destroy()
+        delete this.filters[filter[0]]
+      }
+
+      // Handle Range instances
+      if (Object.hasOwn(filter[1], 'noUiSlider')) {
+        filter[1].remove()
+
+        delete this.filters[filter[0]]
+      }
+
+      if (filter[1] instanceof HTMLInputElement) {
+        filter[1].remove()
+        delete this.filters[filter[0]]
+      }
+    })
+
     this.filterContainer.innerHTML = ''
 
     const clearBtn = document.createElement('button')
@@ -61,50 +259,112 @@ class Filters extends EventTarget {
         }
 
         // Handle Range instances
-        if (Object.hasOwn(f[1], 'get')) {
-          f[1].reset()
+        if (Object.hasOwn(f[1], 'noUiSlider')) {
+          f[1].noUiSlider.reset()
 
           return
         }
 
+        // Handle checkboxes
         if (f[1] instanceof HTMLInputElement && f[1].type === 'checkbox') {
           f[1].checked = false
 
           return
         }
 
+        // Handle text inputs
         if (f[1] instanceof HTMLInputElement) {
           f[1].value = ''
         }
       })
     })
 
-    this.addText('title_like', 'Title')
-    this.addTagify('format', 'Format', [], 'OR')
-    this.addTagify('source', 'Source', [], 'OR')
-    this.addTagify('country', 'Country', [], 'OR')
-    this.addTagify('airStatus', 'Airing Status', [], 'OR')
-    this.addTagify('genres', 'Genres', [], 'AND')
-    this.addTagify('tags', 'Tags', [], 'AND')
+    this.filterMap[this.mediaTypeSelect.value].forEach((filterName: string) => {
+      const filterDef = this.filterDefs[filterName]
+      switch (filterDef.type) {
+        case 'text':
+          this.addText(filterName, filterDef.label, filterDef.experimental ?? false)
+          break;
+        case 'tagify':
+          this.addTagify(filterName, filterDef.label, filterDef. urlOrData, filterDef.logic, filterDef.experimental ?? false)
+          break;
+        case 'checkbox':
+          this.addCheckbox(filterName, filterDef.label, filterDef.experimental ?? false)
+          break;
+        case 'range':
+          if (this.mediaTypeSelect.value === 'MANGA' && filterDef.label === 'Episodes') {
+            filterDef.label = 'Chapters'
+          }
+
+          this.addRange(filterName, filterDef.label, filterDef.experimental ?? false)
+          break;
+      }
+    })
+
     // Backup the dropdown rendering function to switch between the custom one for tag groups and the normal one
-    this.filters['tags'].dropdown.createListHTMLoriginal = this.filters['tags'].dropdown.createListHTML
-    this.addTagify('season', 'Season', [], 'OR')
-    this.addTagify('year', 'Year', [], 'OR')
-    this.addTagify('externalLinks', 'Available On', [], 'AND')
-    this.addTagify('voiceActor', 'Voice Actor (ID)', '/staff', 'AND')
-    this.addTagify('staff', 'Staff (ID)', '/staff', 'AND')
-    this.addTagify('studio', 'Studio', '/studio', 'AND')
-    this.addTagify('producer', 'Producer', '/studio', 'AND')
-    this.addTagify('awcCommunityList', 'Community List', [], 'AND')
-    this.addRange('episodes', 'Episodes')
-    this.addCheckbox('showAdult', 'Show Adult entries')
+    this.filters.tag.dropdown.createListHTMLoriginal = this.filters.tag.dropdown.createListHTML
+  }
+
+  private updateRangeFilter = (filter, values) => {
+    // Prepare options object to update episode filter
+    const options = {
+      start: [filter.noUiSlider.get()[0], values[values.length - 1]],
+      range: {
+        min: 0,
+        max: values[values.length - 1]
+      }
+    }
+
+    // Calculate steps
+    for (let i = 0; i < values.length - 1; ++i) {
+      options.range[((values[i] / values[values.length - 1]) * 100).toString() + '%'] = values[i]
+    }
+    filter.noUiSlider.updateOptions(options, false)
+  }
+
+  // Function that updates the available options in the filters using the data the API returned
+  public updateFilters = async (userListTagify: Tagify | undefined = undefined): Promise<void> => {
+    await this.insertFilters()
+    const response = await fetch(import.meta.env.VITE_API_URL + '/filterValues?media_type=' + this.mediaTypeSelect.value)
+    const filterValues = await response.json()
+    this.tagCache = filterValues.tags
+    this.filters.format.whitelist = filterValues.format
+    this.filters.genre.whitelist = filterValues.genres
+    this.filters.country.whitelist = filterValues.country_of_origin
+    this.filters.externalLink.whitelist = filterValues.external_links
+    if (this.filters.season !== undefined) {
+      this.filters.season.whitelist = filterValues.season
+    }
+    this.filters.year.whitelist = filterValues.season_year.map(v => v.toString())
+    this.filters.source.whitelist = filterValues.source
+    this.filters.airStatus.whitelist = filterValues.status
+    if (this.filters.awcCommunityList !== undefined) {
+      this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists
+    }
+    this.updateTagFilter()
+    if (this.filters.totalRuntime !== undefined) {
+      this.updateRangeFilter(this.filters.totalRuntime, filterValues.total_runtime)
+    }
+    this.updateRangeFilter(this.filters.episodes, filterValues.episodes)
+    if (this.filters.volumes !== undefined) {
+      this.updateRangeFilter(this.filters.volumes, filterValues.volumes)
+    }
+
+    if (userListTagify !== undefined) {
+      this.filters.userList = userListTagify
+    } else {
+      // Remove the userList filter if it exists but wasn't passed with the method call
+      if (Object.hasOwn(this.filters, 'userList')) {
+        delete this.filters.userList
+      }
+    }
   }
 
   private readonly filterChangeCallback = () => {
     this.dispatchEvent(new Event('filter-changed'))
   }
 
-  private addText (col: string, label: string) {
+  private addText (col: string, label: string, experimental: boolean) {
     const input = document.createElement('input')
     input.classList.add('columnFilter', 'form-control')
     input.dataset.column = col
@@ -115,7 +375,7 @@ class Filters extends EventTarget {
   }
 
   // Function to add a Tagify type filter
-  private readonly addTagify = (col: string, label: string, urlOrData: string[] | string, logic: string) => {
+  private readonly addTagify = (col: string, label: string, urlOrData: string[] | string, logic: string, experimental: boolean) => {
     const container = document.createElement('div')
     const field = document.createElement('input')
     field.setAttribute('placeholder', label)
@@ -124,6 +384,12 @@ class Filters extends EventTarget {
     field.addEventListener('change', this.filterChangeCallback)
     container.insertAdjacentElement('beforeend', field)
     this.filterContainer.insertAdjacentElement('beforeend', container)
+    if (experimental === true) {
+      container.style.display = 'flex'
+      container.style.gap = '0.25em'
+      const warning = document.querySelector('#mangaupdates-warning').content.firstElementChild.cloneNode(true)
+      container.insertAdjacentElement('beforeend', warning)
+    }
 
     const tagify: Tagify = new Tagify(field, {
       enforceWhitelist: true,
@@ -194,7 +460,7 @@ class Filters extends EventTarget {
     this.filters[col] = tagify
   }
 
-  private readonly addCheckbox = (col: string, label: string): void => {
+  private readonly addCheckbox = (col: string, label: string, experimental: boolean): void => {
     const cswitch = document.createElement('div')
     cswitch.classList.add('custom-switch')
     const labelElement: HTMLLabelElement = document.createElement('label')
@@ -208,12 +474,19 @@ class Filters extends EventTarget {
     cswitch.insertAdjacentElement('beforeend', field)
     cswitch.insertAdjacentElement('beforeend', labelElement)
 
+    if (experimental === true) {
+      cswitch.style.display = 'flex'
+      cswitch.style.gap = '0.25em'
+      const warning = document.querySelector('#mangaupdates-warning').content.firstElementChild.cloneNode(true)
+      cswitch.insertAdjacentElement('beforeend', warning)
+    }
+
     this.filters[col] = field
 
     this.filterContainer.insertAdjacentElement('beforeend', cswitch)
   }
 
-  private readonly addRange = (col: string, label: string): void => {
+  private readonly addRange = (col: string, label: string, experimental: boolean): void => {
     const formInline = document.createElement('div')
     formInline.classList.add('form-inline')
 
@@ -237,7 +510,8 @@ class Filters extends EventTarget {
 
     this.filterContainer.insertAdjacentElement('beforeend', formInline)
 
-    this.filters[col] = noUiSlider.create(container, {
+    this.filters[col] = container
+    noUiSlider.create(container, {
       start: [0, 9999],
       connect: true,
       format: wNumb({ decimals: 0 }),
@@ -281,10 +555,10 @@ class Filters extends EventTarget {
         })
       })
     })
-    this.filters['tags'].whitelist = values
+    this.filters.tag.whitelist = values
 
     if (this.ATSettings.shouldGroupTags()) {
-      this.filters['tags'].dropdown.createListHTML = (suggestionList) => {
+      this.filters.tag.dropdown.createListHTML = (suggestionList) => {
         const categories = suggestionList.reduce((acc, suggestion) => {
           const category = suggestion.category || 'Not Assigned';
             if( !acc[category] )
@@ -299,11 +573,11 @@ class Filters extends EventTarget {
               if( typeof suggestion == 'string' || typeof suggestion == 'number' )
                   suggestion = {value:suggestion}
       
-              var value = this.filters['tags'].dropdown.getMappedValue.call(this.filters['tags'], suggestion)
+              var value = this.filters.tag.dropdown.getMappedValue.call(this.filters.tag, suggestion)
       
               suggestion.value = value
       
-              return this.filters['tags'].settings.templates.dropdownItem.apply(this.filters['tags'], [suggestion]);
+              return this.filters.tag.settings.templates.dropdownItem.apply(this.filters.tag, [suggestion]);
           }).join("")
 
           // assign the user to a group
@@ -314,52 +588,10 @@ class Filters extends EventTarget {
     } else {
       // Sort values alphabetically
       values.sort((x,y) => { if (x.value < y.value) { return -1 } if (x.value > y.value) { return 1 } return 0 } );
-      this.filters['tags'].whitelist = values
+      this.filters.tag.whitelist = values
       // Reset Dropdown rendering function to default
-      this.filters['tags'].dropdown.createListHTML = this.filters['tags'].dropdown.createListHTMLoriginal
+      this.filters.tag.dropdown.createListHTML = this.filters.tag.dropdown.createListHTMLoriginal
     }
-  }
-
-  // Function that updates the available options in the filters using the data the API returned
-  public updateFilters = async (userListTagify: Tagify | undefined = undefined): Promise<void> => {
-    const response = await fetch(import.meta.env.VITE_API_URL + '/filterValues?media_type=' + this.mediaTypeSelect.value)
-    const filterValues = await response.json()
-    this.tagCache = filterValues.tags
-    this.filters['format'].whitelist = filterValues.format
-    this.filters['genres'].whitelist = filterValues.genres
-    this.filters['country'].whitelist = filterValues.country_of_origin
-    this.filters['externalLinks'].whitelist = filterValues.external_links
-    this.filters['season'].whitelist = filterValues.season
-    this.filters['year'].whitelist = filterValues.season_year.map(v => v.toString())
-    this.filters['source'].whitelist = filterValues.source
-    this.filters['airStatus'].whitelist = filterValues.status
-    this.filters['awcCommunityList'].whitelist = filterValues.awc_community_lists
-    this.updateTagFilter()
-
-    if (userListTagify !== undefined) {
-      this.filters['userList'] = userListTagify
-    } else {
-      // Remove the userList filter if it exists but wasn't passed with the method call
-      if (Object.hasOwn(this.filters, 'userList')) {
-        delete this.filters['userList']
-      }
-    }
-    
-    // Prepare options object to update episode filter
-    const e = filterValues.episodes
-    const options = {
-      start: [this.filters['episodes'].get()[0], e[e.length - 1]],
-      range: {
-        min: 0,
-        max: e[e.length - 1]
-      }
-    }
-
-    // Calculate steps
-    for (let i = 0; i < e.length - 1; ++i) {
-      options.range[((e[i] / e[e.length - 1]) * 100).toString() + '%'] = e[i]
-    }
-    this.filters['episodes'].updateOptions(options, false)
   }
 
   public getFilters = (): any => this.filters
@@ -394,12 +626,12 @@ class Filters extends EventTarget {
       }
       // Handle Checkbox instances
       if (f[1]?.tagName === 'INPUT' && f[1].type === 'checkbox') {
-        params[f[0]] = f[1].isChecked
+        params[f[0]] = f[1].checked
       }
       // Handle Range instances
-      if (Object.hasOwn(f[1], 'get')) {
-        params[f[0] + 'Min'] = f[1].get(true)[0]
-        params[f[0] + 'Max'] = f[1].get(true)[1]
+      if (Object.hasOwn(f[1], 'noUiSlider')) {
+        params[f[0] + 'Min'] = f[1].noUiSlider.get(true)[0]
+        params[f[0] + 'Max'] = f[1].noUiSlider.get(true)[1]
 
         return
       }
