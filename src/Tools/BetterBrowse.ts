@@ -15,7 +15,7 @@ class BetterBrowse implements Tool {
     this.Columns = columns
   }
 
-  colVisibilityHandler = (ev: Event): void => {
+  private readonly colVisibilityHandler = (ev: Event): void => {
     if (this.table !== undefined) {
       const col = this.table.column(ev.target.dataset.column + ':name')
       col.visible(!col.visible())
@@ -71,7 +71,7 @@ class BetterBrowse implements Tool {
     document.querySelector('#stats').innerHTML = data + ' in total'
   }
 
-  updateTable = (): void => {
+  private readonly updateTable = (): void => {
     if (this.table !== undefined) {
       this.table.ajax.reload()
 
@@ -149,7 +149,7 @@ class BetterBrowse implements Tool {
     this.table.draw()
   }
 
-  public load = async (): Promise<void> => {
+  public readonly load = async (): Promise<void> => {
     // Create <table>
     const t: HTMLTableElement = document.createElement('table')
     t.id = 'table'
@@ -164,9 +164,6 @@ class BetterBrowse implements Tool {
 
     this.mediaTypeSelect.addEventListener('change', this.mediaTypeChangeHandler)
 
-    if (Object.keys(this.Filters.getFilters()).length === 0) {
-      this.Filters.insertFilters()
-    }
     await this.Filters.updateFilters()
 
     // Column filters
@@ -176,7 +173,7 @@ class BetterBrowse implements Tool {
     console.log('Module BetterBrowse loaded.')
   }
 
-  public unload = (): void => {
+  public readonly unload = (): void => {
     if (this.table !== undefined) {
       this.table.destroy()
       this.table = undefined
