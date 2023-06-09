@@ -292,8 +292,12 @@ class Filters extends EventTarget {
           this.addCheckbox(filterName, filterDef.label, filterDef.experimental ?? false)
           break;
         case 'range':
+          // Switch labels for the Episodes filter depending on media type
           if (this.mediaTypeSelect.value === 'MANGA' && filterDef.label === 'Episodes') {
             filterDef.label = 'Chapters'
+          }
+          if (this.mediaTypeSelect.value === 'ANIME' && filterDef.label === 'Chapters') {
+            filterDef.label = 'Episodes'
           }
 
           this.addRange(filterName, filterDef.label, filterDef.experimental ?? false)
