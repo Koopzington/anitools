@@ -33,7 +33,7 @@ class BetterList implements Tool {
     this.ActivityLister = new ActivityLister()
   }
 
-  updateSelect = async (): Promise<void> => {
+  private readonly updateSelect = async (): Promise<void> => {
     // Reindex array and filter out empty lists
     this.lists = [...this.lists].sort(undefined).filter(a => a)
 
@@ -41,10 +41,9 @@ class BetterList implements Tool {
     this.listTagify.addTags(this.lists[0].label)
 
     this.listTagify.DOM.scope.classList.remove('d-none')
-    this.userListPosition = this.listTagify.DOM.scope.getBoundingClientRect()
   }
 
-  colVisibilityHandler: EventListener = (ev): void => {
+  private readonly colVisibilityHandler: EventListener = (ev): void => {
     if (this.table === undefined) {
       return
     }
@@ -52,7 +51,7 @@ class BetterList implements Tool {
     col.visible(!col.visible())
   }
 
-  request = (): void => {
+  private readonly request = async (): void => {
     this.lists = []
     document.querySelector('#load').innerHTML = '<i class="fas fa-spinner fa-spin"></i>'
 
@@ -61,12 +60,13 @@ class BetterList implements Tool {
     const url = import.meta.env.VITE_API_URL + '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value
 
     // Make the HTTP Api request
-    fetch(url).then(handleResponse).then(this.handleData).catch(handleError).finally(() => {
-      document.querySelector('#load').innerHTML = 'Reload'
-    })
+    const response = await fetch(url);
+    const data = await handleResponse(response);
+    await this.handleData(data).catch(handleError)
+    document.querySelector('#load').innerHTML = 'Reload'
   }
 
-  load = async () => {
+  public readonly load = async () => {
     // Create <table>
     const t: HTMLTableElement = document.createElement('table')
     t.id = 'table'
@@ -107,10 +107,7 @@ class BetterList implements Tool {
 
     this.listTagify.on('change', this.updateTable)
 
-
-    if (Object.keys(this.Filters.getFilters()).length === 0) {
-      this.Filters.insertFilters()
-    }
+    this.mediaTypeSelect.addEventListener('change', this.mediaTypeChangeHandler)
 
     // Setup Copy-Links
     this.copyLinkHandler = on('#table', 'click', '.copy-me', async (e) => {
@@ -130,10 +127,7 @@ class BetterList implements Tool {
       }
     })
 
-    this.activityButtonHandler = on('#table', 'click', '.show-activity', async (e) => {
-      const userId = this.lists[0].value.split('-')[0]
-      await this.ActivityLister.getActivities(userId, e.target.dataset.id)
-    })
+    this.activityButtonHandler = on('#table', 'click', '.show-activity', this.activityButtonEventListener)
 
     // Column filters
     this.Filters.addEventListener('filter-changed', () => {
@@ -146,28 +140,37 @@ class BetterList implements Tool {
 
     // Automatically load if the username is filled out
     if (this.userNameField.value.length > 0) {
-      this.request()
+      await this.request()
     }
 
     console.log('Module BetterList loaded.')
   }
 
-  unload = (): void => {
+  public readonly unload = (): void => {
     if (this.table !== undefined) {
       this.table.destroy()
       this.table = undefined
     }
+    this.mediaTypeSelect.removeEventListener('change', this.mediaTypeChangeHandler)
     document.querySelector('#table').removeEventListener('click', this.copyLinkHandler)
+    delete this.copyLinkHandler
     document.querySelector('#table').removeEventListener('click', this.copyCodeHandler)
+    delete this.copyCodeHandler
     document.querySelector('#table').removeEventListener('click', this.activityButtonHandler)
+    delete this.activityButtonHandler
     document.querySelector('#table').remove()
+
+    this.currentPageData = []
+    this.lists = []
 
     // Column filters
     this.Filters.removeEventListener('filter-changed', () => {
       this.table.draw()
     })
 
-    this.listTagify.DOM.scope.classList.add('d-none')
+    this.listTagify.destroy()
+    delete this.listTagify
+    this.listInput.value = ''
 
     document.querySelector('#load').removeEventListener('click', this.request)
 
@@ -179,7 +182,7 @@ class BetterList implements Tool {
     console.log('Module BetterList unloaded.')
   }
 
-  handleData = async (data: UserList[]): Promise<void> => {
+  private readonly handleData = async (data: UserList[]): Promise<void> => {
     data.forEach(function (list) {
       this.lists.push({
         label: list.name,
@@ -191,13 +194,12 @@ class BetterList implements Tool {
         }
       })
     }, this)
-    await this.updateSelect()
     await this.Filters.updateFilters(this.listTagify)
-    this.updateTable()
+    await this.updateSelect()
   }
 
   // Function responsible for showing the total amount of chapters/minutes of the current selection and the user's completion in %
-  statsHandler = (_ev, _settings, json: MediaSearchResult): void => {
+  private readonly statsHandler = (_ev, _settings, json: MediaSearchResult): void => {
     let data: string
     if (this.mediaTypeSelect.value === 'ANIME') {
       data = json.filtered_runtime.toString() + ' minutes'
@@ -217,7 +219,7 @@ class BetterList implements Tool {
   }
 
   // Function that adds the filter values to the data that will get sent to the API
-  getParams = (params, settings): any => {
+  private readonly getParams = (params, settings): any => {
     for (let i = 0; i < params.columns.length; ++i) {
       // Get rid of unneeded default params
       delete params.columns[i].orderable
@@ -245,7 +247,7 @@ class BetterList implements Tool {
   }
 
   // Function that updates or creates the DataTables instance
-  updateTable = (): void => {
+  private readonly updateTable = async (): Promise<void> => {
     if (this.table !== undefined) {
       this.table.ajax.reload()
 
@@ -329,6 +331,15 @@ class BetterList implements Tool {
 
     // Let DataTables update the completion and total count info on top of the table
     this.table.on('xhr.dt', this.statsHandler)
+  }
+
+  private readonly mediaTypeChangeHandler = async (): Promise<void> => {
+    this.request()
+  }
+
+  private readonly activityButtonEventListener: EventListener = async (e): Promise<void> => {
+    const userId = this.lists[0].value.split('-')[0]
+    await this.ActivityLister.getActivities(userId, e.target.dataset.id)
   }
 }
 
