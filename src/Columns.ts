@@ -150,7 +150,11 @@ class Columns {
         name: 'tags',
         title: 'Tags',
         data: 'tags',
-        render: data => data.join(', '),
+        render: (data) => {
+          const tags = []
+          data.forEach(t => tags.push(t.tag))
+          return tags.join(', ')
+        },
         sortable: false
       },
       status: {
