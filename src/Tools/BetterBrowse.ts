@@ -93,9 +93,9 @@ class BetterBrowse implements Tool {
       search: {
         regex: true
       },
-      dom: "<'row'il<'#stats.dataTables_info'>f>" +
-              "<'row dt-table'<'col-sm-12'tr>>" +
-              "<'row'p>",
+      dom: "<'row'i<'#stats.dataTables_info'>>" +
+           '<tr>' +
+           "<'row'lp>",
       initComplete: function () {
         document.querySelector('.dataTables_length').classList.add('form-inline')
         document.querySelector('.dataTables_length select').classList.add('form-control')
