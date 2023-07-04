@@ -138,8 +138,7 @@ class BetterBrowse implements Tool {
         'statusDropped',
         'statusPaused',
         'hasReview',
-        'isAdult',
-        'externalLinks'
+        'isAdult'
       ])
     })
     this.table.on('xhr.dt', this.statsHandler)

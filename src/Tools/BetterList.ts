@@ -324,8 +324,7 @@ class BetterList implements Tool {
         'isAdult',
         'references',
         'activity',
-        'code',
-        'externalLinks'
+        'code'
       ])
     })
 
