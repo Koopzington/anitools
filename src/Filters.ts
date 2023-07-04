@@ -127,13 +127,13 @@ class Filters extends EventTarget {
       type: 'tagify',
       logic: 'AND',
       label: 'Studio',
-      urlOrData: '/studio',
+      urlOrData: '/searchForFilter/studio',
     },
     producer: {
       type: 'tagify',
       logic: 'AND',
       label: 'Producer',
-      urlOrData: '/studio',
+      urlOrData: '/searchForFilter/studio',
     },
     awcCommunityList: {
       type: 'tagify',
@@ -161,14 +161,14 @@ class Filters extends EventTarget {
       type: 'tagify',
       logic: 'AND',
       label: 'Publisher',
-      urlOrData: '/muPublisher',
+      urlOrData: '/searchForFilter/muPublisher',
       experimental: true,
     },
     muPublication: {
       type: 'tagify',
       logic: 'AND',
       label: 'Publication',
-      urlOrData: '/muPublication',
+      urlOrData: '/searchForFilter/muPublication',
       experimental: true,
     },
     onlyScanlated: {
