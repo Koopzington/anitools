@@ -30,7 +30,7 @@
     "datatables.net-dt": "^1.13.5",
     "halfmoon": "^1.1.1",
     "jquery": "^3.7",
-    "marked": "^5.1.0",
+    "marked": "^5.1.1",
     "nouislider": "^15.7",
     "wnumb": "^1.2.0"
   },
