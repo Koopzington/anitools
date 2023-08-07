@@ -21,7 +21,7 @@
     "last 1 Chrome version"
   ],
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.4.0",
+    "@fortawesome/fontawesome-free": "^6.4.2",
     "@popperjs/core": "^2.11",
     "@types/wnumb": "^1.2.1",
     "@yaireo/tagify": "^4.17",
