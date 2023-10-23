@@ -23,7 +23,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@popperjs/core": "^2.11",
-    "@types/wnumb": "^1.2.1",
+    "@types/wnumb": "^1.2.2",
     "@yaireo/tagify": "^4.17",
     "datatables.net": "^1.13",
     "datatables.net-colreorder": "^1.7",
