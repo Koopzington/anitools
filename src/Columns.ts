@@ -3,7 +3,165 @@
 class Columns {
   private readonly mediaTypeSelect: HTMLSelectElement = document?.querySelector('.media-type')
   private readonly anilistBaseLink: string = 'https://anilist.co/'
-  warning: HTMLElement = document.createElement('i')
+  private readonly warning: HTMLElement = document.createElement('i')
+
+  private readonly colMap = {
+    anime: [
+      'title',
+      'titleEng',
+      'titleNat',
+      'id',
+      'seasonYear',
+      'season',
+      'year',
+      'airStart',
+      'airEnd',
+      'airStatus',
+      'score',
+      'format',
+      'country',
+      'genres',
+      'tags',
+      'status',
+      'progress',
+      'repeat',
+      'started',
+      'completed',
+      'episodes',
+      'duration',
+      'totalDuration',
+      'source',
+      'avgScore',
+      'meanScore',
+      'popularity',
+      'favourites',
+      'studios',
+      'producers',
+      'statusCurrent',
+      'statusPlanning',
+      'statusCompleted',
+      'statusDropped',
+      'statusPaused',
+      'hasReview',
+      'notes',
+      'isAdult',
+      'references',
+      'activity',
+      'code',
+    ],
+    manga: [
+      'title',
+      'titleEng',
+      'titleNat',
+      'id',
+      'seasonYear',
+      'season',
+      'year',
+      'airStart',
+      'airEnd',
+      'airStatus',
+      'score',
+      'format',
+      'country',
+      'genres',
+      'tags',
+      'status',
+      'progress',
+      'progressVolumes',
+      'repeat',
+      'started',
+      'completed',
+      'episodes',
+      'volumes',
+      'source',
+      'avgScore',
+      'meanScore',
+      'popularity',
+      'favourites',
+      'statusCurrent',
+      'statusPlanning',
+      'statusCompleted',
+      'statusDropped',
+      'statusPaused',
+      'hasReview',
+      'notes',
+      'isAdult',
+      'references',
+      'activity',
+      'code',
+    ],
+  }
+
+  private readonly colGroups = {
+    'General columns': {
+      description: 'These columns are available for all data types',
+      cols: [
+        'id',
+        'favourites'
+      ]
+    },
+    'Media columns': {
+      description: 'These columns are available for both anime/manga',
+      cols: [
+        'title',
+        'titleEng',
+        'titleNat',
+        'year',
+        'airStart',
+        'airEnd',
+        'airStatus',
+        'score',
+        'format',
+        'country',
+        'genres',
+        'tags',
+        'episodes',
+        'source',
+        'avgScore',
+        'meanScore',
+        'popularity',
+        'statusCurrent',
+        'statusPlanning',
+        'statusCompleted',
+        'statusDropped',
+        'statusPaused',
+        'hasReview',
+        'isAdult'
+      ]
+    },
+    'Anime columns': {
+      description: '',
+      cols: [
+        'seasonYear',
+        'season',
+        'duration',
+        'totalDuration',
+        'studios',
+        'producers'
+      ]
+    },
+    'Manga columns': {
+      description: '',
+      cols: [
+        'volumes',
+      ]
+    },
+    'User related columns': {
+      description: 'These columns do not work for BetterBrowse since they are based on a user\'s data',
+      cols: [
+        'status',
+        'progress',
+        'progressVolumes',
+        'repeat',
+        'started',
+        'completed',
+        'notes',
+        'references',
+        'activity',
+        'code',
+      ]
+    }
+  }
 
   // Reinitialize Button states on reload, enable default columns on first load
   private readonly defaultCols = [
@@ -20,6 +178,38 @@ class Columns {
   }
 
   public initToggles = (): void => {
+    const btn = document.createElement('button')
+    btn.type = 'button'
+    btn.classList.add('btn', 'btn-sm', 'toggle-column')
+
+    const container = document.querySelector('#column-toggles')
+
+    Object.entries(this.colGroups).forEach((group) => {
+      const groupContainer = document.createElement('div')
+      groupContainer.classList.add('d-flex', 'flex-wrap')
+      groupContainer.style.gap = '0.5rem'
+
+      const colDefs = this.getColumnDefs()
+
+      group[1].cols.forEach((col) => {
+        const b: HTMLButtonElement = btn.cloneNode(true)
+        b.dataset.column = col
+        b.innerText = Object.hasOwn(colDefs[col], 'buttonLabel') ? colDefs[col].buttonLabel : colDefs[col].title
+        if (Object.hasOwn(colDefs[col], 'description')) {
+          b.title = colDefs[col].description
+        }
+        groupContainer.insertAdjacentElement('beforeend', b)
+      })
+
+      let content = '<div><h5>' + group[0] +'</h5>'
+
+      if (group[1].description !== '') {
+        content += '<span>' + group[1].description +'</span>'
+      }
+      content += groupContainer.outerHTML
+      container?.insertAdjacentHTML('beforeend', content + '</div>')
+    });
+
     document.querySelectorAll('.toggle-column').forEach((b: HTMLButtonElement) => {
       const check = localStorage.getItem('col-' + b.dataset.column)
       if (check !== null) {
@@ -202,6 +392,7 @@ class Columns {
       episodes: {
         name: 'episodes',
         title: this.mediaTypeSelect.value === 'ANIME' ? 'Episodes' : 'Chapters',
+        buttonLabel: 'Episodes/Chapters',
         data: 'episodes'
       },
       volumes: {
@@ -302,23 +493,27 @@ class Columns {
       isAdult: {
         name: 'isAdult',
         title: 'R18',
+        description: 'Displays whether the media contains adult content or not',
         data: 'isAdult',
         render: (data: number) => data === 1 ? '✓' : '✗'
       },
       references: {
         name: 'references',
         title: '# References',
+        description: 'Displays how many references to the media exist in other lists of the user',
         data: 'references',
         render: (data: string[]) => '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
       },
       activity: {
         name: 'activity',
         title: 'Activities',
+        description: 'Displays a button that shows a popup containing the user\'s activities for the media',
         render: (_data, _type, row: Media) => '<a role="button" href="#activity-modal" data-id="' + row.id.toString() + '" class="btn btn-sm show-activity">Show Activity</button>'
       },
       code: {
         name: 'code',
         title: 'Challenge Code',
+        description: 'Displays a button that copies the link title, start and finish date for the media formatted for AWC challenges',
         render: (_data, _type, row: Media) => '<button data-id="' + row.id.toString() + '" class="btn btn-sm copy-code">Copy Code</button>'
       },
       externalLinks: {

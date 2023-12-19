@@ -238,3 +238,9 @@ tag[exclude="true"] {
 #changelog-content ul ul {
     margin-top: 0;
 }
+
+#column-toggles h1,
+#column-toggles h5,
+.card h1, .card h2 {
+    margin-bottom: 0;
+}
