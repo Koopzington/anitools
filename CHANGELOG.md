@@ -1,5 +1,141 @@
 # Changelog
 
+## 2023-12-19
+- Reorganize column toggles [Commit](https://github.com/Koopzington/anitools/commit/38cb5728805a3db344f75058e74afc0ab325115a), [Commit](https://github.com/Koopzington/anitools/commit/799ccc0b2cd4c2d50b4090361be4f754ffef72bb)
+- Added functionality to show errors [Commit](https://github.com/Koopzington/anitools/commit/02358ec710d1b9d99e1543cfbb86dd13f4076e07)
+- Updated dependencies
+  - marked from 11.0.1 to 11.1.0 [#84](https://github.com/Koopzington/anitools/pull/84)
+  - vite from 5.0.7 to 5.0.10 [#85](https://github.com/Koopzington/anitools/pull/85)
+
+## 2023-12-18
+- Added metadata for search engines [Commit](https://github.com/Koopzington/anitools/commit/a4553a1c412231dc0c19947f036a0e305df8e9e2), [Commit](https://github.com/Koopzington/anitools/commit/a2c3bf421647ba240a6340098628aae138bbbb25), [Commit](https://github.com/Koopzington/anitools/commit/8665ea2810a616da629c5dedc8e05c62abc62407)
+
+## 2023-12-15
+- Updated dependencies
+  - @fortawesome/fontawesome-free from 6.4.2 to 6.5.1 [#80](https://github.com/Koopzington/anitools/pull/80)
+  - vite from 5.0.2 to 5.0.7 [#81](https://github.com/Koopzington/anitools/pull/81)
+  - stylelint from 15.11.0 to 16.0.2 [#82](https://github.com/Koopzington/anitools/pull/82)
+  - stylelint-config-standard from 34.0.0 to 35.0.0 [#82](https://github.com/Koopzington/anitools/pull/82)
+  - marked from 10.0.0 to 11.0.1 [#83](https://github.com/Koopzington/anitools/pull/83)
+
+## 2023-11-28
+- Updated dependencies
+  - vite from 5.0.0 to 5.0.2 [#77](https://github.com/Koopzington/anitools/pull/77)
+
+## 2023-11-22
+- Updated dependencies
+  - vite from 4.5.0 to 5.0.0 [#74](https://github.com/Koopzington/anitools/pull/74)
+  - datatables.net-dt from 1.13.7 to 1.13.8 [#75](https://github.com/Koopzington/anitools/pull/75)
+  - datatables.net from 1.13.7 to 1.13.8 [#76](https://github.com/Koopzington/anitools/pull/76)
+
+## 2023-11-14
+- Updated dependencies
+  - marked from 9.1.5 to 10.0.0 [#71](https://github.com/Koopzington/anitools/pull/71)
+  - @types/wnumb from 1.2.2 to 1.2.3 [#72](https://github.com/Koopzington/anitools/pull/72)
+
+## 2023-11-10
+- Updated dependencies
+  - marked from 9.1.3 to 9.1.5 [#69](https://github.com/Koopzington/anitools/pull/69)
+
+## 2023-11-07
+- Updated dependencies
+  - datatables.net-dt from 1.13.6 to 1.13.7 [#67](https://github.com/Koopzington/anitools/pull/67)
+
+## 2023-10-31
+- Updated dependencies
+  - marked from 9.1.2 to 9.1.3 [#66](https://github.com/Koopzington/anitools/pull/66)
+
+## 2023-10-25
+- Updated dependencies
+  - stylelint from 15.10.3 to 15.11.0 [#63](https://github.com/Koopzington/anitools/pull/63)
+  - vite from 4.4.11 to 4.5.0 [#64](https://github.com/Koopzington/anitools/pull/64)
+  - @types/wnumb from 1.2.1 to 1.2.2 [#65](https://github.com/Koopzington/anitools/pull/65)
+
+## 2023-10-21
+- Updated dependencies
+  - marked from 9.1.0 to 9.1.2 [#62](https://github.com/Koopzington/anitools/pull/62)
+
+## 2023-10-10
+- Updated dependencies
+  - marked from 9.0.3 to 9.1.0 [#58](https://github.com/Koopzington/anitools/pull/58)
+  - vite from 4.4.9 to 4.4.11 [#60](https://github.com/Koopzington/anitools/pull/60)
+  - postcss from 8.4.27 to 8.4.31 [#61](https://github.com/Koopzington/anitools/pull/61)
+
+## 2023-09-19
+- Updated dependencies
+  - marked from 9.0.0 to 9.0.3 [#57](https://github.com/Koopzington/anitools/pull/57)
+
+## 2023-09-12
+- Updated dependencies
+  - marked from 8.0.0 to 9.0.0 [#56](https://github.com/Koopzington/anitools/pull/56)
+
+## 2023-09-05
+- Updated dependencies
+  - marked from 7.0.5 to 8.0.0 [#55](https://github.com/Koopzington/anitools/pull/55)
+
+## 2023-08-29
+- Updated dependencies
+  - marked from 7.0.4 to 7.0.5 [#52](https://github.com/Koopzington/anitools/pull/52)
+  - jquery from 3.7.0 to 3.7.1 [#53](https://github.com/Koopzington/anitools/pull/53)
+
+## 2023-08-23
+ - @yaireo/tagify from 4.17.8 to 4.17.9 [#48](https://github.com/Koopzington/anitools/pull/48)
+ - stylelint from 15.10.2 to 15.10.3 [#49](https://github.com/Koopzington/anitools/pull/49)
+ - marked from 7.0.2 to 7.0.4 [#51](https://github.com/Koopzington/anitools/pull/51)
+
+## 2023-08-19
+- Updated dependencies
+  - marked from 7.0.1 to 7.0.2 [#46](https://github.com/Koopzington/anitools/pull/46)
+
+## 2023-08-08
+- Linked Live version in README.md [Commit](https://github.com/Koopzington/anitools/commit/7e493545b57362d6960e9b48979a3490e107d3fe)
+- Updated dependencies
+  - vite from 4.4.7 to 4.4.9 [#43](https://github.com/Koopzington/anitools/pull/43)
+  - marked from 6.0.0 to 7.0.1 [#44](https://github.com/Koopzington/anitools/pull/44)
+  - @fortawesome/fontawesome-free from 6.4.0 to 6.4.2 [#45](https://github.com/Koopzington/anitools/pull/45)
+  
+## 2023-08-01
+- Updated dependencies
+  - datatables.net from 1.13.5 to 1.13.6 [#40](https://github.com/Koopzington/anitools/pull/40)
+  - marked from 5.1.1 to 6.0.0 [#41](https://github.com/Koopzington/anitools/pull/41)
+  - datatables.net-dt from 1.13.5 to 1.13.6 [#42](https://github.com/Koopzington/anitools/pull/42)
+
+## 2023-07-25
+- Updated dependencies
+  - vite from 4.4.4 to 4.4.7 [#38](https://github.com/Koopzington/anitools/pull/38)
+  - stylelint from 15.10.1 to 15.10.2 [#39](https://github.com/Koopzington/anitools/pull/39)
+
+## 2023-07-19
+- Updated dependencies
+  - datatables.net-dt (1.13.4 to 1.13.5) [#35](https://github.com/Koopzington/anitools/pull/35)
+  - marked (5.1.0 to 5.1.1) [#36](https://github.com/Koopzington/anitools/pull/36)
+  - vite (4.4.3 to 4.4.4) [#37](https://github.com/Koopzington/anitools/pull/37)
+
+## 2023-07-13
+- Updated dependencies
+  - stylelint-config-standard (33.0.0 to 34.0.0) [#29](https://github.com/Koopzington/anitools/pull/29)
+  - datatables.net-colreorder (1.6.2 to 1.7.0) [#32](https://github.com/Koopzington/anitools/pull/32)
+  - datatables.net (1.13.4 to 1.13.5) [#33](https://github.com/Koopzington/anitools/pull/33)
+  - vite (4.3.9 to 4.4.3) [#34](https://github.com/Koopzington/anitools/pull/34)
+
+## 2023-07-04
+- Removed the "external links" column since you can filter by them [Commit](https://github.com/Koopzington/anitools/commit/7b14cec43dbdbd5e85536d57ad2d5783521d6424)
+- Update URLs to studio/publisher/publication filter search [Commit](https://github.com/Koopzington/anitools/commit/0b05cf68febb98262b1adbaab7e2663ae5c918ad)
+- Align BetterBrowse table dom with BetterList [Commit](https://github.com/Koopzington/anitools/commit/9ce714c3567bb5e773049ccc0689789a24297c53)
+
+## 2023-06-27
+- Updated dependencies
+  - stylelint (15.8.0 to 15.9.0) [#28](https://github.com/Koopzington/anitools/pull/28)
+
+## 2023-6-22
+- Updated dependencies
+  - nouislider (15.7.0 to 15.7.1) [#26](https://github.com/Koopzington/anitools/pull/26)
+  - stylelint (15.7.0 to 15.8.0) [#27](https://github.com/Koopzington/anitools/pull/27)
+
+## 2023-6-13
+- Updated dependencies
+  - marked (5.0.4 to 5.1.0) [#25](https://github.com/Koopzington/anitools/pull/25)
+
 ## 2023-06-09
 - Filters now got assigned to media types. Season, Studio, Producer and Voice Actor filters won't be shown while looking at Manga anymore. "Episodes" turns into "Chapters" as well when switching.
 - New Total Runtime filter for Anime
