@@ -18,7 +18,15 @@ class AniTools {
   private activeModule: string | undefined
   private readonly toolSelect: HTMLSelectElement
 
-  public init (): void {
+  private readonly alertTemplate = `
+  <div class="alert" role="alert">
+    <button class="close" data-dismiss="alert" type="button" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <span class="message"></span>
+  </div>`
+
+  public readonly init = async (): Promise<void> => {
     // Check for stored username and replace default value if it exists
     const userName = localStorage.getItem('userName')
     if (userName !== null) {
@@ -71,15 +79,19 @@ class AniTools {
     return result
   }
 
+  private readonly clearHash = (): any => {
+    window.location.hash = '';
+  }
+
   private readonly getHashParam = (param): string => {
     const params = this.getHashParams()
-    return params[param] ?? false
+    return params[param] ?? null
   }
 
   private readonly route = (target: any = null): void => {
     if (target === null) {
       target = this.getHashParam('module')
-      if (target === false) {
+      if (target === null) {
         target = this.toolSelect.value
       } else {
         this.toolSelect.value = target
@@ -115,8 +127,22 @@ class AniTools {
       document.querySelector('#changelog-content').innerHTML = marked.parse(await changelogRaw.text())
     });
   }
+  public readonly alert = (msg: string, type: string = '') => {
+    let alert = document.createElement('div')
+    alert.innerHTML = this.alertTemplate
+    if (type.length > 0) {
+      alert.querySelector('.alert').classList.add('alert-' +  type)
+    }
+    alert.querySelector('.message').innerHTML = msg
+    document.querySelector('#alert-container')?.insertAdjacentElement('beforeend', alert)
+    window.setTimeout(() => {
+      alert.remove()
+    }, 10000)
+  }
 }
 
 // Stupid rules say i can't have unused variables so i moved the contructor code to init()
 const aniTools = new AniTools()
 aniTools.init()
+
+export default AniTools
