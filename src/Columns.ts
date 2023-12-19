@@ -62,7 +62,7 @@ class Columns {
     return {
       title: {
         name: 'title',
-        title: 'Title',
+        title: 'Romaji Title',
         data: 'title',
         render: (data: string, _type, row: Media) => {
           const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
@@ -95,33 +95,33 @@ class Columns {
       },
       seasonYear: {
         name: 'seasonYear',
-        title: 'Season',
+        title: 'Season/Year',
         data: 'seasonYear'
       },
       season: {
         name: 'season',
-        data: 'season',
-        title: 'Season'
+        title: 'Season',
+        data: 'season'
       },
       year: {
         name: 'year',
-        data: 'year',
-        title: 'Year'
+        title: 'Year',
+        data: 'year'
       },
       airStart: {
         name: 'airStart',
+        title: 'Started Airing',
         data: 'airStart',
-        title: 'Started airing'
       },
       airEnd: {
         name: 'airEnd',
+        title: 'Ended Airing',
         data: 'airEnd',
-        title: 'Ended airing'
       },
       airStatus: {
         name: 'airStatus',
+        title: 'Airing Status',
         data: 'airStatus',
-        title: 'Airing Status'
       },
       score: {
         name: 'score',
@@ -174,12 +174,12 @@ class Columns {
       },
       repeat: {
         name: 'repeat',
-        title: 'Rewatched',
+        title: 'Rewatches',
         data: 'repeat'
       },
       started: {
         name: 'started',
-        title: 'Started',
+        title: 'Started at',
         data: 'started',
         render: (data: string | null, _type, row: Media) => {
           if (data === null) {
@@ -195,7 +195,7 @@ class Columns {
       },
       completed: {
         name: 'completed',
-        title: 'Completed',
+        title: 'Completed at',
         data: 'completed',
         render: (data: string | null) => data === null ? null : '<span title="Click to copy" class="copy-me">' + data + '</span>'
       },
