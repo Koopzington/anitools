@@ -220,6 +220,13 @@ tag[exclude="true"] {
     font-weight: 600;
 }
 
+#column-toggles h1,
+#column-toggles h5,
+.card h1,
+.card h2 {
+    margin-bottom: 0;
+}
+
 /* Specific rules for displaying the changelog */
 #changelog-content h1 {
     font-size: var(--modal-title-font-size);
@@ -237,10 +244,4 @@ tag[exclude="true"] {
 
 #changelog-content ul ul {
     margin-top: 0;
-}
-
-#column-toggles h1,
-#column-toggles h5,
-.card h1, .card h2 {
-    margin-bottom: 0;
 }
