@@ -1,5 +1,11 @@
 # Changelog
 
+## 2024-01-02
+- Added a new slider filter for the amount of main characters a media entry has [Commit]()
+- Updated dependencies
+  - stylelint-config-standard from 35.0.0 to 36.0.0 [#87](https://github.com/Koopzington/anitools/pull/87)
+  - marked from 11.1.0 to 11.1.1 [#89](https://github.com/Koopzington/anitools/pull/89)
+
 ## 2023-12-19
 - Reorganize column toggles [Commit](https://github.com/Koopzington/anitools/commit/38cb5728805a3db344f75058e74afc0ab325115a), [Commit](https://github.com/Koopzington/anitools/commit/799ccc0b2cd4c2d50b4090361be4f754ffef72bb)
 - Added functionality to show errors [Commit](https://github.com/Koopzington/anitools/commit/02358ec710d1b9d99e1543cfbb86dd13f4076e07)
