@@ -23,6 +23,7 @@ class Filters extends EventTarget {
       'staff',
       'episodes',
       'volumes',
+      'mcCount',
       'muPublisher',
       'muPublication',
       'onlyScanlated',
@@ -46,6 +47,7 @@ class Filters extends EventTarget {
       'awcCommunityList',
       'episodes',
       'totalRuntime',
+      'mcCount',
       'showAdult',
     ],
   }
@@ -153,6 +155,10 @@ class Filters extends EventTarget {
       type: 'range',
       label: 'Volumes',
     },
+    mcCount: {
+      type: 'range',
+      label: 'Main Characters',
+    },
     showAdult: {
       type: 'checkbox',
       label: 'Show Adult entries',
@@ -199,6 +205,7 @@ class Filters extends EventTarget {
     totalRuntime: HTMLInputElement,
     episodes: HTMLInputElement,
     volumes: HTMLInputElement,
+    mcCount: HTMLInputElement,
     showAdult: HTMLInputElement,
     muPublisher: Tagify | undefined,
     muPublication: Tagify | undefined,
@@ -353,6 +360,7 @@ class Filters extends EventTarget {
     if (this.filters.volumes !== undefined) {
       this.updateRangeFilter(this.filters.volumes, filterValues.volumes)
     }
+    this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
 
     if (userListTagify !== undefined) {
       this.filters.userList = userListTagify
