@@ -220,10 +220,10 @@ tag[exclude="true"] {
     font-weight: 600;
 }
 
-#column-toggles h1,
-#column-toggles h5,
 .card h1,
-.card h2 {
+.card h2,
+#column-toggles h1,
+#column-toggles h5 {
     margin-bottom: 0;
 }
 
