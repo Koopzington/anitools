@@ -141,6 +141,7 @@ class BetterList implements Tool {
     // Automatically load if the username is filled out
     if (this.userNameField.value.length > 0) {
       await this.request()
+      this.updateTable()
     }
 
     console.log('Module BetterList loaded.')
