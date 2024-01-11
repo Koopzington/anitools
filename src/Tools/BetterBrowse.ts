@@ -99,12 +99,6 @@ class BetterBrowse implements Tool {
       initComplete: function () {
         document.querySelector('.dataTables_length').classList.add('form-inline')
         document.querySelector('.dataTables_length select').classList.add('form-control')
-        document.querySelector('#table_filter input').classList.add('form-control')
-        const tableSearchInput: HTMLInputElement = document.querySelector('#table_filter input')
-        tableSearchInput.classList.add('form-control')
-        // Replace label with Placeholder
-        document.querySelector('#table_filter label').childNodes[0].remove()
-        tableSearchInput.placeholder = 'Search'
       },
       columns: this.Columns.getColumns([
         'title',
