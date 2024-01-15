@@ -1,6 +1,7 @@
 import Tagify from '@yaireo/tagify'
 import noUiSlider from 'nouislider'
 import wNumb from 'wnumb'
+import Inputmask from 'inputmask'
 import Settings from './Settings'
 import { handleError } from './commonLib'
 
@@ -19,6 +20,8 @@ class Filters extends EventTarget {
       'genre',
       'tag',
       'year',
+      'airingStart',
+      'airingFinish',
       'externalLink',
       'staff',
       'episodes',
@@ -39,6 +42,8 @@ class Filters extends EventTarget {
       'tag',
       'season',
       'year',
+      'airingStart',
+      'airingFinish',
       'externalLink',
       'voiceActor',
       'staff',
@@ -83,6 +88,20 @@ class Filters extends EventTarget {
       label: 'Airing Status',
       urlOrData: [],
     },
+    airingStart: {
+      type: 'text',
+      logic: 'AND',
+      label: 'Started Airing',
+      mask: '([0-9]{4}|\\*)-([0-9]{2}|\\*)-([0-9]{2}|\\*)',
+      urlOrData: [],
+    },
+    airingFinish: {
+      type: 'text',
+      logic: 'AND',
+      label: 'Finished Airing',
+      mask: '([0-9]{4}|\\*)-([0-9]{2}|\\*)-([0-9]{2}|\\*)',
+      urlOrData: [],
+    },
     genre: {
       type: 'tagify',
       logic: 'AND',
@@ -104,7 +123,7 @@ class Filters extends EventTarget {
     year: {
       type: 'tagify',
       logic: 'OR',
-      label: 'Year',
+      label: 'Season Year',
       urlOrData: [],
     },
     externalLink: {
@@ -192,6 +211,8 @@ class Filters extends EventTarget {
     source: Tagify,
     country: Tagify,
     airStatus: Tagify,
+    airingStart: HTMLInputElement,
+    airingFinish: HTMLInputElement,
     genre: Tagify,
     tag: Tagify,
     season: Tagify | undefined,
@@ -290,7 +311,7 @@ class Filters extends EventTarget {
       const filterDef = this.filterDefs[filterName]
       switch (filterDef.type) {
         case 'text':
-          this.addText(filterName, filterDef.label, filterDef.experimental ?? false)
+          this.addText(filterName, filterDef.label, filterDef.mask ?? null)
           break;
         case 'tagify':
           this.addTagify(filterName, filterDef.label, filterDef. urlOrData, filterDef.logic, filterDef.experimental ?? false)
@@ -376,11 +397,16 @@ class Filters extends EventTarget {
     this.dispatchEvent(new Event('filter-changed'))
   }
 
-  private addText (col: string, label: string, experimental: boolean) {
+  private addText (col: string, label: string, mask: string | null = null) {
     const input = document.createElement('input')
     input.classList.add('columnFilter', 'form-control')
     input.dataset.column = col
     input.placeholder = label
+
+    if (mask !== null) {
+      Inputmask({ regex: mask }).mask(input)
+    }
+
     this.filters[col] = input
     this.filterContainer.insertAdjacentElement('beforeend', input)
     input.addEventListener('keyup', this.filterChangeCallback)
