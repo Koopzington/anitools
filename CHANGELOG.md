@@ -1,5 +1,14 @@
 # Changelog
 
+## 2024-01-15
+- Added new "Started Airing" and "Finished Airing" filters which let people filter by specific date ranges or alternatively for media that started/finished airing in a specific month/day (eg. \*-01-\* => January only)
+- Small CSS fix for titles going through the table header
+
+## 2024-01-09
+- Updated dependencies
+  - @yaireo/tagify from 4.17.9 to 4.18.1 [#90](https://github.com/Koopzington/anitools/pull/90)
+  - vite from 5.0.10 to 5.0.11 [#91](https://github.com/Koopzington/anitools/pull/91)
+
 ## 2024-01-02
 - Added a new slider filter for the amount of main characters a media entry has [Commit]()
 - Updated dependencies
