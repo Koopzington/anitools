@@ -9,10 +9,14 @@ table.dataTable tbody tr {
     background-color: inherit;
 }
 
-/* Sticky table header */
+/* Sticky table header
+ * z-index is needed so the header stays on top of the links and references which
+ * have position: relative for hovering
+*/
 #table thead tr {
     position: sticky;
     top: 0;
+    z-index: 1;
     background-color: var(--lm-base-body-bg-color);
 }
 
@@ -20,13 +24,11 @@ table.dataTable tbody tr {
     background-color: var(--dm-base-body-bg-color);
 }
 
-table.dataTable thead th,
-table.dataTable thead th:last-child {
+table.dataTable thead th {
     border-color: var(--lm-table-border-color);
 }
 
-.dark-mode table.dataTable thead th,
-.dark-mode table.dataTable thead th:last-child {
+.dark-mode table.dataTable thead th {
     border-color: var(--dm-table-border-color);
 }
 
