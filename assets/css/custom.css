@@ -65,7 +65,7 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
 html.show-covers-on-title-hover a[style]::after {
     content: "";
     width: 140px;
-    background-image: var(--cover);
+    background-image: url('/public/assets/img/placeholder.webp');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -78,6 +78,10 @@ html.show-covers-on-title-hover a[style]::after {
     top: -60px;
     margin-left: 10px;
     box-shadow: 0 2px 20px #3136444d;
+}
+
+html.show-covers-on-title-hover a[style]:hover::after {
+    background-image: var(--cover);
 }
 
 .custom-tooltip, html.show-covers-on-title-hover a[style] {
