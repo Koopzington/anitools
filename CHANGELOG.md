@@ -1,5 +1,22 @@
 # Changelog
 
+## 2024-01-30
+- Modified some CSS to fix what the tagify update broke visually
+- Updated dependencies
+  - marked from 11.1.1 to 11.2.0 [#96](https://github.com/Koopzington/anitools/pull/96)
+  - @yaireo/tagify from 4.18.3 to 4.19.1 [#97](https://github.com/Koopzington/anitools/pull/97)
+
+## 2024-01-23
+- Updated dependencies
+  - @yaireo/tagify from 4.18.2 to 4.18.3 [#93](https://github.com/Koopzington/anitools/pull/93)
+  - vite from 5.0.11 to 5.0.12 [#94](https://github.com/Koopzington/anitools/pull/94)
+  - stylelint from 16.1.0 to 16.2.0 [#95](https://github.com/Koopzington/anitools/pull/95)
+
+## 2024-01-18
+- Lazyload cover images to reduce traffic
+- Updated dependencies
+  - @yaireo/tagify from 4.18.1 to 4.18.2 [#92](https://github.com/Koopzington/anitools/pull/92)
+
 ## 2024-01-15
 - Added new "Started Airing" and "Finished Airing" filters which let people filter by specific date ranges or alternatively for media that started/finished airing in a specific month/day (eg. \*-01-\* => January only)
 - Small CSS fix for titles going through the table header

@@ -75,13 +75,6 @@
     display: none;
 }
 
-.tagify--select .tagify__input {
-    padding-left: 0.35rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 /* override the caret to look the same as the default ones **/
 .tagify--select[aria-expanded="true"]::after {
     transform: none;
@@ -104,7 +97,13 @@
     width: 1rem;
 }
 
-.tagify__tag>div {
-    background: var(--tag-bg);
+.tagify--select {
+    --tag-pad: 0 0 0 0.35rem;
+    --tag-text-color: var(--lm-input-text-color)
 }
+
+.dark-mode .tagify--select {
+    --tag-text-color: var(--dm-input-text-color)
+}
+
 /* stylelint-enable selector-class-pattern */
