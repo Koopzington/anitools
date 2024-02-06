@@ -1,5 +1,10 @@
 # Changelog
 
+## 2024-02-06
+- Updated dependencies
+  - stylelint from 16.2.0 to 16.2.1 [#98](https://github.com/Koopzington/anitools/pull/98)
+  - marked from 11.2.0 to 12.0.0 [#99](https://github.com/Koopzington/anitools/pull/99)
+
 ## 2024-01-30
 - Modified some CSS to fix what the tagify update broke visually
 - Updated dependencies
