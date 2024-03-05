@@ -1,9 +1,11 @@
 /* stylelint-disable selector-class-pattern */
 
 /* The "Show X entries" select is too small */
+/*
 .dataTables_wrapper .dataTables_length select {
     width: 55px;
 }
+*/
 
 table.dataTable tbody tr {
     background-color: inherit;

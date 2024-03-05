@@ -42,7 +42,7 @@
 
     /* Overriding halfmoon variables with gruvbox variables */
     --dark-color: var(--gruvbox-dark1);
-    --dark-color-light: var(--gruvbox-dark2);
+    --dark-color-light: var(--gruvbox-dark3);
     --dark-color-dark: var(--gruvbox-dark0);
     --white-bg-color: var(--gruvbox-light1);
     --light-color: var(--gruvbox-light1);

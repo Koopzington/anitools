@@ -231,7 +231,7 @@
     --dm-input-text-color-focus: var(--al-dm-color-text);
     --lm-input-text-color-focus: var(--al-color-text);
     --lm-switch-bg-color: var(--light-color-dark);
-    --lm-table-striped-bg-color: var(--light-color);
+    --lm-table-striped-bg-color: var(--light-color-dark);
     --dm-button-text-color: var(--al-color-text-bright);
     --lm-modal-content-bg-color: var(--al-color-foreground);
 }
