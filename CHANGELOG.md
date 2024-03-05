@@ -3,9 +3,6 @@
 ## 2024-03-05
 - Fixed tag styling after a tagify update broke it
 - Updated dependencies
-  - datatables.net from 1.13.10 to 2.0.1
-  - datatables.net-dt from 1.13.10 to 2.0.1
-  - datatables.net-colreorder from 1.7.0 to 2.0.0
   - vite from 5.1.1 to 5.1.5
 
 ## 2024-02-13
