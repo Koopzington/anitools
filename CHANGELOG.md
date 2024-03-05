@@ -1,5 +1,21 @@
 # Changelog
 
+## 2024-03-05
+- Fixed tag styling after a tagify update broke it
+- Updated dependencies
+  - datatables.net from 1.13.10 to 2.0.1
+  - datatables.net-dt from 1.13.10 to 2.0.1
+  - datatables.net-colreorder from 1.7.0 to 2.0.0
+  - vite from 5.1.1 to 5.1.5
+
+## 2024-02-13
+- Updated dependencies
+  - @yaireo/tagify from 4.19.1 to 4.21.1 [#100](https://github.com/Koopzington/anitools/pull/100)
+  - datatables.net from 1.13.8 to 1.13.10 [#101](https://github.com/Koopzington/anitools/pull/101)
+  - datatables.net-dt from 1.13.8 to 1.13.10 [#102](https://github.com/Koopzington/anitools/pull/102)
+  - vite from 5.0.12 to 5.1.1 [#103](https://github.com/Koopzington/anitools/pull/103)
+
+
 ## 2024-02-06
 - Updated dependencies
   - stylelint from 16.2.0 to 16.2.1 [#98](https://github.com/Koopzington/anitools/pull/98)

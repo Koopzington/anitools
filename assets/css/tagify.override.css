@@ -106,4 +106,9 @@
     --tag-text-color: var(--dm-input-text-color)
 }
 
+.tagify:not(.tagify--select) .tagify__tag {
+    background-color: var(--tag-bg);
+    border-radius: var(--tag-border-radius);
+}
+
 /* stylelint-enable selector-class-pattern */
