@@ -1,7 +1,7 @@
 /* global localStorage */
 
 class Columns {
-  private readonly mediaTypeSelect: HTMLSelectElement = document?.querySelector('.media-type')
+  private readonly mediaTypeSelect: HTMLSelectElement = document.querySelector('.media-type')!
   private readonly anilistBaseLink: string = 'https://anilist.co/'
   private readonly warning: HTMLElement = document.createElement('i')
 
@@ -110,7 +110,6 @@ class Columns {
         'airStart',
         'airEnd',
         'airStatus',
-        'score',
         'format',
         'country',
         'genres',
@@ -155,6 +154,7 @@ class Columns {
         'repeat',
         'started',
         'completed',
+        'score',
         'notes',
         'references',
         'activity',
