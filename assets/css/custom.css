@@ -274,7 +274,7 @@ img[src="null"] {
 
 /* To differentiate between browser CTRL+F and the automatic marking */
 .mapper-content mark.highlight {
-    background-color: orange;
+    background-color: #ffa500;
 }
 
 .mapper-content .multi-check {
