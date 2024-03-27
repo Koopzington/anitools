@@ -47,7 +47,7 @@ class BetterList implements Tool {
     if (this.table === undefined) {
       return
     }
-    const col = this.table.column(ev.target.dataset.column.toString() + ':name')
+    const col = this.table.column(ev.target!.dataset.column.toString() + ':name')
     col.visible(!col.visible())
   }
 
@@ -72,7 +72,7 @@ class BetterList implements Tool {
     t.id = 'table'
     t.classList.add('table-inner-bordered', 'table-striped')
     t.style.width = '100%'
-    document.querySelector('#page-content').insertAdjacentElement('beforeend', t)
+    document.querySelector('#page-content')!.insertAdjacentElement('beforeend', t)
 
     // Toggle visibility of columns via click
     document.querySelectorAll('.toggle-column').forEach((b) => {
@@ -110,22 +110,9 @@ class BetterList implements Tool {
     this.mediaTypeSelect.addEventListener('change', this.mediaTypeChangeHandler)
 
     // Setup Copy-Links
-    this.copyLinkHandler = on('#table', 'click', '.copy-me', async (e) => {
-      if (navigator.clipboard !== undefined) {
-        await navigator.clipboard.writeText(e.target.innerText)
-      }
-    })
+    this.copyLinkHandler = on('#table', 'click', '.copy-me', this.copyLinkEventListener)
 
-    this.copyCodeHandler = on('#table', 'click', '.copy-code', async (e) => {
-      const media = this.currentPageData.filter((m) => m.id === parseInt(e.target.dataset.id))[0]
-      if (navigator.clipboard !== undefined) {
-        let firstLine = 'https://anilist.co/' + this.mediaTypeSelect.value.toLowerCase() + '/' + media.id.toString()
-        if (!this.Settings.shouldUseEmbedsForCodeCopy()) {
-          firstLine = '[' + media.title + '](' + firstLine + ')'
-        }
-        await navigator.clipboard.writeText(firstLine + '\r\nStart: ' + (media.started ?? 'YYYY-MM-DD') + ' Finish: ' + (media.completed ?? 'YYYY-MM-DD'))
-      }
-    })
+    this.copyCodeHandler = on('#table', 'click', '.copy-code', this.copyCodeEventListener)
 
     this.activityButtonHandler = on('#table', 'click', '.show-activity', this.activityButtonEventListener)
 
@@ -136,7 +123,7 @@ class BetterList implements Tool {
       }
     })
 
-    document.querySelector('#load').addEventListener('click', this.request)
+    document.querySelector('#load')!.addEventListener('click', this.request)
 
     // Automatically load if the username is filled out
     if (this.userNameField.value.length > 0) {
@@ -201,7 +188,7 @@ class BetterList implements Tool {
 
   // Function responsible for showing the total amount of chapters/minutes of the current selection and the user's completion in %
   private readonly statsHandler = (_ev, _settings, json: MediaSearchResult): void => {
-    let data: string
+    let data: string = ''
     if (this.mediaTypeSelect.value === 'ANIME') {
       data = json.filtered_runtime.toString() + ' minutes'
       if (json.total_runtime > json.filtered_runtime) {
@@ -214,9 +201,12 @@ class BetterList implements Tool {
       }
     }
 
-    const completion = (Math.floor(json.total_completed) / json.recordsTotal * 100).toFixed(2)
+    let completion = ''
+    if (this.userNameField.value.length > 0) {
+      completion = (Math.floor(json.total_completed) / json.recordsTotal * 100).toFixed(2) + '% Completed, '
+    }
 
-    document.querySelector('#stats').innerHTML = completion + '% Completed, ' + data
+    document.querySelector('#stats')!.innerHTML = completion  + data
   }
 
   // Function that adds the filter values to the data that will get sent to the API
@@ -279,8 +269,8 @@ class BetterList implements Tool {
            '<tr>' +
            "<'row'lp>",
       initComplete: function () {
-        document.querySelector('.dataTables_length').classList.add('form-inline')
-        document.querySelector('.dataTables_length select').classList.add('form-control')
+        document.querySelector('.dataTables_length')!.classList.add('form-inline')
+        document.querySelector('.dataTables_length select')!.classList.add('form-control')
       },
       columns: this.Columns.getColumns([
         'title',
@@ -340,6 +330,23 @@ class BetterList implements Tool {
   private readonly activityButtonEventListener: EventListener = async (e): Promise<void> => {
     const userId = this.lists[0].value.split('-')[0]
     await this.ActivityLister.getActivities(userId, e.target.dataset.id)
+  }
+
+  private readonly copyLinkEventListener: EventListener = async (e) => {
+    if (navigator.clipboard !== undefined) {
+      await navigator.clipboard.writeText(e.target.innerText)
+    }
+  }
+
+  private readonly copyCodeEventListener: EventListener = async (e) => {
+    const media = this.currentPageData.filter((m) => m.id === parseInt(e.target.dataset.id))[0]
+    if (navigator.clipboard !== undefined) {
+      let firstLine = 'https://anilist.co/' + this.mediaTypeSelect.value.toLowerCase() + '/' + media.id.toString()
+      if (!this.Settings.shouldUseEmbedsForCodeCopy()) {
+        firstLine = '[' + media.title + '](' + firstLine + ')'
+      }
+      await navigator.clipboard.writeText(firstLine + '\r\nStart: ' + (media.started ?? 'YYYY-MM-DD') + ' Finish: ' + (media.completed ?? 'YYYY-MM-DD'))
+    }
   }
 }
 

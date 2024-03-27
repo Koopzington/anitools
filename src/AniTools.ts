@@ -16,7 +16,7 @@ class AniTools {
   // Tools which can be loaded and unloaded
   private readonly Tools = {}
   private activeModule: string | undefined
-  private readonly toolSelect: HTMLSelectElement
+  private toolSelect: HTMLSelectElement
 
   private readonly alertTemplate = `
   <div class="alert" role="alert">
@@ -30,10 +30,10 @@ class AniTools {
     // Check for stored username and replace default value if it exists
     const userName = localStorage.getItem('userName')
     if (userName !== null) {
-      document.querySelector('#al-user').value = userName
+      document.querySelector('#al-user')!.value = userName
     }
 
-    this.toolSelect = document.querySelector('#tool-dropdown')
+    this.toolSelect = document.querySelector('#tool-dropdown')!
     halfmoon.onDOMContentLoaded()
     document.querySelector('#toggle-sidebar-btn').addEventListener('click', () => { halfmoon.toggleSidebar() })
     document.querySelectorAll('.dark-mode-toggler').forEach((e) => e.addEventListener('click', () => { halfmoon.toggleDarkMode() }))
@@ -114,8 +114,8 @@ class AniTools {
       return
     }
 
-    Object.values(document.querySelector('#navsidebar-nav').children).forEach((e) => {
-      document.querySelector('#navsidebar-sidebar').insertAdjacentElement('beforeend', e)
+    Object.values(document.querySelector('#navsidebar-nav')!.children).forEach((e) => {
+      document.querySelector('#navsidebar-sidebar')!.insertAdjacentElement('beforeend', e)
     })
   }
 
@@ -124,16 +124,16 @@ class AniTools {
       // We need to import the markdown file as a module, otherwise it won't make it into the build
       const changelogRawImport = await import('../CHANGELOG.md')
       const changelogRaw = await fetch(changelogRawImport.default)
-      document.querySelector('#changelog-content').innerHTML = marked.parse(await changelogRaw.text())
+      document.querySelector('#changelog-content')!.innerHTML = marked.parse(await changelogRaw.text())
     });
   }
   public readonly alert = (msg: string, type: string = '') => {
     let alert = document.createElement('div')
     alert.innerHTML = this.alertTemplate
     if (type.length > 0) {
-      alert.querySelector('.alert').classList.add('alert-' +  type)
+      alert.querySelector('.alert')!.classList.add('alert-' +  type)
     }
-    alert.querySelector('.message').innerHTML = msg
+    alert.querySelector('.message')!.innerHTML = msg
     document.querySelector('#alert-container')?.insertAdjacentElement('beforeend', alert)
     window.setTimeout(() => {
       alert.remove()

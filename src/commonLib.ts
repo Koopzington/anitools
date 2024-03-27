@@ -168,5 +168,5 @@ $.fn.dataTableExt.oPagination.halfmoon = {
 export {
   on,
   handleResponse,
-  handleError
+  handleError,
 }
