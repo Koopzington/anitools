@@ -1,4 +1,10 @@
-# [AniTools](https://anitools.koopz.rocks/)
+<center>
+    <a href="https://anitools.koopz.rocks/">
+        <img src="https://anitools.koopz.rocks/android-chrome-512x512.png" width="250"><br>
+        <h1>AniTools Frontend</h1>
+    </a>
+</center>
+
 ![License](https://img.shields.io/github/license/koopzington/anitools)
 [![Githhub Issues](https://img.shields.io/github/issues/koopzington/anitools)](https://github.com/Koopzington/anitools/issues)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
