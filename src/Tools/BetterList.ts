@@ -201,51 +201,7 @@ class BetterList implements Tool {
         document.querySelector('.dataTables_length')!.classList.add('form-inline')
         document.querySelector('.dataTables_length select')!.classList.add('form-control')
       },
-      columns: this.Columns.getColumns([
-        'title',
-        'titleEng',
-        'titleNat',
-        'id',
-        'seasonYear',
-        'season',
-        'year',
-        'airStart',
-        'airEnd',
-        'airStatus',
-        'score',
-        'format',
-        'country',
-        'genres',
-        'tags',
-        'status',
-        'progress',
-        'progressVolumes',
-        'repeat',
-        'started',
-        'completed',
-        'episodes',
-        'volumes',
-        'duration',
-        'totalDuration',
-        'source',
-        'avgScore',
-        'meanScore',
-        'popularity',
-        'favourites',
-        'studios',
-        'producers',
-        'statusCurrent',
-        'statusPlanning',
-        'statusCompleted',
-        'statusDropped',
-        'statusPaused',
-        'hasReview',
-        'notes',
-        'isAdult',
-        'references',
-        'activity',
-        'code'
-      ])
+      columns: this.Columns.getColumns(this.mediaTypeSelect.value.toLowerCase())
     })
 
     // Let DataTables update the completion and total count info on top of the table

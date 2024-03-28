@@ -228,7 +228,8 @@ class Columns {
     })
   }
 
-  public getColumns = (cols): any[] => {
+  public getColumns = (mediaType): any[] => {
+    const cols = this.colMap[mediaType]
     const columnDefs = this.getColumnDefs()
     // Add 'visible' property to all column configs
     Object.keys(columnDefs).forEach((c) => {
@@ -241,7 +242,11 @@ class Columns {
     const columns = []
     cols.forEach((k) => {
       if (Object.hasOwn(columnDefs, k)) {
-        columns.push(columnDefs[k])
+        let t = columnDefs[k]
+        if (t.name === 'episodes' && this.mediaTypeSelect.value === 'MANGA') {
+          t.title = 'Chapters'
+        }
+        columns.push(t)
       }
     })
 
@@ -391,7 +396,7 @@ class Columns {
       },
       episodes: {
         name: 'episodes',
-        title: this.mediaTypeSelect.value === 'ANIME' ? 'Episodes' : 'Chapters',
+        title: 'Episodes',
         buttonLabel: 'Episodes/Chapters',
         data: 'episodes'
       },
