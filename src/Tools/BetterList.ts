@@ -1,8 +1,7 @@
 /* global localStorage */
 
 import $ from 'jquery'
-import Tagify from '@yaireo/tagify'
-import { on, handleResponse, handleError } from '../commonLib'
+import { on } from '../commonLib'
 import Columns from '../Columns'
 import Tool from '../Interfaces/Tool'
 import Filters from '../Filters'
@@ -15,32 +14,19 @@ class BetterList implements Tool {
   private readonly Filters: Filters
   private readonly Columns: Columns
   private readonly ActivityLister: ActivityLister
-  private readonly userNameField: HTMLInputElement = document?.querySelector('#al-user')
-  private readonly mediaTypeSelect: HTMLSelectElement = document?.querySelector('.media-type')
-  private readonly listInput: HTMLInputElement = document?.querySelector('#list')
-  private listTagify: Tagify
-  private lists = []
+  private readonly userNameField: HTMLInputElement = document.querySelector('#al-user')!
+  private readonly mediaTypeSelect: HTMLSelectElement = document.querySelector('.media-type')!
   private table: Api<HTMLTableElement> | undefined
   private currentPageData: Media[] = []
-  private copyLinkHandler: EventListener
-  private copyCodeHandler: EventListener
-  private activityButtonHandler: EventListener
+  private copyLinkHandler: EventListener | undefined
+  private copyCodeHandler: EventListener | undefined
+  private activityButtonHandler: EventListener | undefined
 
   constructor (settings: Settings, filters: Filters, columns: Columns) {
     this.Settings = settings
     this.Filters = filters
     this.Columns = columns
     this.ActivityLister = new ActivityLister()
-  }
-
-  private readonly updateSelect = async (): Promise<void> => {
-    // Reindex array and filter out empty lists
-    this.lists = [...this.lists].sort(undefined).filter(a => a)
-
-    this.listTagify.whitelist = this.lists
-    this.listTagify.addTags(this.lists[0].label)
-
-    this.listTagify.DOM.scope.classList.remove('d-none')
   }
 
   private readonly colVisibilityHandler: EventListener = (ev): void => {
@@ -51,19 +37,13 @@ class BetterList implements Tool {
     col.visible(!col.visible())
   }
 
-  private readonly request = async (): void => {
-    this.lists = []
-    document.querySelector('#load').innerHTML = '<i class="fas fa-spinner fa-spin"></i>'
+  private readonly request = async (): Promise<void> => {
+    document.querySelector('#load')!.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'
 
     localStorage.setItem('userName', this.userNameField.value)
-    // Define the config we'll need for our Api request
-    const url = import.meta.env.VITE_API_URL + '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value
-
-    // Make the HTTP Api request
-    const response = await fetch(url);
-    const data = await handleResponse(response);
-    await this.handleData(data).catch(handleError)
-    document.querySelector('#load').innerHTML = 'Reload'
+    await this.Filters.updateFilters(this.mediaTypeSelect.value)
+    document.querySelector('#load')!.innerHTML = 'Reload'
+    this.updateTable()
   }
 
   public readonly load = async () => {
@@ -79,34 +59,6 @@ class BetterList implements Tool {
       b.addEventListener('click', this.colVisibilityHandler)
     })
 
-    this.listTagify = new Tagify(this.listInput, {
-      enforceWhiteList: true,
-      mode: 'select',
-      tagTextProp: 'label',
-      dropdown: {
-        classname: 'list-select-dropdown',
-        enabled: 0,
-        searchKeys: ['label'],
-        maxItems: Infinity
-      },
-      templates: {
-        dropdownItem: function (item) {
-          return `<div ${this.getAttributes(item)}
-          class='${this.settings.classNames.dropdownItem} ${item.class ? item.class : ""}'
-          tabindex="0"
-          role="option">
-            <div class="ch-label">${item.label}</div>
-            <div class="ch-completion">${item.customProperties.completion}</div>
-          </div>`
-        },
-      },
-      transformTag: (tagData) => {
-        tagData.exclude = false
-      }
-    })
-
-    this.listTagify.on('change', this.updateTable)
-
     this.mediaTypeSelect.addEventListener('change', this.mediaTypeChangeHandler)
 
     // Setup Copy-Links
@@ -117,50 +69,35 @@ class BetterList implements Tool {
     this.activityButtonHandler = on('#table', 'click', '.show-activity', this.activityButtonEventListener)
 
     // Column filters
-    this.Filters.addEventListener('filter-changed', () => {
-      if (this.table !== undefined) {
-        this.table.draw()
-      }
-    })
+    this.Filters.addEventListener('filter-changed', this.filterChangeHandler)
 
     document.querySelector('#load')!.addEventListener('click', this.request)
 
-    // Automatically load if the username is filled out
-    if (this.userNameField.value.length > 0) {
       await this.request()
-      this.updateTable()
-    }
 
     console.log('Module BetterList loaded.')
   }
 
   public readonly unload = (): void => {
+    this.mediaTypeSelect.removeEventListener('change', this.mediaTypeChangeHandler)
+    document.querySelector('#table')!.removeEventListener('click', this.copyLinkHandler!)
+    delete this.copyLinkHandler
+    document.querySelector('#table')!.removeEventListener('click', this.copyCodeHandler!)
+    delete this.copyCodeHandler
+    document.querySelector('#table')!.removeEventListener('click', this.activityButtonHandler!)
+    delete this.activityButtonHandler
     if (this.table !== undefined) {
       this.table.destroy()
       this.table = undefined
     }
-    this.mediaTypeSelect.removeEventListener('change', this.mediaTypeChangeHandler)
-    document.querySelector('#table').removeEventListener('click', this.copyLinkHandler)
-    delete this.copyLinkHandler
-    document.querySelector('#table').removeEventListener('click', this.copyCodeHandler)
-    delete this.copyCodeHandler
-    document.querySelector('#table').removeEventListener('click', this.activityButtonHandler)
-    delete this.activityButtonHandler
-    document.querySelector('#table').remove()
+    document.querySelector('#table')!.remove()
 
     this.currentPageData = []
-    this.lists = []
 
     // Column filters
-    this.Filters.removeEventListener('filter-changed', () => {
-      this.table.draw()
-    })
-
-    this.listTagify.destroy()
-    delete this.listTagify
-    this.listInput.value = ''
-
-    document.querySelector('#load').removeEventListener('click', this.request)
+    this.Filters.removeEventListener('filter-changed', this.filterChangeHandler)
+    
+    document.querySelector('#load')!.removeEventListener('click', this.request)
 
     // Toggle visibility of columns via click
     document.querySelectorAll('.toggle-column').forEach((b) => {
@@ -170,20 +107,12 @@ class BetterList implements Tool {
     console.log('Module BetterList unloaded.')
   }
 
-  private readonly handleData = async (data: UserList[]): Promise<void> => {
-    data.forEach(function (list) {
-      this.lists.push({
-        label: list.name,
-        value: list.id,
-        customProperties: {
-          completion: Object.hasOwn(list, 'amount_completed')
-            ? ' (' + list.amount_completed.toString() + '/' + list.amount_total.toString() + ') ' + Math.floor(list.amount_completed / list.amount_total * 100).toString() + '%'
-            : ' (' + list.amount_total.toString() + ')'
-        }
-      })
-    }, this)
-    await this.Filters.updateFilters(this.listTagify)
-    await this.updateSelect()
+  private debouncer: number
+  private readonly filterChangeHandler = (): void => {
+    clearTimeout(this.debouncer)
+    this.debouncer = setTimeout(() => {
+      this.table!.draw()
+    }, 500);
   }
 
   // Function responsible for showing the total amount of chapters/minutes of the current selection and the user's completion in %
@@ -324,7 +253,12 @@ class BetterList implements Tool {
   }
 
   private readonly mediaTypeChangeHandler = async (): Promise<void> => {
-    this.request()
+    if (this.table !== undefined) {
+      this.table.destroy()
+      this.table = undefined
+    }
+    document.querySelector('#table')!.innerHTML = ''
+    await this.request()
   }
 
   private readonly activityButtonEventListener: EventListener = async (e): Promise<void> => {

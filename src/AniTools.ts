@@ -10,7 +10,6 @@ import Columns from './Columns'
 import Settings from './Settings'
 import BetterList from './Tools/BetterList'
 import Filters from './Filters'
-import BetterBrowse from './Tools/BetterBrowse'
 
 class AniTools {
   // Tools which can be loaded and unloaded
@@ -43,7 +42,6 @@ class AniTools {
     const filters = new Filters(settings)
     const columns = new Columns()
     this.Tools.BetterList = new BetterList(settings, filters, columns)
-    this.Tools.BetterBrowse = new BetterBrowse(filters, columns)
 
     settings.initSettings()
     columns.initToggles()

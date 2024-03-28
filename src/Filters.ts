@@ -3,16 +3,18 @@ import noUiSlider from 'nouislider'
 import wNumb from 'wnumb'
 import Inputmask from 'inputmask'
 import Settings from './Settings'
-import { handleError } from './commonLib'
+import { handleError, handleResponse } from './commonLib'
 
 class Filters extends EventTarget {
-  private readonly filterContainer: HTMLDivElement = document?.querySelector('#filters')
-  private readonly mediaTypeSelect: HTMLSelectElement = document?.querySelector('.media-type')
+  private readonly filterContainer: HTMLDivElement = document!.querySelector('#filters')!
+  private readonly mediaTypeSelect: HTMLSelectElement = document!.querySelector('.media-type')!
+  private readonly userNameField: HTMLInputElement = document!.querySelector('#al-user')!
   private readonly ATSettings: Settings
 
   private readonly filterMap = {
     MANGA: [
       'titleLike',
+      'userList',
       'format',
       'source',
       'country',
@@ -34,6 +36,7 @@ class Filters extends EventTarget {
     ],
     ANIME: [
       'titleLike',
+      'userList',
       'format',
       'source',
       'country',
@@ -58,6 +61,12 @@ class Filters extends EventTarget {
   }
 
   private filterDefs = {
+    userList: {
+      type: 'userList',
+      logic: 'AND',
+      label: 'List',
+      urlOrData: [],
+    },
     titleLike: {
       type: 'text',
       logic: 'AND',
@@ -243,12 +252,9 @@ class Filters extends EventTarget {
   }
 
   // Function to setup all filters
-  public insertFilters = async () => {
+  public insertFilters = async (filterSet: string) => {
+    // First we clean up all existing ones
     Object.entries(this.filters).forEach((filter) => {
-      if (filter[0] === 'userList') {
-        return
-      }
-
       if (filter[1] instanceof Tagify) {
         filter[1].destroy()
         delete this.filters[filter[0]]
@@ -307,28 +313,80 @@ class Filters extends EventTarget {
       })
     })
 
-    this.filterMap[this.mediaTypeSelect.value].forEach((filterName: string) => {
+    this.filterMap[filterSet].forEach((filterName: string) => {
       const filterDef = this.filterDefs[filterName]
       switch (filterDef.type) {
         case 'text':
           this.addText(filterName, filterDef.label, filterDef.mask ?? null)
           break;
         case 'tagify':
-          this.addTagify(filterName, filterDef.label, filterDef. urlOrData, filterDef.logic, filterDef.experimental ?? false)
+          this.addTagify(filterName, filterDef.label, filterDef.urlOrData, filterDef.logic, filterDef.experimental ?? false)
           break;
         case 'checkbox':
           this.addCheckbox(filterName, filterDef.label, filterDef.experimental ?? false)
           break;
         case 'range':
           // Switch labels for the Episodes filter depending on media type
-          if (this.mediaTypeSelect.value === 'MANGA' && filterDef.label === 'Episodes') {
+          if (filterSet === 'MANGA' && filterDef.label === 'Episodes') {
             filterDef.label = 'Chapters'
           }
-          if (this.mediaTypeSelect.value === 'ANIME' && filterDef.label === 'Chapters') {
+          if (filterSet === 'ANIME' && filterDef.label === 'Chapters') {
             filterDef.label = 'Episodes'
           }
 
           this.addRange(filterName, filterDef.label, filterDef.experimental ?? false)
+          break;
+        case 'userList':
+          if (this.userNameField.value.length === 0) {
+            return
+          }
+          const container = document.createElement('div')
+          const field = document.createElement('input')
+          if (this.userNameField.value.length === 0) {
+            field.disabled = true
+            field.title = 'Please enter an AL username to make use of this filter'
+          }
+          field.setAttribute('placeholder', filterDef.label)
+          field.classList.add('columnFilter', 'form-control')
+          field.dataset.logic = filterDef.logic
+          field.addEventListener('change', this.filterChangeCallback)
+          container.insertAdjacentElement('beforeend', field)
+          this.filterContainer.insertAdjacentElement('beforeend', container)
+          this.filters.userList = new Tagify(field, {
+            enforceWhiteList: true,
+            whitelist: [],
+            pasteAsTags: false,
+            editTags: false,
+            //mode: 'select',
+            tagTextProp: 'label',
+            dropdown: {
+              classname: 'list-select-dropdown',
+              enabled: 0,
+              searchKeys: ['label'],
+              maxItems: Infinity
+            },
+            templates: {
+              dropdownItem: function (item) {
+                return `<div ${this.getAttributes(item)}
+                class='${this.settings.classNames.dropdownItem} ${item.class ? item.class : ""}'
+                tabindex="0"
+                role="option">
+                  <div class="ch-label">${item.label}</div>
+                  <div class="ch-completion">${item.customProperties.completion}</div>
+                </div>`
+              },
+            },
+            transformTag: (tagData) => {
+              tagData.exclude = false
+            }
+          })
+          this.filters.userList.on('click', (e) => {
+            if (this.filterDefs['userList'].logic === 'AND') {
+              const {tag:tagElm, data:tagData} = e.detail;
+              tagData.exclude = tagData.exclude !== true
+              this.filters.userList.replaceTag(tagElm, tagData)
+            }
+          })
           break;
       }
     })
@@ -355,8 +413,10 @@ class Filters extends EventTarget {
   }
 
   // Function that updates the available options in the filters using the data the API returned
-  public updateFilters = async (userListTagify: Tagify | undefined = undefined): Promise<void> => {
-    await this.insertFilters()
+  public updateFilters = async (filterSet: string): Promise<void> => {
+    await this.insertFilters(filterSet)
+    await this.updateUserListFilter()
+
     const response = await fetch(import.meta.env.VITE_API_URL + '/filterValues?media_type=' + this.mediaTypeSelect.value)
     const filterValues = await response.json()
     this.tagCache = filterValues.tags
@@ -382,15 +442,33 @@ class Filters extends EventTarget {
       this.updateRangeFilter(this.filters.volumes, filterValues.volumes)
     }
     this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
+  }
 
-    if (userListTagify !== undefined) {
-      this.filters.userList = userListTagify
-    } else {
-      // Remove the userList filter if it exists but wasn't passed with the method call
-      if (Object.hasOwn(this.filters, 'userList')) {
-        delete this.filters.userList
-      }
+  private readonly updateUserListFilter = async () => {
+    if (this.userNameField.value.length === 0) {
+      return
     }
+    let lists: TagifyValue[] = [];
+    const response = await fetch(import.meta.env.VITE_API_URL + '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value)
+    const data: UserList[] = await handleResponse(response);
+
+    data.forEach(function (list) {
+      lists.push({
+        label: list.name,
+        value: list.id,
+        customProperties: {
+          completion: Object.hasOwn(list, 'amount_completed')
+            ? ' (' + list.amount_completed.toString() + '/' + list.amount_total.toString() + ') ' + Math.floor(list.amount_completed / list.amount_total * 100).toString() + '%'
+            : ' (' + list.amount_total.toString() + ')'
+        }
+      })
+    }, this)
+
+    // Reindex array and filter out empty lists
+    lists = [...lists].sort(undefined).filter(a => a)
+
+    this.filters.userList.whitelist = lists
+    this.filters.userList.addTags(lists[0].label)
   }
 
   private readonly filterChangeCallback = () => {
@@ -486,14 +564,13 @@ class Filters extends EventTarget {
       })    
     }
 
-    // TODO: Change when making filter logic configurable by user
-    if (logic === 'AND') {
       tagify.on('click', (e) => {
+      if (this.filterDefs[col].logic === 'AND') {
         const {tag:tagElm, data:tagData} = e.detail;
         tagData.exclude = tagData.exclude !== true
         tagify.replaceTag(tagElm, tagData)
+      }
       })
-    }
 
     this.filters[col] = tagify
   }

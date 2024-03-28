@@ -51,6 +51,14 @@ interface UserList {
   name: string
 }
 
+interface TagifyValue {
+  label: string
+  value: string
+  customProperties: {
+    completion: string
+  }
+}
+
 interface MediaSearchResult {
   data: Media[]
   draw: number // variable from DataTables

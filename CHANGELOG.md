@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-03-28
+- The "User List" filter has been moved to the filter section and turned into a multi-selection with AND logic so you can now find overlap between multiple custom lists or even exclude things from certain lists by clicking on the selected entries to turn them red like with the Tags and Genres. With this change the BetterBrowse module no longer offered any additional benefits and thus hahs been removed. If you want to go through the entire database, simply empty the "User List" filter (or for example select "All" and turn it into exclusion mode which is the equivalent of AL's "Hide My Anime" checkbox on the Browse page).
+
 ## 2024-03-05
 - Fixed tag styling after a tagify update broke it
 - Updated dependencies
@@ -11,7 +14,6 @@
   - datatables.net from 1.13.8 to 1.13.10 [#101](https://github.com/Koopzington/anitools/pull/101)
   - datatables.net-dt from 1.13.8 to 1.13.10 [#102](https://github.com/Koopzington/anitools/pull/102)
   - vite from 5.0.12 to 5.1.1 [#103](https://github.com/Koopzington/anitools/pull/103)
-
 
 ## 2024-02-06
 - Updated dependencies
