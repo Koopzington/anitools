@@ -86,3 +86,8 @@ interface ALActivity {
     }
   }
 }
+
+interface ALUserInfo {
+  id: number
+  name: string
+}

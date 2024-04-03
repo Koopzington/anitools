@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-04-03
+- Fixed the 'Show activities' Button after breaking it with the previous update
+
 ## 2024-03-28
 - The "User List" filter has been moved to the filter section and turned into a multi-selection with AND logic so you can now find overlap between multiple custom lists or even exclude things from certain lists by clicking on the selected entries to turn them red like with the Tags and Genres. With this change the BetterBrowse module no longer offered any additional benefits and thus hahs been removed. If you want to go through the entire database, simply empty the "User List" filter (or for example select "All" and turn it into exclusion mode which is the equivalent of AL's "Hide My Anime" checkbox on the Browse page).
 
