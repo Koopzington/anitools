@@ -10,10 +10,12 @@ import Columns from './Columns'
 import Settings from './Settings'
 import BetterList from './Tools/BetterList'
 import Filters from './Filters'
+import AniList from './AniList'
 
 class AniTools {
   // Tools which can be loaded and unloaded
-  private readonly Tools = {}
+  private readonly Tools: { BetterList: BetterList } = {}
+  private readonly AniList: AniList
   private activeModule: string | undefined
   private toolSelect: HTMLSelectElement
 
@@ -24,6 +26,10 @@ class AniTools {
     </button>
     <span class="message"></span>
   </div>`
+
+  constructor () {
+    this.AniList = new AniList()
+  }
 
   public readonly init = async (): Promise<void> => {
     // Check for stored username and replace default value if it exists
@@ -41,7 +47,7 @@ class AniTools {
     const settings = new Settings()
     const filters = new Filters(settings)
     const columns = new Columns()
-    this.Tools.BetterList = new BetterList(settings, filters, columns)
+    this.Tools.BetterList = new BetterList(settings, filters, columns, this.AniList)
 
     settings.initSettings()
     columns.initToggles()

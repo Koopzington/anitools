@@ -8,12 +8,14 @@ import Filters from '../Filters'
 import { Api, ConfigColumnDefsSingle } from 'datatables.net'
 import ActivityLister from '../ActivityLister'
 import Settings from 'Settings'
+import AniList from 'AniList'
 
 class BetterList implements Tool {
   private readonly Settings: Settings
   private readonly Filters: Filters
   private readonly Columns: Columns
   private readonly ActivityLister: ActivityLister
+  private readonly AniList: AniList
   private readonly userNameField: HTMLInputElement = document.querySelector('#al-user')!
   private readonly mediaTypeSelect: HTMLSelectElement = document.querySelector('.media-type')!
   private table: Api<HTMLTableElement> | undefined
@@ -21,11 +23,13 @@ class BetterList implements Tool {
   private copyLinkHandler: EventListener | undefined
   private copyCodeHandler: EventListener | undefined
   private activityButtonHandler: EventListener | undefined
+  private curUserInfo: ALUserInfo | undefined
 
-  constructor (settings: Settings, filters: Filters, columns: Columns) {
+  constructor (settings: Settings, filters: Filters, columns: Columns, aniList: AniList) {
     this.Settings = settings
     this.Filters = filters
     this.Columns = columns
+    this.AniList = aniList
     this.ActivityLister = new ActivityLister()
   }
 
@@ -41,6 +45,11 @@ class BetterList implements Tool {
     document.querySelector('#load')!.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'
 
     localStorage.setItem('userName', this.userNameField.value)
+    if (this.userNameField.value.length > 0) {
+      this.curUserInfo = await this.AniList.getUserInfo(this.userNameField.value)
+    } else {
+      this.curUserInfo = undefined
+    }
     await this.Filters.updateFilters(this.mediaTypeSelect.value)
     document.querySelector('#load')!.innerHTML = 'Reload'
     this.updateTable()
@@ -218,8 +227,9 @@ class BetterList implements Tool {
   }
 
   private readonly activityButtonEventListener: EventListener = async (e): Promise<void> => {
-    const userId = this.lists[0].value.split('-')[0]
-    await this.ActivityLister.getActivities(userId, e.target.dataset.id)
+    if (this.curUserInfo !== undefined) {
+      await this.ActivityLister.getActivities(this.curUserInfo.id, e.target.dataset.id)
+    }
   }
 
   private readonly copyLinkEventListener: EventListener = async (e) => {
