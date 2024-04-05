@@ -10,6 +10,7 @@ class Filters extends EventTarget {
   private readonly mediaTypeSelect: HTMLSelectElement = document!.querySelector('.media-type')!
   private readonly userNameField: HTMLInputElement = document!.querySelector('#al-user')!
   private readonly ATSettings: Settings
+  private curFilterValues: any
 
   private readonly filterMap = {
     MANGA: [
@@ -101,14 +102,14 @@ class Filters extends EventTarget {
       type: 'text',
       logic: 'AND',
       label: 'Started Airing',
-      mask: '([0-9]{4}|\\*)-([0-9]{2}|\\*)-([0-9]{2}|\\*)',
+      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
       urlOrData: [],
     },
     airingFinish: {
       type: 'text',
       logic: 'AND',
       label: 'Finished Airing',
-      mask: '([0-9]{4}|\\*)-([0-9]{2}|\\*)-([0-9]{2}|\\*)',
+      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
       urlOrData: [],
     },
     genre: {
@@ -252,7 +253,7 @@ class Filters extends EventTarget {
   }
 
   // Function to setup all filters
-  public insertFilters = async (filterSet: string) => {
+  public readonly insertFilters = async (filterSet: string) => {
     // First we clean up all existing ones
     Object.entries(this.filters).forEach((filter) => {
       if (filter[1] instanceof Tagify) {
@@ -395,7 +396,7 @@ class Filters extends EventTarget {
     this.filters.tag.dropdown.createListHTMLoriginal = this.filters.tag.dropdown.createListHTML
   }
 
-  private updateRangeFilter = (filter, values) => {
+  private readonly updateRangeFilter = (filter, values) => {
     // Prepare options object to update episode filter
     const options = {
       start: [filter.noUiSlider.get()[0], values[values.length - 1]],
@@ -413,7 +414,7 @@ class Filters extends EventTarget {
   }
 
   // Function that updates the available options in the filters using the data the API returned
-  public updateFilters = async (filterSet: string): Promise<void> => {
+  public readonly updateFilters = async (filterSet: string): Promise<void> => {
     await this.insertFilters(filterSet)
     await this.updateUserListFilter()
 
@@ -442,6 +443,8 @@ class Filters extends EventTarget {
       this.updateRangeFilter(this.filters.volumes, filterValues.volumes)
     }
     this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
+
+    this.curFilterValues = this.getFilterParams()
   }
 
   private readonly updateUserListFilter = async () => {
@@ -472,10 +475,15 @@ class Filters extends EventTarget {
   }
 
   private readonly filterChangeCallback = () => {
+    const newValues = this.getFilterParams()
+    // Only trigger the event if the values actually changed (mainly for airStart and airEnd)
+    if (JSON.stringify(this.curFilterValues) !== JSON.stringify(newValues)) {
     this.dispatchEvent(new Event('filter-changed'))
+    }
+    this.curFilterValues = newValues
   }
 
-  private addText (col: string, label: string, mask: string | null = null) {
+  private readonly addText = (col: string, label: string, mask: string | null = null) => {
     const input = document.createElement('input')
     input.classList.add('columnFilter', 'form-control')
     input.dataset.column = col
@@ -751,7 +759,10 @@ class Filters extends EventTarget {
         return
       }
       if (f[1]?.tagName === 'INPUT' && f[1].type === 'text' && f[1].value.length > 0) {
+        // Validate value against regex pattern if present
+        if (! Object.hasOwn(this.filterDefs[f[0]], 'mask') || f[1].value.match(this.filterDefs[f[0]].mask) !== null) {
         params[f[0]] = f[1].value
+        }
       }
     })
 
