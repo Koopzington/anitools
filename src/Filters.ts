@@ -314,6 +314,27 @@ class Filters extends EventTarget {
       })
     })
 
+    let lists: TagifyValue[] = [];
+    if (this.userNameField.value.length > 0) {
+      const response = await fetch(import.meta.env.VITE_API_URL + '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value)
+      const data: UserList[] = await handleResponse(response);
+
+      data.forEach(function (list) {
+        lists.push({
+          label: list.name,
+          value: list.id,
+          customProperties: {
+            completion: Object.hasOwn(list, 'amount_completed')
+              ? ' (' + list.amount_completed.toString() + '/' + list.amount_total.toString() + ') ' + Math.floor(list.amount_completed / list.amount_total * 100).toString() + '%'
+              : ' (' + list.amount_total.toString() + ')'
+          }
+        })
+      }, this)
+
+      // Reindex array and filter out empty lists
+      lists = [...lists].sort(undefined).filter(a => a)
+    }
+
     this.filterMap[filterSet].forEach((filterName: string) => {
       const filterDef = this.filterDefs[filterName]
       switch (filterDef.type) {
@@ -341,24 +362,21 @@ class Filters extends EventTarget {
           if (this.userNameField.value.length === 0) {
             return
           }
+
           const container = document.createElement('div')
           const field = document.createElement('input')
-          if (this.userNameField.value.length === 0) {
-            field.disabled = true
-            field.title = 'Please enter an AL username to make use of this filter'
-          }
           field.setAttribute('placeholder', filterDef.label)
           field.classList.add('columnFilter', 'form-control')
           field.dataset.logic = filterDef.logic
+          field.value = lists[0].label
           field.addEventListener('change', this.filterChangeCallback)
           container.insertAdjacentElement('beforeend', field)
           this.filterContainer.insertAdjacentElement('beforeend', container)
           this.filters.userList = new Tagify(field, {
             enforceWhiteList: true,
-            whitelist: [],
+            whitelist: lists,
             pasteAsTags: false,
             editTags: false,
-            //mode: 'select',
             tagTextProp: 'label',
             dropdown: {
               classname: 'list-select-dropdown',
@@ -416,7 +434,6 @@ class Filters extends EventTarget {
   // Function that updates the available options in the filters using the data the API returned
   public readonly updateFilters = async (filterSet: string): Promise<void> => {
     await this.insertFilters(filterSet)
-    await this.updateUserListFilter()
 
     const response = await fetch(import.meta.env.VITE_API_URL + '/filterValues?media_type=' + this.mediaTypeSelect.value)
     const filterValues = await response.json()
@@ -445,33 +462,6 @@ class Filters extends EventTarget {
     this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
 
     this.curFilterValues = this.getFilterParams()
-  }
-
-  private readonly updateUserListFilter = async () => {
-    if (this.userNameField.value.length === 0) {
-      return
-    }
-    let lists: TagifyValue[] = [];
-    const response = await fetch(import.meta.env.VITE_API_URL + '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value)
-    const data: UserList[] = await handleResponse(response);
-
-    data.forEach(function (list) {
-      lists.push({
-        label: list.name,
-        value: list.id,
-        customProperties: {
-          completion: Object.hasOwn(list, 'amount_completed')
-            ? ' (' + list.amount_completed.toString() + '/' + list.amount_total.toString() + ') ' + Math.floor(list.amount_completed / list.amount_total * 100).toString() + '%'
-            : ' (' + list.amount_total.toString() + ')'
-        }
-      })
-    }, this)
-
-    // Reindex array and filter out empty lists
-    lists = [...lists].sort(undefined).filter(a => a)
-
-    this.filters.userList.whitelist = lists
-    this.filters.userList.addTags(lists[0].label)
   }
 
   private readonly filterChangeCallback = () => {
