@@ -1,6 +1,7 @@
 :root {
     --base-font-size: 1.2rem;
     --content-and-card-spacing: 1rem;
+    --cover: url('/assets/img/placeholder.webp')
 }
 
 /* Halfmoon only supports left sided sidebars but we want to give users the ability to choose */
@@ -9,7 +10,6 @@ html.sidebar-right .sidebar {
     left: auto;
     border-left: var(--sidebar-border-width) solid var(--lm-sidebar-border-color);
     border-right: none;
-
 }
 
 html.sidebar-right .page-wrapper.with-sidebar[data-sidebar-hidden] > .sidebar {
@@ -65,7 +65,7 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
 html.show-covers-on-title-hover a[style]::after {
     content: "";
     width: 140px;
-    background-image: url('/assets/img/placeholder.webp');
+    background-image: var(--cover);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -78,10 +78,6 @@ html.show-covers-on-title-hover a[style]::after {
     top: -60px;
     margin-left: 10px;
     box-shadow: 0 2px 20px #3136444d;
-}
-
-html.show-covers-on-title-hover a[style]:hover::after {
-    background-image: var(--cover);
 }
 
 .custom-tooltip, html.show-covers-on-title-hover a[style] {
