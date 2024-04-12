@@ -693,9 +693,8 @@ class Filters extends EventTarget {
               return this.filters.tag.settings.templates.dropdownItem.apply(this.filters.tag, [suggestion]);
           }).join("")
 
-          // assign the user to a group
           return Object.entries(categories).map(([category, categories]) => {
-              return `<div class="tagify-dropdown-item-group" data-title="Team ${category}:">${getUsersSuggestionsHTML(categories)}</div>`
+              return `<div class="tagify-dropdown-item-group" data-title="${category}:">${getUsersSuggestionsHTML(categories)}</div>`
           }).join("")
       }
     } else {
