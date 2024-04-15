@@ -3,7 +3,7 @@
     width: 55px;
 }
 
-table.dt-table tbody tr {
+.dt-table tbody tr {
     background-color: inherit;
 }
 
@@ -22,11 +22,11 @@ table.dt-table tbody tr {
     background-color: var(--dm-base-body-bg-color);
 }
 
-table.dt-table thead th {
+.dt-table thead th {
     border-color: var(--lm-table-border-color);
 }
 
-.dark-mode table.dt-table thead th {
+.dark-mode .dt-table thead th {
     border-color: var(--dm-table-border-color);
 }
 
