@@ -209,7 +209,7 @@ class BetterList implements Tool {
            "<'row'lp>",
       initComplete: function () {
         document.querySelector('.dt-length')!.classList.add('form-inline')
-        document.querySelector('#dt-length-0')!.classList.add('form-control')
+        document.querySelector('.dt-length .dt-input')!.classList.add('form-control')
       },
       columns: this.Columns.getColumns(this.mediaTypeSelect.value.toLowerCase())
     })

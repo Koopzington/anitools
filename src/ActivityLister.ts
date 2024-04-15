@@ -105,7 +105,7 @@ class ActivityLister {
     })
   }
 
-  public getActivities = async (user: string, anime: number): Promise<void> => {
+  public getActivities = async (user: number, anime: number): Promise<void> => {
     const variables = {
       page: 1,
       userId: user,

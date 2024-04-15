@@ -35,12 +35,12 @@ class AniTools {
     // Check for stored username and replace default value if it exists
     const userName = localStorage.getItem('userName')
     if (userName !== null) {
-      document.querySelector('#al-user')!.value = userName
+      document.querySelector<HTMLInputElement>('#al-user')!.value = userName
     }
 
     this.toolSelect = document.querySelector('#tool-dropdown')!
     halfmoon.onDOMContentLoaded()
-    document.querySelector('#toggle-sidebar-btn').addEventListener('click', () => { halfmoon.toggleSidebar() })
+    document.querySelector('#toggle-sidebar-btn')!.addEventListener('click', () => { halfmoon.toggleSidebar() })
     document.querySelectorAll('.dark-mode-toggler').forEach((e) => e.addEventListener('click', () => { halfmoon.toggleDarkMode() }))
 
     // Basic stuff that needs to run on page load
