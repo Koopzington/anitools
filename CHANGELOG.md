@@ -1,5 +1,15 @@
 # Changelog
 
+## 2024-04-15
+- Added Character and Staff to "Media Type" dropdown
+- Updated dependencies
+  - @yaireo/tagify from 4.21.1 to 4.24.0
+  - datatables.net from 1.13.10 to 2.0.3
+  - datatables.net-dt from 1.13.10 to 2.0.3
+  - datatables.net-colreorder from 1.7.0 to 2.0.1
+  - vite from 5.1.1 to 5.2.8
+  - marked from 12.0.0 to 12.0.1
+
 ## 2024-04-03
 - Fixed the 'Show activities' Button after breaking it with the previous update
 

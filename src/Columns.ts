@@ -90,6 +90,38 @@ class Columns {
       'activity',
       'code',
     ],
+    character: [
+      'nameFirst',
+      'nameMiddle',
+      'nameLast',
+      'nameFull',
+      'nameNative',
+      'id',
+      //'description',
+      'gender',
+      'dateOfBirth',
+      'bloodType',
+      'favourites',
+      'appearances',
+    ],
+    staff: [
+      'nameFirst',
+      'nameMiddle',
+      'nameLast',
+      'nameFull',
+      'nameNative',
+      'id',
+      //'description',
+      'homeTown',
+      'yearsActiveFrom',
+      'yearsActiveUntil',
+      'gender',
+      'dateOfBirth',
+      'dateOfDeath',
+      'bloodType',
+      'favourites',
+      'appearances',
+    ]
   }
 
   private readonly colGroups = {
@@ -143,6 +175,30 @@ class Columns {
       description: '',
       cols: [
         'volumes',
+      ]
+    },
+    'Character/Staff columns': {
+      description: '',
+      cols: [
+        'nameFirst',
+        'nameMiddle',
+        'nameLast',
+        'nameFull',
+        'nameNative',
+        'description',
+        'gender',
+        'dateOfBirth',
+        'bloodType',
+        'appearances'
+      ]
+    },
+    'Staff columns': {
+      description: '',
+      cols: [
+        'dateOfDeath',
+        'homeTown',
+        'yearsActiveFrom',
+        'yearsActiveUntil',
       ]
     },
     'User related columns': {
@@ -521,14 +577,85 @@ class Columns {
         description: 'Displays a button that copies the link title, start and finish date for the media formatted for AWC challenges',
         render: (_data, _type, row: Media) => '<button data-id="' + row.id.toString() + '" class="btn btn-sm copy-code">Copy Code</button>'
       },
-      externalLinks: {
-        name: 'externalLinks',
-        title: '',
-        data: 'externalLinks',
-        visible: false,
-        render: data => data.join(', '),
-        sortable: false
-      }
+      nameFirst: {
+        name: 'nameFirst',
+        title: 'First Name',
+        data: 'nameFirst',
+        render: (data: string, _type, row: CharacterStaff) => {
+          const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+        }
+      },
+      nameMiddle: {
+        name: 'nameMiddle',
+        title: 'Middle Name',
+        data: 'nameMiddle',
+      },
+      nameLast: {
+        name: 'nameLast',
+        title: 'Last Name',
+        data: 'nameLast',
+      },
+      nameFull: {
+        name: 'nameFull',
+        title: 'Full Name',
+        data: 'nameFull',
+        render: (data: string, _type, row: CharacterStaff) => {
+          const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+        }
+      },
+      nameNative: {
+        name: 'nameNative',
+        title: 'Native Name',
+        data: 'nameNative',
+      },
+      description: {
+        name: 'description',
+        title: 'Description',
+        data: 'description',
+      },
+      gender: {
+        name: 'gender',
+        title: 'Gender',
+        data: 'gender',
+      },
+      dateOfBirth: {
+        name: 'dateOfBirth',
+        title: 'Birthday',
+        data: 'dateOfBirth',
+      },
+      dateOfDeath: {
+        name: 'dateOfDeath',
+        title: 'Deathday',
+        data: 'dateOfDeath',
+      },
+      bloodType: {
+        name: 'bloodType',
+        title: 'Blood Type',
+        data: 'bloodType',
+      },
+      homeTown: {
+        name: 'homeTown',
+        title: 'Home Town',
+        data: 'homeTown',
+      },
+      yearsActiveFrom: {
+        name: 'yearsActiveFrom',
+        title: 'Active From',
+        data: 'yearsActiveFrom'
+      },
+      yearsActiveUntil: {
+        name: 'yearsActiveUntil',
+        title: 'Active Until',
+        data: 'yearsActiveUntil'
+      },
+      appearances: {
+        name: 'appearances',
+        title: 'Appearances',
+        description: 'Displays the amount of appearances of this character in media',
+        data: 'appearances',
+      },
     }
   }
 }

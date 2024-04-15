@@ -43,6 +43,19 @@ interface Media {
   coverImage: string
 }
 
+interface CharacterStaff {
+  nameFirst: string
+  nameMiddle: string
+  nameLast: string
+  nameFull: string
+  nameNative: string
+  id: number
+  gender: string
+  dateOfBirth: string
+  bloodType: string
+  coverImage: string
+}
+
 interface UserList {
   id: string
   amount_completed: number

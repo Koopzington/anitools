@@ -59,6 +59,22 @@ class Filters extends EventTarget {
       'mcCount',
       'showAdult',
     ],
+    CHARACTER: [
+      'nameLike',
+      'bloodType',
+      'gender',
+      'birthdayFrom',
+      'birthdayUntil',
+    ],
+    STAFF: [
+      'nameLike',
+      'bloodType',
+      'gender',
+      'birthdayFrom',
+      'birthdayUntil',
+      'deathdayFrom',
+      'deathdayUntil',
+    ]
   }
 
   private filterDefs = {
@@ -211,6 +227,51 @@ class Filters extends EventTarget {
       label: 'Only fully scanlated',
       experimental: true,
     },
+    nameLike: {
+      type: 'text',
+      logic: 'OR',
+      label: 'Name',
+    },
+    bloodType: {
+      type: 'tagify',
+      logic: 'OR',
+      label: 'Blood Type',
+      urlOrData: [],
+    },
+    gender: {
+      type: 'tagify',
+      logic: 'OR',
+      label: 'Gender',
+      urlOrData: [],
+    },
+    birthdayFrom: {
+      type: 'text',
+      logic: 'OR',
+      label: 'Birthday from',
+      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
+      urlOrData: [],
+    },
+    birthdayUntil: {
+      type: 'text',
+      logic: 'OR',
+      label: 'Birthday until',
+      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
+      urlOrData: [],
+    },
+    deathdayFrom: {
+      type: 'text',
+      logic: 'OR',
+      label: 'Deathday from',
+      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
+      urlOrData: [],
+    },
+    deathdayUntil: {
+      type: 'text',
+      logic: 'OR',
+      label: 'Deathday until',
+      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
+      urlOrData: [],
+    },
   }
 
   // Object to hold all added filters
@@ -241,6 +302,13 @@ class Filters extends EventTarget {
     muPublisher: Tagify | undefined,
     muPublication: Tagify | undefined,
     onlyScanlated: HTMLInputElement | undefined,
+    nameLike: HTMLInputElement | undefined,
+    bloodType: Tagify | undefined,
+    gender: Tagify | undefined,
+    birthdayFrom: HTMLInputElement | undefined,
+    birthdayUntil: HTMLInputElement | undefined,
+    deathdayFrom: HTMLInputElement | undefined,
+    deathdayUntil: HTMLInputElement | undefined,
   } = {}
 
   // We cache tags on initialization so the user can switch between grouped and non-grouped mode on the filter
@@ -481,6 +549,12 @@ class Filters extends EventTarget {
     }
     if (this.filters.mcCount !== undefined) {
     this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
+    }
+    if (this.filters.bloodType !== undefined) {
+      this.filters.bloodType.whitelist = filterValues.blood_type
+    }
+    if (this.filters.gender !== undefined) {
+      this.filters.gender.whitelist = filterValues.gender
     }
 
     this.curFilterValues = this.getFilterParams()
