@@ -55,12 +55,10 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
     --navbar-height: 4rem;
 }
 
-/* stylelint-disable selector-class-pattern */
-.fat-free table.dataTable tbody th,
-.fat-free table.dataTable tbody td {
+.fat-free table.dt-table tbody th,
+.fat-free table.dt-table tbody td {
     padding: 4px 10px;
 }
-/* stylelint-enable selector-class-pattern */
 
 html.show-covers-on-title-hover a[style]::after {
     content: "";

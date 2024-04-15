@@ -204,7 +204,7 @@ class BetterList implements Tool {
       search: {
         regex: true
       },
-      dom: "<'row'i<'#stats.dataTables_info'>>" +
+      dom: "<'row'i<'#stats'>>" +
            '<tr>' +
            "<'row'lp>",
       initComplete: function () {

@@ -3,7 +3,7 @@
     width: 55px;
 }
 
-table.dataTable tbody tr {
+table.dt-table tbody tr {
     background-color: inherit;
 }
 
@@ -11,22 +11,22 @@ table.dataTable tbody tr {
  * z-index is needed so the header stays on top of the links and references which
  * have position: relative for hovering
 */
-#table thead tr {
+.dt-table thead tr {
     position: sticky;
     top: 0;
     z-index: 1;
     background-color: var(--lm-base-body-bg-color);
 }
 
-.dark-mode #table thead tr {
+.dark-mode .dt-table thead tr {
     background-color: var(--dm-base-body-bg-color);
 }
 
-table.dataTable thead th {
+table.dt-table thead th {
     border-color: var(--lm-table-border-color);
 }
 
-.dark-mode table.dataTable thead th {
+.dark-mode table.dt-table thead th {
     border-color: var(--dm-table-border-color);
 }
 
@@ -57,7 +57,7 @@ div.dt-processing>div:last-child>div {
     justify-content: flex-end;
 }
 
-#table td {
+.dt-table td {
     text-align: right;
     white-space: nowrap;
     vertical-align: middle;
@@ -92,8 +92,6 @@ div.dt-processing>div:last-child>div {
     background-color: var(--lm-pagination-item-bg-color-active);
     background-image: var(--lm-pagination-item-bg-image-active);
     border-color: var(--lm-pagination-item-border-color-active);
-    -moz-box-shadow: var(--lm-pagination-item-box-shadow-active);
-    -webkit-box-shadow: var(--lm-pagination-item-box-shadow-active);
     box-shadow: var(--lm-pagination-item-box-shadow-active);
     pointer-events: none
 }
@@ -103,9 +101,5 @@ div.dt-processing>div:last-child>div {
     background-color: var(--dm-pagination-item-bg-color-active);
     background-image: var(--dm-pagination-item-bg-image-active);
     border-color: var(--dm-pagination-item-border-color-active);
-    -moz-box-shadow: var(--dm-pagination-item-box-shadow-active);
-    -webkit-box-shadow: var(--dm-pagination-item-box-shadow-active);
     box-shadow: var(--dm-pagination-item-box-shadow-active);
-    -webkit-font-smoothing: auto;
-    -moz-osx-font-smoothing: auto
 }

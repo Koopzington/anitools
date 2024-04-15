@@ -43,6 +43,7 @@ const on = function (wrapperSelector: string, eventName: string, targetSelector:
 
 DataTable.ext.classes.paging.button = 'page-link'
 DataTable.ext.classes.paging.active = 'active'
+DataTable.ext.classes.table = 'dt-table'
 
 export {
   on,
