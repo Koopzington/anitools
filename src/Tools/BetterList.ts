@@ -1,6 +1,5 @@
 /* global localStorage */
 
-import $ from 'jquery'
 import { on } from '../commonLib'
 import Columns from '../Columns'
 import Tool from '../Interfaces/Tool'
@@ -9,6 +8,7 @@ import { Api, ConfigColumnDefsSingle } from 'datatables.net'
 import ActivityLister from '../ActivityLister'
 import Settings from 'Settings'
 import AniList from 'AniList'
+import DataTable from 'datatables.net-dt'
 
 class BetterList implements Tool {
   private readonly Settings: Settings
@@ -182,7 +182,7 @@ class BetterList implements Tool {
 
       return
     }
-    this.table = $('#table').DataTable({
+    this.table = new DataTable('#table', {
       serverSide: true,
       ajax: {
         url: import.meta.env.VITE_API_URL,
@@ -195,7 +195,7 @@ class BetterList implements Tool {
       },
       paging: true,
       pageLength: 100,
-      pagingType: 'halfmoon',
+      pagingType: 'simple_numbers',
       fixedHeader: true,
       autoWidth: true,
       info: true,
@@ -207,8 +207,8 @@ class BetterList implements Tool {
            '<tr>' +
            "<'row'lp>",
       initComplete: function () {
-        document.querySelector('.dataTables_length')!.classList.add('form-inline')
-        document.querySelector('.dataTables_length select')!.classList.add('form-control')
+        document.querySelector('.dt-length')!.classList.add('form-inline')
+        document.querySelector('#dt-length-0')!.classList.add('form-control')
       },
       columns: this.Columns.getColumns(this.mediaTypeSelect.value.toLowerCase())
     })

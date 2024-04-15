@@ -1,7 +1,5 @@
-/* stylelint-disable selector-class-pattern */
-
 /* The "Show X entries" select is too small */
-.dataTables_wrapper .dataTables_length select {
+.dt-container .dt-length select {
     width: 55px;
 }
 
@@ -32,33 +30,31 @@ table.dataTable thead th {
     border-color: var(--dm-table-border-color);
 }
 
-.dataTables_wrapper .dataTables_length,
-.dataTables_wrapper .dataTables_filter,
-.dataTables_wrapper .dataTables_info,
-.dataTables_wrapper .dataTables_processing,
-.dataTables_wrapper .dataTables_paginate {
+div.dt-processing>div:last-child>div {
+    background: var(--primary-color);
+}
+
+.dt-container .dt-length,
+.dt-container .dt-info,
+.dt-container .dt-processing,
+.dt-container .dt-paging {
     color: inherit;
 }
 
-.dataTables_wrapper .dataTables_info {
+.dt-container .dt-info {
     padding-top: inherit;
 }
 
 /* Styling the info row above the table */
-.dataTables_wrapper .row:first-child {
+.dt-container .row:first-child {
     align-items: center;
     gap: var(--form-inline-horizontal-margin);
     justify-content: space-between;
 }
 
 /* Move pagination buttons to the right */
-.dataTables_wrapper .row:last-child {
+.dt-container .row:last-child {
     justify-content: flex-end;
-}
-
-/* Make the input end with the rest of the content */
-.dataTables_wrapper .dataTables_filter input {
-    margin-left: 0;
 }
 
 #table td {
@@ -66,4 +62,50 @@ table.dataTable thead th {
     white-space: nowrap;
     vertical-align: middle;
 }
-/* stylelint-enable selector-class-pattern */
+
+/* the wrapping .page-item no longer exists in the new pagination */
+.ellipsis {
+    display: inline-block;
+    padding: var(--pagination-item-padding);
+    margin: var(--pagination-item-margin);
+    font-size: var(--pagination-item-font-size);
+    min-width: var(--pagination-item-width);
+    height: var(--pagination-item-height);
+    line-height: var(--pagination-item-line-height);
+    text-align: center;
+    color: var(--lm-pagination-item-text-color);
+    background-color: var(--lm-pagination-item-bg-color);
+    background-image: var(--lm-pagination-item-bg-image);
+    border: var(--pagination-item-border-width) solid var(--lm-pagination-item-border-color);
+    border-radius: var(--pagination-item-border-radius)
+}
+
+.dark-mode .ellipsis {
+    color: var(--dm-pagination-item-text-color);
+    background-color: var(--dm-pagination-item-bg-color);
+    background-image: var(--dm-pagination-item-bg-image);
+    border-color: var(--dm-pagination-item-border-color)
+}
+
+.page-link.active {
+    color: var(--lm-pagination-item-text-color-active);
+    background-color: var(--lm-pagination-item-bg-color-active);
+    background-image: var(--lm-pagination-item-bg-image-active);
+    border-color: var(--lm-pagination-item-border-color-active);
+    -moz-box-shadow: var(--lm-pagination-item-box-shadow-active);
+    -webkit-box-shadow: var(--lm-pagination-item-box-shadow-active);
+    box-shadow: var(--lm-pagination-item-box-shadow-active);
+    pointer-events: none
+}
+
+.dark-mode .page-link.active {
+    color: var(--dm-pagination-item-text-color-active);
+    background-color: var(--dm-pagination-item-bg-color-active);
+    background-image: var(--dm-pagination-item-bg-image-active);
+    border-color: var(--dm-pagination-item-border-color-active);
+    -moz-box-shadow: var(--dm-pagination-item-box-shadow-active);
+    -webkit-box-shadow: var(--dm-pagination-item-box-shadow-active);
+    box-shadow: var(--dm-pagination-item-box-shadow-active);
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto
+}

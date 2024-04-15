@@ -59,3 +59,7 @@
 .navbar-brand:not(:first-child), .navbar-nav:not(:first-child), .navbar-text:not(:first-child), .navbar-content:not(:first-child), .navbar > .form-inline:not(:first-child) {
     margin-left: inherit;
 }
+
+table {
+    border-collapse: separate;
+}
