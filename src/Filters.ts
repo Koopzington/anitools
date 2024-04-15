@@ -216,20 +216,20 @@ class Filters extends EventTarget {
   // Object to hold all added filters
   private filters: {
     userList: Tagify | undefined,
-    titleLike: HTMLInputElement,
-    format: Tagify,
-    source: Tagify,
-    country: Tagify,
-    airStatus: Tagify,
-    airingStart: HTMLInputElement,
-    airingFinish: HTMLInputElement,
-    genre: Tagify,
-    tag: Tagify,
+    titleLike: HTMLInputElement | undefined,
+    format: Tagify | undefined,
+    source: Tagify | undefined,
+    country: Tagify | undefined,
+    airStatus: Tagify | undefined,
+    airingStart: HTMLInputElement | undefined,
+    airingFinish: HTMLInputElement | undefined,
+    genre: Tagify | undefined | undefined,
+    tag: Tagify | undefined,
     season: Tagify | undefined,
-    year: Tagify,
-    externalLink: Tagify,
+    year: Tagify | undefined,
+    externalLink: Tagify | undefined,
     voiceActor: Tagify | undefined,
-    staff: Tagify,
+    staff: Tagify | undefined,
     studio: Tagify | undefined,
     producer: Tagify | undefined,
     awcCommunityList: Tagify | undefined,
@@ -315,7 +315,7 @@ class Filters extends EventTarget {
     })
 
     let lists: TagifyValue[] = [];
-    if (this.userNameField.value.length > 0) {
+    if (this.userNameField.value.length > 0 && this.filterMap[filterSet].includes('userList')) {
       const response = await fetch(import.meta.env.VITE_API_URL + '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value)
       const data: UserList[] = await handleResponse(response);
 
@@ -411,7 +411,9 @@ class Filters extends EventTarget {
     })
 
     // Backup the dropdown rendering function to switch between the custom one for tag groups and the normal one
+    if (this.filters.tag !== undefined) {
     this.filters.tag.dropdown.createListHTMLoriginal = this.filters.tag.dropdown.createListHTML
+    }
   }
 
   private readonly updateRangeFilter = (filter, values) => {
@@ -438,28 +440,48 @@ class Filters extends EventTarget {
     const response = await fetch(import.meta.env.VITE_API_URL + '/filterValues?media_type=' + this.mediaTypeSelect.value)
     const filterValues = await response.json()
     this.tagCache = filterValues.tags
+    if (this.filters.format !== undefined) {
     this.filters.format.whitelist = filterValues.format
+    }
+    if (this.filters.genre !== undefined) {
     this.filters.genre.whitelist = filterValues.genres
+    }
+    if (this.filters.country !== undefined) {
     this.filters.country.whitelist = filterValues.country_of_origin
+    }
+    if (this.filters.externalLink !== undefined) {
     this.filters.externalLink.whitelist = filterValues.external_links
+    }
     if (this.filters.season !== undefined) {
       this.filters.season.whitelist = filterValues.season
     }
+    if (this.filters.year !== undefined) {
     this.filters.year.whitelist = filterValues.season_year.map(v => v.toString())
+    }
+    if (this.filters.source !== undefined) {
     this.filters.source.whitelist = filterValues.source
+    }
+    if (this.filters.airStatus !== undefined) {
     this.filters.airStatus.whitelist = filterValues.status
+    }
     if (this.filters.awcCommunityList !== undefined) {
       this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists
     }
+    if (this.filters.tag !== undefined) {
     this.updateTagFilter()
+    }
     if (this.filters.totalRuntime !== undefined) {
       this.updateRangeFilter(this.filters.totalRuntime, filterValues.total_runtime)
     }
+    if (this.filters.episodes !== undefined) {
     this.updateRangeFilter(this.filters.episodes, filterValues.episodes)
+    }
     if (this.filters.volumes !== undefined) {
       this.updateRangeFilter(this.filters.volumes, filterValues.volumes)
     }
+    if (this.filters.mcCount !== undefined) {
     this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
+    }
 
     this.curFilterValues = this.getFilterParams()
   }
@@ -710,9 +732,7 @@ class Filters extends EventTarget {
 
   // Function returning an object of params that can be used for requests to the AniTools Backend
   public getFilterParams = (): any => {
-    const params = {
-      mediaType: this.mediaTypeSelect.value
-    }
+    const params = {}
 
     Object.entries(this.filters).forEach((f) => {
       // Handle Tagify instances

@@ -167,6 +167,7 @@ class BetterList implements Tool {
     }
 
     params.userName = this.userNameField.value
+    params.mediaType = this.mediaTypeSelect.value
 
     // Get the values of the filters
     params.filter = this.Filters.getFilterParams()
