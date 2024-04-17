@@ -1,7 +1,18 @@
 :root {
     --base-font-size: 1.2rem;
     --content-and-card-spacing: 1rem;
-    --cover: url('/assets/img/placeholder.webp')
+    --cover: url('/assets/img/placeholder.webp');
+    --scrollbar-width: auto;
+    --scrollbar-color: var(--lm-primary-color) var(--lm-base-body-bg-color);
+}
+
+.dark-mode {
+    --scrollbar-color: var(--dm-primary-color) var(--dm-base-body-bg-color);
+}
+
+.sidebar, .content-wrapper {
+    scrollbar-width: var(--scrollbar-width);
+    scrollbar-color: var(--scrollbar-color);
 }
 
 /* Halfmoon only supports left sided sidebars but we want to give users the ability to choose */
@@ -53,6 +64,7 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
     --input-height: 2.5rem;
     --button-height: 2.5rem;
     --navbar-height: 4rem;
+    --scrollbar-width: thin;
 }
 
 .fat-free table.dt-table tbody th,
