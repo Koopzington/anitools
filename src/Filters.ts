@@ -345,7 +345,7 @@ class Filters extends EventTarget {
     this.filterContainer.innerHTML = ''
 
     const clearBtn = document.createElement('button')
-    clearBtn.classList.add('btn', 'btn-primary')
+    clearBtn.classList.add('btn', 'btn-danger')
     clearBtn.innerText = 'Clear filters'
     this.filterContainer.insertAdjacentElement('beforeend', clearBtn)
 
