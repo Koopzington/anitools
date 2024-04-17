@@ -60,7 +60,7 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
     padding: 4px 10px;
 }
 
-html.show-covers-on-title-hover a[style]::after {
+html.show-covers-on-title-hover table a[style]::after {
     content: "";
     width: 140px;
     background-image: var(--cover);
