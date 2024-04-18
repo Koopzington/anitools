@@ -64,7 +64,12 @@
 /* Align DataTables pagination with the one from the template
  * We might move this to another file when the cover based view decoupled from DataTables happens
  */
-.ellipsis {
+ .page-link,
+ .ellipsis {
+     margin-bottom: 0;
+ }
+ 
+ .ellipsis {
     display: inline-block;
     padding: var(--pagination-item-padding);
     margin: var(--pagination-item-margin);
@@ -85,11 +90,6 @@
     background-color: var(--dm-pagination-item-bg-color);
     background-image: var(--dm-pagination-item-bg-image);
     border-color: var(--dm-pagination-item-border-color)
-}
-
-.page-link,
-.ellipsis {
-    margin-bottom: 0;
 }
 
 .page-link.active {
