@@ -342,7 +342,7 @@ class Columns {
         name: 'id',
         title: 'ID',
         data: 'id',
-        render: (data: number) => '<span title="Click to copy" class="copy-me">' + data.toString() + '</span>'
+        className: 'copy-me'
       },
       seasonYear: {
         name: 'seasonYear',

@@ -57,7 +57,8 @@
 }
 
 .tagify__input {
-    padding:  0.3em 0.35em;
+    padding: 0.3em 0.35em;
+    margin-top: 7px;
 }
 
 .fat-free .tagify__input {

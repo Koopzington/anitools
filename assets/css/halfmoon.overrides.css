@@ -52,6 +52,10 @@
     --lm-input-bg-color: var(--light-color);
 }
 
+body {
+    font-family: 'Inter Variable', sans-serif;
+}
+
 .dark-mode select.form-control:not([multiple]) > option {
     background-color: var(--dm-input-bg-color);
 }
@@ -62,4 +66,8 @@
 
 table {
     border-collapse: separate;
+}
+
+button.btn {
+    line-height: 0;
 }

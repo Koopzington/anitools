@@ -1,3 +1,4 @@
+import '@fontsource-variable/inter'
 import halfmoon from 'halfmoon/js/halfmoon-module'
 import 'datatables.net'
 import 'datatables.net-colreorder'

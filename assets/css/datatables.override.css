@@ -1,36 +1,40 @@
-/* The "Show X entries" select is too small */
-.dt-container .dt-length select {
-    width: 55px;
-}
-
-.dt-table tbody tr {
-    background-color: inherit;
+/* Styling the info row above the table */
+.dt-container .row:first-child {
+    align-items: center;
+    gap: var(--form-inline-horizontal-margin);
+    justify-content: space-between;
 }
 
 /* Sticky table header
  * z-index is needed so the header stays on top of the links and references which
  * have position: relative for hovering
 */
-.dt-table thead tr {
+.dt-container .dt-table thead tr {
     position: sticky;
     top: 0;
     z-index: 1;
     background-color: var(--lm-base-body-bg-color);
 }
 
-.dark-mode .dt-table thead tr {
+.dark-mode .dt-container .dt-table thead tr {
     background-color: var(--dm-base-body-bg-color);
 }
 
-.dt-table thead th {
+.dt-container .dt-table thead th {
     border-color: var(--lm-table-border-color);
 }
 
-.dark-mode .dt-table thead th {
+.dark-mode .dt-container .dt-table thead th {
     border-color: var(--dm-table-border-color);
 }
 
-div.dt-processing>div:last-child>div {
+.dt-container .dt-table td {
+    text-align: right;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.dt-container .dt-processing>div:last-child>div {
     background: var(--primary-color);
 }
 
@@ -41,29 +45,25 @@ div.dt-processing>div:last-child>div {
     color: inherit;
 }
 
-.dt-container .dt-info {
-    padding-top: inherit;
-}
-
-/* Styling the info row above the table */
-.dt-container .row:first-child {
-    align-items: center;
-    gap: var(--form-inline-horizontal-margin);
-    justify-content: space-between;
-}
-
 /* Move pagination buttons to the right */
-.dt-container .row:last-child {
+.dt-container > .row:last-child {
     justify-content: flex-end;
+    padding-top: 0.5rem;
 }
 
-.dt-table td {
-    text-align: right;
-    white-space: nowrap;
-    vertical-align: middle;
+/* Align the "X entries per page" select with rest of look & feel */
+.dt-container .dt-length select {
+    padding-right: var(--select-padding-right);
 }
 
-/* the wrapping .page-item no longer exists in the new pagination */
+/* Put distance between label and pagination buttons */
+.dt-container .dt-length label {
+    padding-right: 1rem;
+}
+
+/* Align DataTables pagination with the one from the template
+ * We might move this to another file when the cover based view decoupled from DataTables happens
+ */
 .ellipsis {
     display: inline-block;
     padding: var(--pagination-item-padding);
@@ -85,6 +85,11 @@ div.dt-processing>div:last-child>div {
     background-color: var(--dm-pagination-item-bg-color);
     background-image: var(--dm-pagination-item-bg-image);
     border-color: var(--dm-pagination-item-border-color)
+}
+
+.page-link,
+.ellipsis {
+    margin-bottom: 0;
 }
 
 .page-link.active {
