@@ -142,6 +142,13 @@ html.show-covers-on-title-hover table a[style]::after {
     gap: 5px;
 }
 
+.and-or-switch {
+	padding: 0;
+    width: 3.1rem;
+	margin-right: 0.3rem;
+    font-size: 0.9rem;
+}
+
 /* Change Icon in Light/Dark-Mode toggler depending on current mode */
 .dark-mode-toggler i::before {
     content: '\f59a';

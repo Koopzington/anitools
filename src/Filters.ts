@@ -11,6 +11,7 @@ class Filters extends EventTarget {
   private readonly userNameField: HTMLInputElement = document!.querySelector('#al-user')!
   private readonly ATSettings: Settings
   private curFilterValues: any
+  private readonly andOrSwitch: HTMLButtonElement = document.createElement('button')
 
   private readonly filterMap = {
     MANGA: [
@@ -318,6 +319,9 @@ class Filters extends EventTarget {
     super()
     settings.addEventListener('tag-grouping-updated', this.updateTagFilter)
     this.ATSettings = settings
+    this.andOrSwitch.classList.add('btn', 'btn-primary', 'and-or-switch')
+    this.andOrSwitch.innerText = 'AND'
+    this.andOrSwitch.title = 'All values must match'
   }
 
   // Function to setup all filters
@@ -562,7 +566,7 @@ class Filters extends EventTarget {
 
   private readonly filterChangeCallback = () => {
     const newValues = this.getFilterParams()
-    // Only trigger the event if the values actually changed (mainly for airStart and airEnd)
+    // Only trigger the event if the values actually changed
     if (JSON.stringify(this.curFilterValues) !== JSON.stringify(newValues)) {
     this.dispatchEvent(new Event('filter-changed'))
     }
@@ -593,6 +597,18 @@ class Filters extends EventTarget {
     field.dataset.logic = logic
     field.addEventListener('change', this.filterChangeCallback)
     container.insertAdjacentElement('beforeend', field)
+    if (logic === 'AND') {
+      container.classList.add('d-flex')
+      const logicSwitch: HTMLButtonElement = this.andOrSwitch.cloneNode(true)
+      logicSwitch.addEventListener('click', (ev) => {
+        const newLogic = field.dataset.logic === 'AND' ? 'OR' : 'AND'
+        field.dataset.logic = newLogic
+        logicSwitch.innerText = newLogic
+        logicSwitch.title = newLogic === 'AND' ? 'All values must match' : 'Any values may match'
+        this.filterChangeCallback()
+      });
+      container.insertAdjacentElement('afterbegin', logicSwitch)
+    }
     this.filterContainer.insertAdjacentElement('beforeend', container)
     if (experimental === true) {
       container.style.display = 'flex'
