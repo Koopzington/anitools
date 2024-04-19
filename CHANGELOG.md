@@ -1,5 +1,15 @@
 # Changelog
 
+## 2024-04-19
+- Added logic switches to filters that have AND logic by default so that after switching to OR any of the chosen values must match as opposed to all of them. Values in exclusion mode are not affected by the state.
+
+## 2024-04-18
+- Changed font used by the application and vertically aligned things properly
+
+## 2024-04-17
+- Added colored scrollbars and made them thinner in fat-free mode
+- Some CSS fixes
+
 ## 2024-04-15
 - Added Character and Staff to "Media Type" dropdown
 - Updated dependencies
