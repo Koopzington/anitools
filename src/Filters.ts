@@ -16,6 +16,7 @@ class Filters extends EventTarget {
   private readonly filterMap = {
     MANGA: [
       'titleLike',
+      'notesLike',
       'userList',
       'format',
       'source',
@@ -38,6 +39,7 @@ class Filters extends EventTarget {
     ],
     ANIME: [
       'titleLike',
+      'notesLike',
       'userList',
       'format',
       'source',
@@ -89,6 +91,12 @@ class Filters extends EventTarget {
       type: 'text',
       logic: 'AND',
       label: 'Title',
+      urlOrData: [],
+    },
+    notesLike: {
+      type: 'text',
+      logic: 'AND',
+      label: 'Notes',
       urlOrData: [],
     },
     format: {
