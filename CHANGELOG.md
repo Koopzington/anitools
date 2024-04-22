@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-04-22
+- Added notes filter
+
 ## 2024-04-19
 - Added logic switches to filters that have AND logic by default so that after switching to OR any of the chosen values must match as opposed to all of them. Values in exclusion mode are not affected by the state.
 
