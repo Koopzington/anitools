@@ -185,6 +185,11 @@ html.show-covers-on-title-hover table a[style]::after {
     fill: #fff !important;
 }
 
+.columnFilter.form-control::placeholder {
+    color: var(--placeholder-color);
+    opacity: 0.35;
+}
+
 /* TODO: override default Tagify classNames */
 /* stylelint-disable selector-class-pattern */
 
