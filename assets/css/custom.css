@@ -185,7 +185,7 @@ html.show-covers-on-title-hover table a[style]::after {
     fill: #fff !important;
 }
 
-.columnFilter.form-control::placeholder {
+.column-filter.form-control::placeholder {
     color: var(--placeholder-color);
     opacity: 0.35;
 }

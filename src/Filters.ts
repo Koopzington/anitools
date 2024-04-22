@@ -446,7 +446,7 @@ class Filters extends EventTarget {
           const container = document.createElement('div')
           const field = document.createElement('input')
           field.setAttribute('placeholder', filterDef.label)
-          field.classList.add('columnFilter', 'form-control')
+          field.classList.add('column-filter', 'form-control')
           field.dataset.logic = filterDef.logic
           field.value = lists[0].label
           field.addEventListener('change', this.filterChangeCallback)
@@ -583,7 +583,7 @@ class Filters extends EventTarget {
 
   private readonly addText = (col: string, label: string, mask: string | null = null) => {
     const input = document.createElement('input')
-    input.classList.add('columnFilter', 'form-control')
+    input.classList.add('column-filter', 'form-control')
     input.dataset.column = col
     input.placeholder = label
 
@@ -601,7 +601,7 @@ class Filters extends EventTarget {
     const container = document.createElement('div')
     const field = document.createElement('input')
     field.setAttribute('placeholder', label)
-    field.classList.add('columnFilter', 'form-control')
+    field.classList.add('column-filter', 'form-control')
     field.dataset.logic = logic
     field.addEventListener('change', this.filterChangeCallback)
     container.insertAdjacentElement('beforeend', field)
@@ -702,7 +702,7 @@ class Filters extends EventTarget {
     const field = document.createElement('input')
     field.type = 'checkbox'
     field.id = col
-    field.classList.add('columnFilter')
+    field.classList.add('column-filter')
     field.addEventListener('click', this.filterChangeCallback)
     cswitch.insertAdjacentElement('beforeend', field)
     cswitch.insertAdjacentElement('beforeend', labelElement)
@@ -724,21 +724,21 @@ class Filters extends EventTarget {
     formInline.classList.add('form-inline')
 
     const labelElement = document.createElement('span')
-    labelElement.classList.add('columnFilter-label')
+    labelElement.classList.add('column-filter-label')
     labelElement.innerHTML = label + ':'
     this.filterContainer.insertAdjacentElement('beforeend', labelElement)
 
     const minField: HTMLInputElement = document.createElement('input')
-    minField.classList.add('columnFilter', 'form-control')
+    minField.classList.add('column-filter', 'form-control')
     formInline.insertAdjacentElement('beforeend', minField)
 
     const container = document.createElement('div')
-    container.classList.add('columnFilter', 'form-control', 'range-filter')
+    container.classList.add('column-filter', 'form-control', 'range-filter')
     container.dataset.column = 'episodes'
     this.filterContainer.insertAdjacentElement('beforeend', container)
 
     const maxField: HTMLInputElement = document.createElement('input')
-    maxField.classList.add('columnFilter', 'form-control')
+    maxField.classList.add('column-filter', 'form-control')
     formInline.insertAdjacentElement('beforeend', maxField)
 
     this.filterContainer.insertAdjacentElement('beforeend', formInline)
