@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2024-04-23
+- Added row number column
 - Added filters for user start and finish dates
 - Updated dependencies
   - datatables.net and datatables.net-dt from 2.0.3 to 2.0.5 [#125](https://github.com/Koopzington/anitools/pull/125)
