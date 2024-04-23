@@ -1,5 +1,13 @@
 # Changelog
 
+## 2024-04-23
+- Added filters for user start and finish dates
+- Updated dependencies
+  - datatables.net and datatables.net-dt from 2.0.3 to 2.0.5 [#125](https://github.com/Koopzington/anitools/pull/125)
+  - @fontsource-variable/inter from 5.0.17 to 5.0.18 [#126](https://github.com/Koopzington/anitools/pull/126)
+  - Bump vite from 5.2.8 to 5.2.10 [#128](https://github.com/Koopzington/anitools/pull/128)
+  - Bump marked from 12.0.1 to 12.0.2 [#129](https://github.com/Koopzington/anitools/pull/129)
+
 ## 2024-04-22
 - Added notes filter
 
