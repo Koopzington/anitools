@@ -7,6 +7,7 @@ class Columns {
 
   private readonly colMap = {
     anime: [
+      'rowNum',
       'title',
       'titleEng',
       'titleNat',
@@ -50,6 +51,7 @@ class Columns {
       'code',
     ],
     manga: [
+      'rowNum',
       'title',
       'titleEng',
       'titleNat',
@@ -91,6 +93,7 @@ class Columns {
       'code',
     ],
     character: [
+      'rowNum',
       'nameFirst',
       'nameMiddle',
       'nameLast',
@@ -105,6 +108,7 @@ class Columns {
       'appearances',
     ],
     staff: [
+      'rowNum',
       'nameFirst',
       'nameMiddle',
       'nameLast',
@@ -128,6 +132,7 @@ class Columns {
     'General columns': {
       description: 'These columns are available for all data types',
       cols: [
+        'rowNum',
         'id',
         'favourites'
       ]
@@ -337,6 +342,13 @@ class Columns {
           const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
           return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
         }
+      },
+      rowNum: {
+        name: 'rowNum',
+        title: '#',
+        data: 'rowNum',
+        description: 'Shows the row number',
+        orderable: false
       },
       id: {
         name: 'id',

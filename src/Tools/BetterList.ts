@@ -82,7 +82,7 @@ class BetterList implements Tool {
 
     document.querySelector('#load')!.addEventListener('click', this.request)
 
-      await this.request()
+    await this.request()
 
     console.log('Module BetterList loaded.')
   }
@@ -183,7 +183,9 @@ class BetterList implements Tool {
 
       return
     }
-    this.table = new DataTable('#table', {
+
+    const colDefs = this.Columns.getColumns(this.mediaTypeSelect.value.toLowerCase())
+    const options = {
       serverSide: true,
       ajax: {
         url: import.meta.env.VITE_API_URL,
@@ -194,6 +196,7 @@ class BetterList implements Tool {
           return json.data
         }
       },
+      processing: true,
       paging: true,
       pageLength: 100,
       pagingType: 'simple_numbers',
@@ -211,8 +214,15 @@ class BetterList implements Tool {
         document.querySelector('.dt-length')!.classList.add('form-inline')
         document.querySelector('.dt-length .dt-input')!.classList.add('form-control')
       },
-      columns: this.Columns.getColumns(this.mediaTypeSelect.value.toLowerCase())
-    })
+      columns: colDefs,
+    }
+
+    /* The column rowNum can't be sorted by, manually tell DataTables to sort by the column after that */
+    if (colDefs[0].name === 'rowNum') {
+      options.order = [1, 'asc']
+    }
+
+    this.table = new DataTable('#table', options)
 
     // Let DataTables update the completion and total count info on top of the table
     this.table.on('xhr.dt', this.statsHandler)
