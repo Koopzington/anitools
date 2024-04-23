@@ -12,6 +12,7 @@ class Filters extends EventTarget {
   private readonly ATSettings: Settings
   private curFilterValues: any
   private readonly andOrSwitch: HTMLButtonElement = document.createElement('button')
+  private readonly dateMask = '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$'
 
   private readonly filterMap = {
     MANGA: [
@@ -27,6 +28,8 @@ class Filters extends EventTarget {
       'year',
       'airingStart',
       'airingFinish',
+      'userStartFrom',
+      'userFinishUntil',
       'externalLink',
       'staff',
       'episodes',
@@ -51,6 +54,8 @@ class Filters extends EventTarget {
       'year',
       'airingStart',
       'airingFinish',
+      'userStartFrom',
+      'userFinishUntil',
       'externalLink',
       'voiceActor',
       'staff',
@@ -127,14 +132,14 @@ class Filters extends EventTarget {
       type: 'text',
       logic: 'AND',
       label: 'Started Airing',
-      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
+      mask: this.dateMask,
       urlOrData: [],
     },
     airingFinish: {
       type: 'text',
       logic: 'AND',
       label: 'Finished Airing',
-      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
+      mask: this.dateMask,
       urlOrData: [],
     },
     genre: {
@@ -257,28 +262,42 @@ class Filters extends EventTarget {
       type: 'text',
       logic: 'OR',
       label: 'Birthday from',
-      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
+      mask: this.dateMask,
       urlOrData: [],
     },
     birthdayUntil: {
       type: 'text',
       logic: 'OR',
       label: 'Birthday until',
-      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
+      mask: this.dateMask,
       urlOrData: [],
     },
     deathdayFrom: {
       type: 'text',
       logic: 'OR',
       label: 'Deathday from',
-      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
+      mask: this.dateMask,
       urlOrData: [],
     },
     deathdayUntil: {
       type: 'text',
       logic: 'OR',
       label: 'Deathday until',
-      mask: '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$',
+      mask: this.dateMask,
+      urlOrData: [],
+    },
+    userStartFrom: {
+      type: 'text',
+      logic: 'OR',
+      label: 'Started at',
+      mask: this.dateMask,
+      urlOrData: [],
+    },
+    userFinishUntil: {
+      type: 'text',
+      logic: 'OR',
+      label: 'Completed at',
+      mask: this.dateMask,
       urlOrData: [],
     },
   }
@@ -287,6 +306,7 @@ class Filters extends EventTarget {
   private filters: {
     userList: Tagify | undefined,
     titleLike: HTMLInputElement | undefined,
+    notesLike: HTMLInputElement | undefined,
     format: Tagify | undefined,
     source: Tagify | undefined,
     country: Tagify | undefined,
