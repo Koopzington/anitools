@@ -289,14 +289,14 @@ class Filters extends EventTarget {
     userStartFrom: {
       type: 'text',
       logic: 'OR',
-      label: 'Started at',
+      label: 'Started on',
       mask: this.dateMask,
       urlOrData: [],
     },
     userFinishUntil: {
       type: 'text',
       logic: 'OR',
-      label: 'Completed at',
+      label: 'Completed on',
       mask: this.dateMask,
       urlOrData: [],
     },

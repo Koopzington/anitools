@@ -430,7 +430,7 @@ class Columns {
       },
       started: {
         name: 'started',
-        title: 'Started at',
+        title: 'Started on',
         data: 'started',
         render: (data: string | null, _type, row: Media) => {
           if (data === null) {
@@ -446,7 +446,7 @@ class Columns {
       },
       completed: {
         name: 'completed',
-        title: 'Completed at',
+        title: 'Completed on',
         data: 'completed',
         render: (data: string | null) => data === null ? null : '<span title="Click to copy" class="copy-me">' + data + '</span>'
       },
