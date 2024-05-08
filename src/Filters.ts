@@ -477,6 +477,11 @@ class Filters extends EventTarget {
           field.dataset.logic = filterDef.logic
           field.value = lists[0].label
           field.addEventListener('change', this.filterChangeCallback)
+          container.classList.add('d-flex')
+          const logicSwitch: HTMLButtonElement = this.andOrSwitch.cloneNode(true)
+          logicSwitch.dataset.filter = 'userList'
+          logicSwitch.addEventListener('click', this.logicSwitchCallback);
+          container.insertAdjacentElement('afterbegin', logicSwitch)
           container.insertAdjacentElement('beforeend', field)
           this.filterContainer.insertAdjacentElement('beforeend', container)
           this.filters.userList = new Tagify(field, {
@@ -611,6 +616,16 @@ class Filters extends EventTarget {
     this.curFilterValues = newValues
   }
 
+  private readonly logicSwitchCallback = (ev) => {
+    const logicSwitch = ev.target
+    const field = this.filters[logicSwitch.dataset.filter].DOM.originalInput
+    const newLogic = field.dataset.logic === 'AND' ? 'OR' : 'AND'
+    field.dataset.logic = newLogic
+    logicSwitch.innerText = newLogic
+    logicSwitch.title = newLogic === 'AND' ? 'All values must match' : 'Any values may match'
+    this.filterChangeCallback()
+  }
+
   private readonly addText = (col: string, label: string, mask: string | null = null) => {
     const input = document.createElement('input')
     input.classList.add('column-filter', 'form-control')
@@ -638,13 +653,8 @@ class Filters extends EventTarget {
     if (logic === 'AND') {
       container.classList.add('d-flex')
       const logicSwitch: HTMLButtonElement = this.andOrSwitch.cloneNode(true)
-      logicSwitch.addEventListener('click', (ev) => {
-        const newLogic = field.dataset.logic === 'AND' ? 'OR' : 'AND'
-        field.dataset.logic = newLogic
-        logicSwitch.innerText = newLogic
-        logicSwitch.title = newLogic === 'AND' ? 'All values must match' : 'Any values may match'
-        this.filterChangeCallback()
-      });
+      logicSwitch.dataset.filter = col
+      logicSwitch.addEventListener('click', this.logicSwitchCallback);
       container.insertAdjacentElement('afterbegin', logicSwitch)
     }
     this.filterContainer.insertAdjacentElement('beforeend', container)

@@ -2,6 +2,7 @@
 
 ## 2024-05-08
 - Added a slider for Min/Max Tag Percentage
+- Added logic switch to User list filter
 
 ## 2024-05-07
 - Updated dependencies
