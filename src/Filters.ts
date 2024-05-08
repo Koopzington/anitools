@@ -25,6 +25,7 @@ class Filters extends EventTarget {
       'airStatus',
       'genre',
       'tag',
+      'tagPercentage',
       'year',
       'airingStart',
       'airingFinish',
@@ -50,6 +51,7 @@ class Filters extends EventTarget {
       'airStatus',
       'genre',
       'tag',
+      'tagPercentage',
       'season',
       'year',
       'airingStart',
@@ -153,6 +155,10 @@ class Filters extends EventTarget {
       logic: 'AND',
       label: 'Tags',
       urlOrData: [],
+    },
+    tagPercentage: {
+      type: 'range',
+      label: 'Tag Percentage'
     },
     season: {
       type: 'tagify',
@@ -315,6 +321,7 @@ class Filters extends EventTarget {
     airingFinish: HTMLInputElement | undefined,
     genre: Tagify | undefined | undefined,
     tag: Tagify | undefined,
+    tagPercentage: HTMLInputElement | undefined,
     season: Tagify | undefined,
     year: Tagify | undefined,
     externalLink: Tagify | undefined,
@@ -569,6 +576,9 @@ class Filters extends EventTarget {
     }
     if (this.filters.tag !== undefined) {
     this.updateTagFilter()
+    }
+    if (this.filters.tagPercentage !== undefined) {
+      this.updateRangeFilter(this.filters.tagPercentage, [0, 100])
     }
     if (this.filters.totalRuntime !== undefined) {
       this.updateRangeFilter(this.filters.totalRuntime, filterValues.total_runtime)
@@ -892,6 +902,16 @@ class Filters extends EventTarget {
         }
       }
     })
+
+    // Move tagPercentage to the right place
+    if (Object.hasOwn(params, 'tagPercentageMin')) {
+      if (Object.hasOwn(params, 'tag')) {
+        params['tag']['tagPercentageMin'] = params['tagPercentageMin']
+        params['tag']['tagPercentageMax'] = params['tagPercentageMax']
+      }
+      delete params['tagPercentageMin']
+      delete params['tagPercentageMax']
+    }
 
     return { and: params }
   }

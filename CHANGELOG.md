@@ -1,13 +1,29 @@
 # Changelog
 
+## 2024-05-08
+- Added a slider for Min/Max Tag Percentage
+
+## 2024-05-07
+- Updated dependencies
+  - @yaireo/tagify from 4.26.0 to 4.26.2 [#132](https://github.com/Koopzington/anitools/pull/132)
+  - vite from 5.2.10 to 5.2.11 [#134](https://github.com/Koopzington/anitools/pull/134)
+  - stylelint from 16.4.0 to 16.5.0 [#135](https://github.com/Koopzington/anitools/pull/135)
+  - datatables.net from 2.0.5 to 2.0.6 [#136](https://github.com/Koopzington/anitools/pull/136)
+  - datatables.net-dt from 2.0.5 to 2.0.7 [#137](https://github.com/Koopzington/anitools/pull/137)
+
+## 2024-04-30
+- Updated dependencies
+  - @yaireo/tagify from 4.24.0 to 4.26.0 [#130](https://github.com/Koopzington/anitools/pull/130)
+  - stylelint from 16.3.1 to 16.4.0 [#131](https://github.com/Koopzington/anitools/pull/131)
+
 ## 2024-04-23
 - Added row number column
 - Added filters for user start and finish dates
 - Updated dependencies
   - datatables.net and datatables.net-dt from 2.0.3 to 2.0.5 [#125](https://github.com/Koopzington/anitools/pull/125)
   - @fontsource-variable/inter from 5.0.17 to 5.0.18 [#126](https://github.com/Koopzington/anitools/pull/126)
-  - Bump vite from 5.2.8 to 5.2.10 [#128](https://github.com/Koopzington/anitools/pull/128)
-  - Bump marked from 12.0.1 to 12.0.2 [#129](https://github.com/Koopzington/anitools/pull/129)
+  - vite from 5.2.8 to 5.2.10 [#128](https://github.com/Koopzington/anitools/pull/128)
+  - marked from 12.0.1 to 12.0.2 [#129](https://github.com/Koopzington/anitools/pull/129)
 
 ## 2024-04-22
 - Added notes filter
