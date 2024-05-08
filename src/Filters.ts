@@ -497,7 +497,7 @@ class Filters extends EventTarget {
                 class='${this.settings.classNames.dropdownItem} ${item.class ? item.class : ""}'
                 tabindex="0"
                 role="option">
-                  <div class="ch-label">${item.label}</div>
+                  <div class="ch-label" title="${item.label}">${item.label}</div>
                   <div class="ch-completion">${item.customProperties.completion}</div>
                 </div>`
               },
