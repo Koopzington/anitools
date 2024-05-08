@@ -814,7 +814,8 @@ class Filters extends EventTarget {
       group[1].forEach((tag: string) => {
         values.push({
           category: group[0],
-          value: tag
+          value: tag,
+          text: tag
         })
       })
     })
