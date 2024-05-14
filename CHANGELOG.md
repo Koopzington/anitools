@@ -1,5 +1,11 @@
 # Changelog
 
+## 2024-05-14
+- Added new Mapper module for mapping AL manga to MangaUpdates manga
+- Updated dependencies
+  - datatables.net-colreorder from 2.0.1 to 2.0.2
+  - @yaireo/tagify from 4.26.2 to 4.26.5
+
 ## 2024-05-08
 - Added a slider for Min/Max Tag Percentage
 - Added logic switch to User list filter
