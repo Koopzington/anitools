@@ -1,3 +1,5 @@
+/* global localStorage */
+
 import '@fontsource-variable/inter'
 import halfmoon from 'halfmoon/js/halfmoon-module'
 import 'datatables.net'
@@ -12,6 +14,7 @@ import Settings from './Settings'
 import BetterList from './Tools/BetterList'
 import Filters from './Filters'
 import AniList from './AniList'
+import Mapper from './Tools/Mapper'
 
 class AniTools {
   // Tools which can be loaded and unloaded
@@ -33,6 +36,7 @@ class AniTools {
   }
 
   public readonly init = async (): Promise<void> => {
+    this.initALLoginButton()
     // Check for stored username and replace default value if it exists
     const userName = localStorage.getItem('userName')
     if (userName !== null) {
@@ -49,13 +53,37 @@ class AniTools {
     const filters = new Filters(settings)
     const columns = new Columns()
     this.Tools.BetterList = new BetterList(settings, filters, columns, this.AniList)
-
+    this.Tools.Mapper = new Mapper(this, filters)
+    
     settings.initSettings()
     columns.initToggles()
     this.handleInputs()
     this.initToolSelect()
     this.route()
     this.initChangelog()
+  }
+
+  private readonly initALLoginButton = (): void =>  {
+    const loginbtn = document.querySelector('#al-login-btn')!
+    const logoutbtn = document.querySelector('#al-logout-btn')!
+
+    // Check whether we got redirected from AniList's OAuth login
+    const accessToken = this.getHashParam('access_token')
+    if (accessToken !== null) {
+      localStorage.setItem('al-access-token', accessToken)
+      this.clearHash()
+    }
+    // Check whether we got an access token in the localStorage
+    if (localStorage.getItem('al-access-token') !== null) {
+      loginbtn.classList.remove('d-inline-flex')
+      loginbtn.classList.add('d-none')
+      logoutbtn.classList.remove('d-none')
+      logoutbtn.classList.add('d-inline-flex')
+      logoutbtn.addEventListener('click', () => {
+        localStorage.removeItem('al-access-token')
+        window.location.reload()
+      });
+    }
   }
 
   private readonly initToolSelect = (): void => {
@@ -132,6 +160,35 @@ class AniTools {
       document.querySelector('#changelog-content')!.innerHTML = marked.parse(await changelogRaw.text())
     });
   }
+
+  public readonly isLoggedIn = (): boolean => {
+    return localStorage.getItem('al-access-token') !== null
+  }
+
+  public readonly fetch = async (url: string, init: RequestInit | undefined = undefined) => {
+    const accessToken = localStorage.getItem('al-access-token');
+    if (accessToken !== null) {
+      if (init === undefined) {
+        init = {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('al-access-token')
+          }
+        }
+      } else {
+        if (Object.hasOwn(init, 'headers')) {
+          init.headers.Authorization = 'Bearer ' + localStorage.getItem('al-access-token')
+        } else {
+          init.headers = {
+            Authorization: 'Bearer ' + localStorage.getItem('al-access-token')
+          }
+        }
+        
+      }
+    }
+
+    return await fetch(import.meta.env.VITE_API_URL + url, init)
+  }
+
   public readonly alert = (msg: string, type: string = '') => {
     let alert = document.createElement('div')
     alert.innerHTML = this.alertTemplate

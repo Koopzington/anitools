@@ -108,6 +108,12 @@
                         <button type="button" class="btn" id="show-covers-on-title-hover" title="">Show covers while hovering over titles</button>
                         <a class="btn" target="_blank" rel="noopener" href="%VITE_GITHUB_REPO%">Report issues/feature requests on <i class="fab fa-github"></i></a>
                         <a class="btn" id="show-changelog" title="Show the Changelog" href="#changelog-modal">Show changelog</a>
+                        <a id="al-login-btn" class="btn d-inline-flex align-items-center" rel="noopener" href="https://anilist.co/api/v2/oauth/authorize?client_id=%VITE_ANILIST_CLIENT_ID%&response_type=token">Login with
+                            <img alt="AniList Icon" class="pl-5" style="height: 50%;" src="assets/al-icon.svg">
+                        </a>
+                        <button id="al-logout-btn" class="btn btn-primary d-none align-items-center" rel="noopener">Logout of
+                            <img alt="AniList Icon" class="pl-5" style="height: 50%;" src="assets/al-icon.svg">
+                        </button>
                     </div>
                     <div class="form-row" style="gap: 1rem;">
                         <div class="w-200">

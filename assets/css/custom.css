@@ -323,3 +323,36 @@ img[src="null"] {
 .mapper-content .collapse-content {
     padding: 0.5rem;
 }
+
+.loader {
+    margin: 0 auto;
+    margin-top: 30px;
+    grid-column: span 2;
+    width: 150px;
+    aspect-ratio: 1;
+    display: grid;
+    color: var(--primary-color);
+    background: radial-gradient(farthest-side, currentColor calc(100% - 10px),#0000 calc(100% - 10px) 0);
+    mask: radial-gradient(farthest-side,#0000 calc(100% - 25px),#000 calc(100% - 25px));
+    border-radius: 50%;
+    animation: l19 2s infinite linear;
+}
+
+.loader::before,
+.loader::after {    
+    content: "";
+    grid-area: 1/1;
+    background:
+        linear-gradient(currentColor 0 0) center,
+        linear-gradient(currentColor 0 0) center;
+    background-size: 100% 25px,25px 100%;
+    background-repeat: no-repeat;
+}
+
+.loader::after {
+    transform: rotate(45deg);
+}
+
+@keyframes l19 { 
+    100%{transform: rotate(1turn)}
+}

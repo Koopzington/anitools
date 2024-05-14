@@ -15,6 +15,29 @@ class Filters extends EventTarget {
   private readonly dateMask = '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$'
 
   private readonly filterMap = {
+    MAPPER: [
+      'titleLike',
+      'notesLike',
+      'userList',
+      'format',
+      'source',
+      'country',
+      'airStatus',
+      'genre',
+      'tag',
+      'tagPercentage',
+      'year',
+      'airingStart',
+      'airingFinish',
+      'userStartFrom',
+      'userFinishUntil',
+      'externalLink',
+      'staff',
+      'episodes',
+      'volumes',
+      'mcCount',
+      'showAdult',
+    ],
     MANGA: [
       'titleLike',
       'notesLike',
@@ -524,7 +547,7 @@ class Filters extends EventTarget {
 
     // Backup the dropdown rendering function to switch between the custom one for tag groups and the normal one
     if (this.filters.tag !== undefined) {
-    this.filters.tag.dropdown.createListHTMLoriginal = this.filters.tag.dropdown.createListHTML
+      this.filters.tag.dropdown.createListHTMLoriginal = this.filters.tag.dropdown.createListHTML
     }
   }
 
@@ -553,34 +576,34 @@ class Filters extends EventTarget {
     const filterValues = await response.json()
     this.tagCache = filterValues.tags
     if (this.filters.format !== undefined) {
-    this.filters.format.whitelist = filterValues.format
+      this.filters.format.whitelist = filterValues.format
     }
     if (this.filters.genre !== undefined) {
-    this.filters.genre.whitelist = filterValues.genres
+      this.filters.genre.whitelist = filterValues.genres
     }
     if (this.filters.country !== undefined) {
-    this.filters.country.whitelist = filterValues.country_of_origin
+      this.filters.country.whitelist = filterValues.country_of_origin
     }
     if (this.filters.externalLink !== undefined) {
-    this.filters.externalLink.whitelist = filterValues.external_links
+      this.filters.externalLink.whitelist = filterValues.external_links
     }
     if (this.filters.season !== undefined) {
       this.filters.season.whitelist = filterValues.season
     }
     if (this.filters.year !== undefined) {
-    this.filters.year.whitelist = filterValues.season_year.map(v => v.toString())
+      this.filters.year.whitelist = filterValues.season_year.map(v => v.toString())
     }
     if (this.filters.source !== undefined) {
-    this.filters.source.whitelist = filterValues.source
+      this.filters.source.whitelist = filterValues.source
     }
     if (this.filters.airStatus !== undefined) {
-    this.filters.airStatus.whitelist = filterValues.status
+      this.filters.airStatus.whitelist = filterValues.status
     }
     if (this.filters.awcCommunityList !== undefined) {
       this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists
     }
     if (this.filters.tag !== undefined) {
-    this.updateTagFilter()
+      this.updateTagFilter()
     }
     if (this.filters.tagPercentage !== undefined) {
       this.updateRangeFilter(this.filters.tagPercentage, [0, 100])
@@ -589,13 +612,13 @@ class Filters extends EventTarget {
       this.updateRangeFilter(this.filters.totalRuntime, filterValues.total_runtime)
     }
     if (this.filters.episodes !== undefined) {
-    this.updateRangeFilter(this.filters.episodes, filterValues.episodes)
+      this.updateRangeFilter(this.filters.episodes, filterValues.episodes)
     }
     if (this.filters.volumes !== undefined) {
       this.updateRangeFilter(this.filters.volumes, filterValues.volumes)
     }
     if (this.filters.mcCount !== undefined) {
-    this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
+      this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
     }
     if (this.filters.bloodType !== undefined) {
       this.filters.bloodType.whitelist = filterValues.blood_type
@@ -603,7 +626,7 @@ class Filters extends EventTarget {
     if (this.filters.gender !== undefined) {
       this.filters.gender.whitelist = filterValues.gender
     }
-
+    
     this.curFilterValues = this.getFilterParams()
   }
 
@@ -611,7 +634,7 @@ class Filters extends EventTarget {
     const newValues = this.getFilterParams()
     // Only trigger the event if the values actually changed
     if (JSON.stringify(this.curFilterValues) !== JSON.stringify(newValues)) {
-    this.dispatchEvent(new Event('filter-changed'))
+      this.dispatchEvent(new Event('filter-changed'))
     }
     this.curFilterValues = newValues
   }
@@ -722,13 +745,13 @@ class Filters extends EventTarget {
       })    
     }
 
-      tagify.on('click', (e) => {
+    tagify.on('click', (e) => {
       if (this.filterDefs[col].logic === 'AND') {
         const {tag:tagElm, data:tagData} = e.detail;
         tagData.exclude = tagData.exclude !== true
         tagify.replaceTag(tagElm, tagData)
       }
-      })
+    })
 
     this.filters[col] = tagify
   }
@@ -909,7 +932,7 @@ class Filters extends EventTarget {
       if (f[1]?.tagName === 'INPUT' && f[1].type === 'text' && f[1].value.length > 0) {
         // Validate value against regex pattern if present
         if (! Object.hasOwn(this.filterDefs[f[0]], 'mask') || f[1].value.match(this.filterDefs[f[0]].mask) !== null) {
-        params[f[0]] = f[1].value
+          params[f[0]] = f[1].value
         }
       }
     })
