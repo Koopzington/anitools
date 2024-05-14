@@ -508,6 +508,10 @@ class Mapper implements Tool {
         btn.dataset.id = suggestion.id.toString()
         btn?.addEventListener('click', this.singleSubmitHandler)
 
+        const isActive = document.querySelector('#multi-mode')!.classList.contains('btn-primary')
+        btn.classList.toggle('d-none', isActive)
+        checkbox.classList.toggle('d-none', ! isActive)
+
         return card
     }
 
