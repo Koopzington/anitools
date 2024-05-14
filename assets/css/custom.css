@@ -332,7 +332,7 @@ img[src="null"] {
     aspect-ratio: 1;
     display: grid;
     color: var(--primary-color);
-    background: radial-gradient(farthest-side, currentColor calc(100% - 10px),#0000 calc(100% - 10px) 0);
+    background: radial-gradient(farthest-side, currentcolor calc(100% - 10px),#0000 calc(100% - 10px) 0);
     mask: radial-gradient(farthest-side,#0000 calc(100% - 25px),#000 calc(100% - 25px));
     border-radius: 50%;
     animation: l19 2s infinite linear;
@@ -343,8 +343,8 @@ img[src="null"] {
     content: "";
     grid-area: 1/1;
     background:
-        linear-gradient(currentColor 0 0) center,
-        linear-gradient(currentColor 0 0) center;
+        linear-gradient(currentcolor 0 0) center,
+        linear-gradient(currentcolor 0 0) center;
     background-size: 100% 25px,25px 100%;
     background-repeat: no-repeat;
 }
