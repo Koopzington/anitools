@@ -2,6 +2,7 @@
 
 ## 2024-05-19
 - BetterList now saves the last selected value from the data type dropdown
+- CSS improvements to the Mapper for use on phones
 
 ## 2024-05-14
 - Added new Mapper module for mapping AL manga to MangaUpdates manga

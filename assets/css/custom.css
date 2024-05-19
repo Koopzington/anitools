@@ -274,15 +274,21 @@ img[src="null"] {
 
 .mapper-content {
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: auto;
 }
 
-.mapper-content .card:nth-child(2n+1) {
-	margin-left: 0;
-}
+@media (min-width: 769px) {
+    .mapper-content {
+        grid-template-columns: 50% 50%;
+    }
 
-.mapper-content .card:nth-child(2n) {
-	margin-right: 0;
+    .mapper-content .card:nth-child(2n+1) {
+        margin-left: 0;
+    }
+    
+    .mapper-content .card:nth-child(2n) {
+        margin-right: 0;
+    }
 }
 
 .mapper-content .anilist-entry {
