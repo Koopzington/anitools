@@ -68,6 +68,7 @@ class BetterList implements Tool {
       b.addEventListener('click', this.colVisibilityHandler)
     })
 
+    this.mediaTypeSelect.value = localStorage.getItem('mediaType') ?? 'ANIME'
     this.mediaTypeSelect.addEventListener('change', this.mediaTypeChangeHandler)
 
     // Setup Copy-Links
@@ -233,6 +234,7 @@ class BetterList implements Tool {
       this.table.destroy()
       this.table = undefined
     }
+    localStorage.setItem('mediaType', this.mediaTypeSelect.value)
     document.querySelector('#table')!.innerHTML = ''
     await this.request()
   }
