@@ -166,7 +166,7 @@ class Mapper implements Tool {
     </div>`
 
     private header = `
-    <div class="d-flex justify-content-around">
+    <div class="d-block d-sm-flex justify-content-around">
         <div>Total manga: <span id="total_manga">?</span></div>
         <div>Total unmapped manga: <span id="total_unmapped">?</span></div>
         <div>Total mapped manga: <span id="total_mapped">?</span></div>
@@ -174,12 +174,12 @@ class Mapper implements Tool {
         <div>Total personally unvoted for current filters: <span id="total_unvoted_filtered">?</span></div>
     </div>
     <div class="d-flex">
-        <div class="w-half">
+        <div class="d-none d-xl-block w-xl-half">
             <div class="d-flex" style="justify-content: center;line-height: 2.5rem;">
                 <strong>AniList entry</strong>
             </div>
         </div>
-        <div class="w-half">
+        <div class="w-full w-xl-half">
             <div class="d-flex" style="justify-content: center;gap: 1rem;">
                 <div id="multi-mode" class="btn" title="Only use this if you are 100% certain that an AL entry is referring to multiple MangaUpdates entries as it's rather rare">Map to multiple entries</div>
                 <div id="multi-submit" class="btn btn-primary d-none">Submit</div>
