@@ -576,31 +576,31 @@ class Filters extends EventTarget {
     const filterValues = await response.json()
     this.tagCache = filterValues.tags
     if (this.filters.format !== undefined) {
-      this.filters.format.whitelist = filterValues.format
+      this.filters.format.whitelist = filterValues.format.map((v) => { return {value: v, text: v}})
     }
     if (this.filters.genre !== undefined) {
-      this.filters.genre.whitelist = filterValues.genres
+      this.filters.genre.whitelist = filterValues.genres.map((v) => { return {value: v, text: v}})
     }
     if (this.filters.country !== undefined) {
-      this.filters.country.whitelist = filterValues.country_of_origin
+      this.filters.country.whitelist = filterValues.country_of_origin.map((v) => { return {value: v, text: v}})
     }
     if (this.filters.externalLink !== undefined) {
-      this.filters.externalLink.whitelist = filterValues.external_links
+      this.filters.externalLink.whitelist = filterValues.external_links.map((v) => { return {value: v, text: v}})
     }
     if (this.filters.season !== undefined) {
-      this.filters.season.whitelist = filterValues.season
+      this.filters.season.whitelist = filterValues.season.map((v) => { return {value: v, text: v}})
     }
     if (this.filters.year !== undefined) {
-      this.filters.year.whitelist = filterValues.season_year.map(v => v.toString())
+      this.filters.year.whitelist = filterValues.season_year.map((v) => { return {value: v, text: v}})
     }
     if (this.filters.source !== undefined) {
-      this.filters.source.whitelist = filterValues.source
+      this.filters.source.whitelist = filterValues.source.map((v) => { return {value: v, text: v}})
     }
     if (this.filters.airStatus !== undefined) {
-      this.filters.airStatus.whitelist = filterValues.status
+      this.filters.airStatus.whitelist = filterValues.status.map((v) => { return {value: v, text: v}})
     }
     if (this.filters.awcCommunityList !== undefined) {
-      this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists
+      this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists.map((v) => { return {value: v, text: v}})
     }
     if (this.filters.tag !== undefined) {
       this.updateTagFilter()
@@ -621,10 +621,10 @@ class Filters extends EventTarget {
       this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
     }
     if (this.filters.bloodType !== undefined) {
-      this.filters.bloodType.whitelist = filterValues.blood_type
+      this.filters.bloodType.whitelist = filterValues.blood_type.map((v) => { return {value: v, text: v}})
     }
     if (this.filters.gender !== undefined) {
-      this.filters.gender.whitelist = filterValues.gender
+      this.filters.gender.whitelist = filterValues.gender.map((v) => { return {value: v, text: v}})
     }
     
     this.curFilterValues = this.getFilterParams()
