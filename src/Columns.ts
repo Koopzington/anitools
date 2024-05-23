@@ -406,7 +406,7 @@ class Columns {
         name: 'genres',
         title: 'Genres',
         data: 'genres',
-        render: data => data.join(', '),
+        render: (data: string[] | null) => data !== null ? data.join(', ') : null,
         sortable: false
       },
       tags: {
@@ -414,6 +414,9 @@ class Columns {
         title: 'Tags',
         data: 'tags',
         render: (data) => {
+          if (data === null) {
+            return data
+          }
           const tags = []
           data.forEach(t => tags.push(t.tag))
           return tags.join(', ')
@@ -512,14 +515,14 @@ class Columns {
         name: 'studios',
         title: 'Studios',
         data: 'studios',
-        render: data => data.join(', '),
+        render: (data: string[] | null) => data !== null ? data.join(', ') : null,
         sortable: false
       },
       producers: {
         name: 'producers',
         title: 'Producers',
         data: 'producers',
-        render: data => data.join(', '),
+        render: (data: string[] | null) => data !== null ? data.join(', ') : null,
         sortable: false
       },
       statusCurrent: {

@@ -127,6 +127,10 @@ class BetterList implements Tool {
 
   // Function responsible for showing the total amount of chapters/minutes of the current selection and the user's completion in %
   private readonly statsHandler = (_ev, _settings, json: MediaSearchResult): void => {
+    if (json === null) {
+      return
+    }
+
     let data: string = ''
     if (this.mediaTypeSelect.value === 'ANIME') {
       data = json.filtered_runtime.toString() + ' minutes'
@@ -171,7 +175,11 @@ class BetterList implements Tool {
     params.mediaType = this.mediaTypeSelect.value
 
     // Get the values of the filters
-    params.filter = this.Filters.getFilterParams()
+    const filterValues = this.Filters.getFilterParams()
+    if (JSON.stringify(filterValues) !== '{"and":{}}') {
+      params.filter = filterValues
+    }
+
     delete params.search
 
     return params
