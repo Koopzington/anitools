@@ -9,7 +9,7 @@ class Mapper implements Tool {
 
     // Thess maps are for highlighting to work on differences between normal characters and full-width versions
     // This one contains characters that may or may not be present on both sides
-    private optionalCharacterMapping: Array<Array<String>> = [
+    private optionalCharacterMapping: Array<Array<string>> = [
         ['\\|', '｜'],
         ['\\(', '（'],
         ['\\)', '）'],
@@ -46,7 +46,7 @@ class Mapper implements Tool {
     ]
 
     // This one contaains characters that are very likely to be present on both sides
-    private requiredCharacterMapping: Array<Array<String>> = [
+    private requiredCharacterMapping: Array<Array<string>> = [
         ['0', '０'],
         ['1', '１'],
         ['2', '２'],
@@ -291,6 +291,25 @@ class Mapper implements Tool {
         });
     }
 
+    private readonly escapeStringForRegEx = (input: string): string => {
+        // Escape special characters
+        input = input.replaceAll('.', '\\.')
+        .replaceAll('?', '\\?')
+        .replaceAll('(', '\\(')
+        .replaceAll(')', '\\)')
+        .replaceAll('|', '\\|')
+        .replaceAll('*', '\\*')
+        .replaceAll('^', '\\^')
+        .replaceAll('[', '\\[')
+        .replaceAll(']', '\\]')
+        .replaceAll('+', '\\+')
+        .replaceAll('/', '\\/')
+        .replaceAll('$', '\\$')
+        .trim()
+
+        return input
+    }
+
     private readonly getSuggestion = async (): Promise<void> => {
         this.mediaContainer.innerHTML = ''
         this.mediaContainer.insertAdjacentElement('beforeend', this.loader.cloneNode())
@@ -356,7 +375,8 @@ class Mapper implements Tool {
             let name = [author.name_last, author.name_first].filter(Boolean).join(' ')
             // The handling of "ō" varies between platforms, higlighting should work with "o" and "ou"
             // AL usually only has "o", but sometimes "ou"
-            let regName = name.replaceAll(/uu?/g, 'uu?').replaceAll(/ou?/g, 'ou?')
+            let regName = this.escapeStringForRegEx(name)
+            regName = regName.replaceAll(/uu?/g, 'uu?').replaceAll(/ou?/g, 'ou?')
 
             this.curStaffRegex.push(new RegExp('(' + regName + ')|(' + regName.split(' ').reverse().join(' ') + ')', 'gi'))
             if (author.role !== null) {
@@ -383,48 +403,33 @@ class Mapper implements Tool {
         this.curAlNativeTitleRegex = null
         let title = alEntry.title_native
         if (title !== null) {
-            // Escape special characters
-            title = title.replaceAll('.', '\\.')
-                        .replaceAll('?', '\\?')
-                        .replaceAll('(', '\\(')
-                        .replaceAll(')', '\\)')
-                        .replaceAll('|', '\\|')
-                        .replaceAll('*', '\\*')
-                        .replaceAll('^', '\\^')
-                        .replaceAll('[', '\\[')
-                        .replaceAll(']', '\\]')
-                        .replaceAll('+', '\\+')
-                        .replaceAll('/', '\\/')
-                        .replaceAll('$', '\\$')
-                        .trim()
-
+            title = this.escapeStringForRegEx(title)
             // Native titles may contain fullwidth versions of punctuation marks
             this.optionalCharacterMapping.forEach((mapping) => {
-                // Check for both the normal and the full-width version
-                let matched: Array<String> = []
-                mapping.forEach((char) => {
-                    if (title.indexOf(char) > 0) {
-                        matched.push(char)
-                    }
-                })
-
-                matched.forEach((char) => {
-                    title = title.replaceAll(char, '(' + mapping.join('|') + ')?')
-                });
+            // Check for both the normal and the full-width version
+            let matched: Array<string> = []
+            mapping.forEach((char) => {
+                if (title.indexOf(char) > 0) {
+                    matched.push(char)
+                }
+            })
+    
+            matched.forEach((char) => {
+                title = title.replaceAll(char, '(' + mapping.join('|') + ')?')
+            });
             })
             this.requiredCharacterMapping.forEach((mapping) => {
-                // Check for both the normal and the full-width version
-                const checkA = title.indexOf(mapping[0]) > 0
-                const checkB = title.indexOf(mapping[1]) > 0
-
-                if (checkA) {
-                    title = title.replaceAll(mapping[0], '(' + mapping[0] + '|' + mapping[1] + ')')
-                }
-                if (checkB) {
-                    title = title.replaceAll(mapping[1], '(' + mapping[0] + '|' + mapping[1] + ')')
-                }
+            // Check for both the normal and the full-width version
+            const checkA = title.indexOf(mapping[0]) > 0
+            const checkB = title.indexOf(mapping[1]) > 0
+    
+            if (checkA) {
+                title = title.replaceAll(mapping[0], '(' + mapping[0] + '|' + mapping[1] + ')')
+            }
+            if (checkB) {
+                title = title.replaceAll(mapping[1], '(' + mapping[0] + '|' + mapping[1] + ')')
+            }
             })
-
             this.curAlNativeTitleRegex = new RegExp(title, 'gi')
         }
         this.curAlRomajiTitleRegex = new RegExp(alEntry.title_romaji, 'gi')
