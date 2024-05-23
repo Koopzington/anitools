@@ -372,7 +372,7 @@ class Mapper implements Tool {
         this.curStaffRegex = []
         let staff: string[] = []
         alEntry.authors.forEach((author) => {
-            let name = [author.name_last, author.name_first].filter(Boolean).join(' ')
+            let name = [author.name_last.trim(), author.name_first.trim()].filter(Boolean).join(' ')
             // The handling of "ō" varies between platforms, higlighting should work with "o" and "ou"
             // AL usually only has "o", but sometimes "ou"
             let regName = this.escapeStringForRegEx(name)
