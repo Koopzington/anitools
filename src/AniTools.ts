@@ -94,8 +94,14 @@ class AniTools {
       this.toolSelect.insertAdjacentElement('beforeend', o)
     })
 
+    const lastTool = localStorage.getItem('tool')
+    if (lastTool !== null && Object.hasOwn(this.Tools, lastTool)) {
+      this.toolSelect.value = lastTool
+    }
+
     // Sync value change with other select and route
     this.toolSelect.addEventListener('change', () => {
+      localStorage.setItem('tool', this.toolSelect.value)
       this.route(this.toolSelect.value)
     })
   }
