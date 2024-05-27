@@ -413,11 +413,11 @@ class Columns {
         name: 'tags',
         title: 'Tags',
         data: 'tags',
-        render: (data) => {
+        render: (data: MediaTag[]) => {
           if (data === null) {
             return data
           }
-          const tags = []
+          const tags: string[] = []
           data.forEach(t => tags.push(t.tag))
           return tags.join(', ')
         },
@@ -578,7 +578,7 @@ class Columns {
         title: '# References',
         description: 'Displays how many references to the media exist in other lists of the user',
         data: 'references',
-        render: (data: string[]) => '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
+        render: (data: string[] | null) => data === null ? null : '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
       },
       activity: {
         name: 'activity',

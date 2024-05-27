@@ -35,12 +35,18 @@ interface Media {
   isAdult: number
   id: number
   genres: string[]
-  tags: string[]
+  tags: MediaTag[]
   studios: string[]
   producers: string[]
   references: string[]
   externalLinks: string[]
   coverImage: string
+}
+
+interface MediaTag {
+  tag: string
+  rank: number
+  is_spoiler: number
 }
 
 interface CharacterStaff {
