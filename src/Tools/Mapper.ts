@@ -165,7 +165,7 @@ class Mapper implements Tool {
         </div>
     </div>`
 
-    private header = `
+    private readonly header = `
     <div class="d-block d-sm-flex justify-content-around">
         <div>Total manga: <span id="total_manga">?</span></div>
         <div>Total unmapped manga: <span id="total_unmapped">?</span></div>
@@ -190,6 +190,15 @@ class Mapper implements Tool {
         </div>
     </div>`
 
+    private readonly notLoggedInContent = `
+    <h4>What does this tool do?</h4>
+    <p>If you used the BetterList tool to browse manga you may have noticed the experimental "Publisher", "Publication" and "Only fully scanlated" filters.
+    These filters are based on MangaUpdates data which in turn requires AniList and MangaUpdates entries to be "mapped" to each other.
+    The AniTools backend already has mappings for a large portion of AL manga from other data sources like Animeshon and MangaDex but the rest will require extra work.
+    Due to many factors however this process can't be done in a fully automated manner and thus i've written a Mapping tool that can be used by volunteers to help getting all the currently unmapped AL manga associated with MangaUpdates entries.
+    To prevent the vote-based system from abuse it requires an AL login. <br>
+    To log in, open the settings and click the "Login using AL" button.
+    `
     private multiCheckbox = `<input type="checkbox" class="multi-check d-none" />`
     private mediaContainer: HTMLDivElement
     private readonly japaneseRegex = /(?![\uff5e])[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/
@@ -222,7 +231,7 @@ class Mapper implements Tool {
         this.mediaTypeSelect.classList.add('d-none')
 
         if (! this.AniTools.isLoggedIn()) {
-            document.querySelector('#page-content')!.innerHTML = 'This tool can only be used when you\'re logged in through AniTools.<br>To log in, open the settings and click the "Login using AL" button'
+            document.querySelector('#page-content')!.innerHTML = this.notLoggedInContent
             return
         }
         this.mediaContainer = document.createElement('div')
