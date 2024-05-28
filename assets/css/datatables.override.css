@@ -64,12 +64,16 @@
 /* Align DataTables pagination with the one from the template
  * We might move this to another file when the cover based view decoupled from DataTables happens
  */
- .page-link,
- .ellipsis {
-     margin-bottom: 0;
- }
+.page-link {
+    cursor: pointer;
+}
+
+.page-link,
+.ellipsis {
+    margin-bottom: 0;
+}
  
- .ellipsis {
+.ellipsis {
     display: inline-block;
     padding: var(--pagination-item-padding);
     margin: var(--pagination-item-margin);
