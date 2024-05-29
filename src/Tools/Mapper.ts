@@ -137,7 +137,7 @@ class Mapper implements Tool {
 
     private readonly cardTemplate = `
     <div class="card p-0 d-flex">
-        <img class="img-fluid rounded-top align-self-top">
+      <img loading="lazy" class="img-fluid rounded-top align-self-top">
         <div class="content media-info" style="flex-grow:1;">
             <div class="d-flex justify-content-between">
                 <h2 class="content-title"></h2>
