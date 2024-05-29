@@ -1,7 +1,6 @@
 :root {
     --base-font-size: 1.2rem;
     --content-and-card-spacing: 1rem;
-    --cover: url('/assets/img/placeholder.webp');
     --scrollbar-width: auto;
     --scrollbar-color: var(--lm-primary-color) var(--lm-base-body-bg-color);
 }
@@ -75,7 +74,7 @@ html.sidebar-right .page-wrapper.with-sidebar > .sidebar + .content-wrapper {
 html.show-covers-on-title-hover table a[style]::after {
     content: "";
     width: 140px;
-    background-image: var(--cover);
+    background-image: none;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -118,6 +117,7 @@ html.show-covers-on-title-hover table a[style]::after {
 }
 
 .custom-tooltip:hover::after, html.show-covers-on-title-hover a[style]:hover::after {
+    background-image: var(--cover);
     visibility: visible;
 }
 
@@ -131,8 +131,7 @@ html.show-covers-on-title-hover table a[style]::after {
     vertical-align: middle;
 }
 
-.page-wrapper.with-sidebar[data-sidebar-type~='overlayed-all']
-    > .sidebar-overlay {
+.page-wrapper.with-sidebar[data-sidebar-type~='overlayed-all'] > .sidebar-overlay {
     background-color: unset;
 }
 
