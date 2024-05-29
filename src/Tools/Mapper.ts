@@ -405,7 +405,9 @@ class Mapper implements Tool {
             status,
             startDate,
             staff,
-            result.al_entry.description
+            result.al_entry.description,
+            null,
+            result.not_found_votes
         )
         mediacard.classList.add('anilist-entry')
         const btn: HTMLButtonElement = mediacard.querySelector('.btn')!
