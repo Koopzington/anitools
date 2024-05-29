@@ -238,7 +238,7 @@
 
 .table-striped tbody tr:hover,
 .dark-mode .table-striped tbody tr:hover,
-.table-striped tbody tr:hover a {
+.table-striped tbody tr:hover a:not(.btn) {
     background-color: var(--al-color-user-green);
     color: var(--al-color-foreground);
 }
