@@ -283,9 +283,19 @@ img[src="null"] {
     margin: 0;
 }
 
+.mapper-content .card .content {
+    --content-and-card-spacing-xs: 1rem;
+}
+
+@media (width <= 768px) {
+    .mapper-content .card .content .d-flex {
+        gap: var(--content-and-card-spacing-xs);
+    }
+}
+
 @media (width >= 769px) {
     .mapper-content {
-        grid-template-columns: 50% 50%;
+        grid-template-columns: 1fr 1fr;
     }
 }
 
@@ -311,6 +321,13 @@ img[src="null"] {
 .mapper-content img {
     min-width: 150px;
     max-height: 233px;
+}
+
+@media (width <= 768px) {
+    .mapper-content img {
+        min-width: 125px;
+        max-height: 166px;
+    }
 }
 
 .mapper-content .other-titles {
