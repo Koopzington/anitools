@@ -26,7 +26,7 @@
     "@popperjs/core": "^2.11",
     "@yaireo/tagify": "^4.26",
     "datatables.net": "^2.0",
-    "datatables.net-colreorder": "^2.0.1",
+    "datatables.net-colreorder": "^2.0.3",
     "datatables.net-dt": "^2.0",
     "halfmoon": "^1.1.1",
     "inputmask": "^5.0",
