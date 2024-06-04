@@ -1,5 +1,26 @@
 # Changelog
 
+## 2024-06-04
+- Updated dependencies
+  - vite from 5.2.11 to 5.2.12
+  - inputmask from 5.0.8 to 5.0.9
+  - datatables.net from 2.0.7 to 2.0.8
+  - datatables.net-dt from 2.0.7 to 2.0.8
+  - datatables.net-colreorder from 2.0.2 to 2.0.3
+
+## 2024-05-29
+- Show "None found" votes on the Mapper
+- Lazy loading for images in the Mapper and covers in BetterList
+- Updated dependencies
+  - stylelint from 16.5.0 to 16.6.0 [#141](https://github.com/Koopzington/anitools/pull/141)
+
+## 2024-05-27
+- Added a proper description for the Mapper module when people aren't logged in
+
+## 2024-05-23
+- We now store the last used tool between sessions
+- Improved highlighting in Mapper for staff names
+
 ## 2024-05-19
 - BetterList now saves the last selected value from the data type dropdown
 - CSS improvements to the Mapper for use on phones
