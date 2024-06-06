@@ -1,3 +1,4 @@
+import AniTools from "./AniTools"
 import Tagify from '@yaireo/tagify'
 import noUiSlider from 'nouislider'
 import wNumb from 'wnumb'
@@ -9,6 +10,7 @@ class Filters extends EventTarget {
   private readonly filterContainer: HTMLDivElement = document!.querySelector('#filters')!
   private readonly mediaTypeSelect: HTMLSelectElement = document!.querySelector('.media-type')!
   private readonly userNameField: HTMLInputElement = document!.querySelector('#al-user')!
+  private readonly AniTools: AniTools
   private readonly ATSettings: Settings
   private curFilterValues: any
   private readonly andOrSwitch: HTMLButtonElement = document.createElement('button')
@@ -370,12 +372,14 @@ class Filters extends EventTarget {
     deathdayUntil: HTMLInputElement | undefined,
   } = {}
 
+  private abortController: AbortController
   // We cache tags on initialization so the user can switch between grouped and non-grouped mode on the filter
   private tagCache: Object
 
-  constructor (settings: Settings) {
+  constructor (anitools: AniTools, settings: Settings) {
     super()
     settings.addEventListener('tag-grouping-updated', this.updateTagFilter)
+    this.AniTools = anitools
     this.ATSettings = settings
     this.andOrSwitch.classList.add('btn', 'btn-primary', 'and-or-switch')
     this.andOrSwitch.innerText = 'AND'
@@ -446,23 +450,32 @@ class Filters extends EventTarget {
 
     let lists: TagifyValue[] = [];
     if (this.userNameField.value.length > 0 && this.filterMap[filterSet].includes('userList')) {
-      const response = await fetch(import.meta.env.VITE_API_URL + '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value)
-      const data: UserList[] = await handleResponse(response);
+      this.abortController && this.abortController.abort()
+      this.abortController = new AbortController()
 
-      data.forEach(function (list) {
-        lists.push({
-          label: list.name,
-          value: list.id,
-          customProperties: {
-            completion: Object.hasOwn(list, 'amount_completed')
-              ? ' (' + list.amount_completed.toString() + '/' + list.amount_total.toString() + ') ' + Math.floor(list.amount_completed / list.amount_total * 100).toString() + '%'
-              : ' (' + list.amount_total.toString() + ')'
-          }
-        })
-      }, this)
+      try {
+        const response = await this.AniTools.fetch(
+          '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value,
+          { signal: this.abortController.signal }
+        )
 
-      // Reindex array and filter out empty lists
-      lists = [...lists].sort(undefined).filter(a => a)
+        const data: UserList[] = await handleResponse(response);
+
+        data.forEach(function (list) {
+          lists.push({
+            label: list.name,
+            value: list.id,
+            customProperties: {
+              completion: Object.hasOwn(list, 'amount_completed')
+                ? ' (' + list.amount_completed.toString() + '/' + list.amount_total.toString() + ') ' + Math.floor(list.amount_completed / list.amount_total * 100).toString() + '%'
+                : ' (' + list.amount_total.toString() + ')'
+            }
+          })
+        }, this)
+
+        // Reindex array and filter out empty lists
+        lists = [...lists].sort(undefined).filter(a => a)
+      } catch (error) {}
     }
 
     this.filterMap[filterSet].forEach((filterName: string) => {
@@ -489,7 +502,7 @@ class Filters extends EventTarget {
           this.addRange(filterName, filterDef.label, filterDef.experimental ?? false)
           break;
         case 'userList':
-          if (this.userNameField.value.length === 0) {
+          if (this.userNameField.value.length === 0 || lists.length === 0) {
             return
           }
 
@@ -568,66 +581,83 @@ class Filters extends EventTarget {
     filter.noUiSlider.updateOptions(options, false)
   }
 
+  // Function for Tools to call upon unloading to stop any running requests
+  public readonly abort = (): void => {
+    this.abortController && this.abortController.abort()
+  }
+
   // Function that updates the available options in the filters using the data the API returned
   public readonly updateFilters = async (filterSet: string): Promise<void> => {
-    await this.insertFilters(filterSet)
+      await this.insertFilters(filterSet)
 
-    const response = await fetch(import.meta.env.VITE_API_URL + '/filterValues?media_type=' + this.mediaTypeSelect.value)
-    const filterValues = await response.json()
-    this.tagCache = filterValues.tags
-    if (this.filters.format !== undefined) {
-      this.filters.format.whitelist = filterValues.format.map((v) => { return {value: v, text: v}})
-    }
-    if (this.filters.genre !== undefined) {
-      this.filters.genre.whitelist = filterValues.genres.map((v) => { return {value: v, text: v}})
-    }
-    if (this.filters.country !== undefined) {
-      this.filters.country.whitelist = filterValues.country_of_origin.map((v) => { return {value: v, text: v}})
-    }
-    if (this.filters.externalLink !== undefined) {
-      this.filters.externalLink.whitelist = filterValues.external_links.map((v) => { return {value: v, text: v}})
-    }
-    if (this.filters.season !== undefined) {
-      this.filters.season.whitelist = filterValues.season.map((v) => { return {value: v, text: v}})
-    }
-    if (this.filters.year !== undefined) {
-      this.filters.year.whitelist = filterValues.season_year.map((v) => { return {value: v, text: v}})
-    }
-    if (this.filters.source !== undefined) {
-      this.filters.source.whitelist = filterValues.source.map((v) => { return {value: v, text: v}})
-    }
-    if (this.filters.airStatus !== undefined) {
-      this.filters.airStatus.whitelist = filterValues.status.map((v) => { return {value: v, text: v}})
-    }
-    if (this.filters.awcCommunityList !== undefined) {
-      this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists.map((v) => { return {value: v, text: v}})
-    }
-    if (this.filters.tag !== undefined) {
-      this.updateTagFilter()
-    }
-    if (this.filters.tagPercentage !== undefined) {
-      this.updateRangeFilter(this.filters.tagPercentage, [0, 100])
-    }
-    if (this.filters.totalRuntime !== undefined) {
-      this.updateRangeFilter(this.filters.totalRuntime, filterValues.total_runtime)
-    }
-    if (this.filters.episodes !== undefined) {
-      this.updateRangeFilter(this.filters.episodes, filterValues.episodes)
-    }
-    if (this.filters.volumes !== undefined) {
-      this.updateRangeFilter(this.filters.volumes, filterValues.volumes)
-    }
-    if (this.filters.mcCount !== undefined) {
-      this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
-    }
-    if (this.filters.bloodType !== undefined) {
-      this.filters.bloodType.whitelist = filterValues.blood_type.map((v) => { return {value: v, text: v}})
-    }
-    if (this.filters.gender !== undefined) {
-      this.filters.gender.whitelist = filterValues.gender.map((v) => { return {value: v, text: v}})
-    }
-    
-    this.curFilterValues = this.getFilterParams()
+      this.abortController && this.abortController.abort()
+      this.abortController = new AbortController()
+
+      let response: Response
+      try {
+        response = await this.AniTools.fetch(
+          '/filterValues?media_type=' + this.mediaTypeSelect.value,
+          { signal: this.abortController.signal }
+        )
+      } catch (error) {
+        return
+      }
+
+      const filterValues = await handleResponse(response)
+      this.tagCache = filterValues.tags
+      if (this.filters.format !== undefined) {
+        this.filters.format.whitelist = filterValues.format.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.genre !== undefined) {
+        this.filters.genre.whitelist = filterValues.genres.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.country !== undefined) {
+        this.filters.country.whitelist = filterValues.country_of_origin.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.externalLink !== undefined) {
+        this.filters.externalLink.whitelist = filterValues.external_links.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.season !== undefined) {
+        this.filters.season.whitelist = filterValues.season.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.year !== undefined) {
+        this.filters.year.whitelist = filterValues.season_year.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.source !== undefined) {
+        this.filters.source.whitelist = filterValues.source.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.airStatus !== undefined) {
+        this.filters.airStatus.whitelist = filterValues.status.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.awcCommunityList !== undefined) {
+        this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.tag !== undefined) {
+        this.updateTagFilter()
+      }
+      if (this.filters.tagPercentage !== undefined) {
+        this.updateRangeFilter(this.filters.tagPercentage, [0, 100])
+      }
+      if (this.filters.totalRuntime !== undefined) {
+        this.updateRangeFilter(this.filters.totalRuntime, filterValues.total_runtime)
+      }
+      if (this.filters.episodes !== undefined) {
+        this.updateRangeFilter(this.filters.episodes, filterValues.episodes)
+      }
+      if (this.filters.volumes !== undefined) {
+        this.updateRangeFilter(this.filters.volumes, filterValues.volumes)
+      }
+      if (this.filters.mcCount !== undefined) {
+        this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
+      }
+      if (this.filters.bloodType !== undefined) {
+        this.filters.bloodType.whitelist = filterValues.blood_type.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.gender !== undefined) {
+        this.filters.gender.whitelist = filterValues.gender.map((v) => { return {value: v, text: v}})
+      }
+      
+      this.curFilterValues = this.getFilterParams()
   }
 
   private readonly filterChangeCallback = () => {
@@ -731,13 +761,13 @@ class Filters extends EventTarget {
           tagify.loading(false)
           return
         }
-        fetch(import.meta.env.VITE_API_URL + urlOrData + '?q=' + value, { signal: controller.signal })
+        this.AniTools.fetch(urlOrData + '?q=' + value, { signal: controller.signal })
           .then(async response => await response.json())
           .then((newWhitelist) => {
             tagify.whitelist = newWhitelist // update whitelist Array in-place
             tagify.loading(false).dropdown.show(value) // render the suggestions dropdown
           })
-          .catch(handleError)
+          .catch(() => null)
       }
 
       tagify.on('input', (e) => {

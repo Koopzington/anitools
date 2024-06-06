@@ -317,13 +317,15 @@ img[src="null"] {
     font-size: 1.5rem;
 }
 
-.mapper-content img {
+.mapper-content img,
+#my-votes img {
     min-width: 150px;
     max-height: 233px;
 }
 
 @media (width <= 768px) {
-    .mapper-content img {
+    .mapper-content img,
+    #my-votes img {
         min-width: 125px;
         max-height: 166px;
     }
@@ -342,6 +344,20 @@ img[src="null"] {
 
 .mapper-content .collapse-content {
     padding: 0.5rem;
+}
+
+#my-votes.dt-table td {
+    white-space: wrap;
+}
+
+#my-votes.dt-table td.media-col {
+    text-align: left;
+}
+
+#my-votes.dt-table td.media-col a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 .loader {

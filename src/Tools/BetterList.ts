@@ -9,6 +9,7 @@ import ActivityLister from '../ActivityLister'
 import Settings from 'Settings'
 import AniList from 'AniList'
 import DataTable from 'datatables.net-dt'
+import AniTools from 'AniTools'
 
 class BetterList implements Tool {
   private readonly Settings: Settings
@@ -16,6 +17,7 @@ class BetterList implements Tool {
   private readonly Columns: Columns
   private readonly ActivityLister: ActivityLister
   private readonly AniList: AniList
+  private readonly AniTools: AniTools
   private readonly userNameField: HTMLInputElement = document.querySelector('#al-user')!
   private readonly mediaTypeSelect: HTMLSelectElement = document.querySelector('.media-type')!
   private table: Api<HTMLTableElement> | undefined
@@ -23,9 +25,12 @@ class BetterList implements Tool {
   private copyLinkHandler: EventListener | undefined
   private copyCodeHandler: EventListener | undefined
   private activityButtonHandler: EventListener | undefined
+  private debouncer: number
   private curUserInfo: ALUserInfo | undefined
+  private abortController: AbortController
 
-  constructor (settings: Settings, filters: Filters, columns: Columns, aniList: AniList) {
+  constructor (aniTools: AniTools, settings: Settings, filters: Filters, columns: Columns, aniList: AniList) {
+    this.AniTools = aniTools
     this.Settings = settings
     this.Filters = filters
     this.Columns = columns
@@ -39,6 +44,8 @@ class BetterList implements Tool {
     }
     const col = this.table.column(ev.target!.dataset.column.toString() + ':name')
     col.visible(!col.visible())
+    // We need to reload the page because previously invisible data might not be present now
+    this.updateTable()
   }
 
   private readonly request = async (): Promise<void> => {
@@ -106,6 +113,7 @@ class BetterList implements Tool {
 
     // Column filters
     this.Filters.removeEventListener('filter-changed', this.filterChangeHandler)
+    this.Filters.abort()
     
     document.querySelector('#load')!.removeEventListener('click', this.request)
 
@@ -117,7 +125,6 @@ class BetterList implements Tool {
     console.log('Module BetterList unloaded.')
   }
 
-  private debouncer: number
   private readonly filterChangeHandler = (): void => {
     clearTimeout(this.debouncer)
     this.debouncer = setTimeout(() => {
@@ -127,17 +134,13 @@ class BetterList implements Tool {
 
   // Function responsible for showing the total amount of chapters/minutes of the current selection and the user's completion in %
   private readonly statsHandler = (_ev, _settings, json: MediaSearchResult): void => {
-    if (json === null) {
-      return
-    }
-
     let data: string = ''
-    if (this.mediaTypeSelect.value === 'ANIME') {
+    if (this.mediaTypeSelect.value === 'ANIME' && Object.hasOwn(json, 'total_runtime')) {
       data = json.filtered_runtime.toString() + ' minutes'
       if (json.total_runtime > json.filtered_runtime) {
         data += ' (filtered from ' + json.total_runtime.toString() + ' minutes)'
       }
-    } else if (this.mediaTypeSelect.value === 'MANGA') {
+    } else if (this.mediaTypeSelect.value === 'MANGA' && Object.hasOwn(json, 'total_episodes')) {
       data = json.filtered_episodes.toString() + ' chapters, ' + json.filtered_volumes.toString() + ' volumes'
       if (json.total_episodes > json.filtered_episodes) {
         data += ' (filtered from ' + json.total_episodes.toString() + ' chapters, ' + json.total_volumes.toString() + ' volumes)'
@@ -145,7 +148,7 @@ class BetterList implements Tool {
     }
 
     let completion = ''
-    if (this.userNameField.value.length > 0) {
+    if (this.userNameField.value.length > 0 && Object.hasOwn(json, 'total_completed')) {
       completion = (Math.floor(json.total_completed) / json.recordsTotal * 100).toFixed(2) + '% Completed, '
     }
 
@@ -196,14 +199,30 @@ class BetterList implements Tool {
     const colDefs = this.Columns.getColumns(this.mediaTypeSelect.value.toLowerCase())
     const options = {
       serverSide: true,
-      ajax: {
-        url: import.meta.env.VITE_API_URL,
-        data: this.getParams,
-        // Keep a copy of the currently displayed page for the "Code copy" button
-        dataSrc: (json) => {
-          this.currentPageData = json.data
-          return json.data
+      ajax: async (data, callback, settings) => {
+        this.abortController && this.abortController.abort()
+        this.abortController = new AbortController()
+
+        const params = this.getParams(data, settings)
+        let response: Response
+        try {
+          response = await this.AniTools.fetch('/', {
+            method: 'POST',
+            body: JSON.stringify(params),
+            signal: this.abortController.signal
+          })
+        } catch (error) {
+          callback({
+            data: [],
+            recordsTotal: 0,
+            recordsFiltered: 0
+          })
+          return
         }
+
+        const json = await response?.json()
+        this.currentPageData = json.data
+        callback(json)
       },
       processing: true,
       paging: true,

@@ -50,9 +50,9 @@ class AniTools {
 
     // Basic stuff that needs to run on page load
     const settings = new Settings()
-    const filters = new Filters(settings)
+    const filters = new Filters(this, settings)
     const columns = new Columns()
-    this.Tools.BetterList = new BetterList(settings, filters, columns, this.AniList)
+    this.Tools.BetterList = new BetterList(this, settings, filters, columns, this.AniList)
     this.Tools.Mapper = new Mapper(this, filters)
     
     settings.initSettings()
@@ -171,7 +171,7 @@ class AniTools {
     return localStorage.getItem('al-access-token') !== null
   }
 
-  public readonly fetch = async (url: string, init: RequestInit | undefined = undefined) => {
+  public readonly fetch = async (url: string, init: RequestInit | undefined = undefined): Promise<Response> => {
     const accessToken = localStorage.getItem('al-access-token');
     if (accessToken !== null) {
       if (init === undefined) {
@@ -192,10 +192,29 @@ class AniTools {
       }
     }
 
-    return await fetch(import.meta.env.VITE_API_URL + url, init)
+    try {
+      return await fetch(import.meta.env.VITE_API_URL + url, init)
+    } catch (error) {
+      this.errorHandler(error)
+      throw error
+    }
   }
 
-  public readonly alert = (msg: string, type: string = '') => {
+  private readonly errorHandler = (error): void => {
+    // Ignore AbortErrors, they're caused by the user when clicking things too fast
+    if (error.name === 'AbortError') {
+      return
+    }
+
+    console.error(error)
+    this.alert(
+      'There seems to be a problem with the AniTools Backend. Please contact the dev.',
+      'danger',
+      false
+    )
+  }
+
+  public readonly alert = (msg: string, type: string = '', autoremove: boolean = true) => {
     let alert = document.createElement('div')
     alert.innerHTML = this.alertTemplate
     if (type.length > 0) {
@@ -203,9 +222,11 @@ class AniTools {
     }
     alert.querySelector('.message')!.innerHTML = msg
     document.querySelector('#alert-container')?.insertAdjacentElement('beforeend', alert)
-    window.setTimeout(() => {
-      alert.remove()
-    }, 10000)
+    if (autoremove) {
+      window.setTimeout(() => {
+        alert.remove()
+      }, 10000)
+    }
   }
 }
 

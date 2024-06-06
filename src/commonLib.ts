@@ -6,12 +6,6 @@ const handleResponse = async (response: Response): Promise<any> => {
   return response.ok ? json : await Promise.reject(json)
 }
 
-const handleError = (error: Error): void => {
-  if (error.name !== 'AbortError') {
-    console.error(error)
-  }
-}
-
 // Function for eventlistener delegation. For cases where you want to listen to an event on elemens that might not exist yet
 const on = function (wrapperSelector: string, eventName: string, targetSelector: string, fn: Function): EventListener {
   const element = document.querySelector(wrapperSelector)
@@ -49,5 +43,4 @@ DataTable.ext.classes.table = 'dataTable dt-table'
 export {
   on,
   handleResponse,
-  handleError,
 }

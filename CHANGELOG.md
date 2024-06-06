@@ -1,5 +1,10 @@
 # Changelog
 
+## 2024-06-06
+- Improved handling of errors and abortion of running requests caused by user interactions
+- Mapper: Users can now get a list of past votes and are able to revoke them if they want to
+- Mapper: Load button for manual loading of MU entries is now disabled while loading suggestions
+
 ## 2024-06-04
 - Updated dependencies
   - vite from 5.2.11 to 5.2.12
