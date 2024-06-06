@@ -16,6 +16,7 @@ class AniList extends EventTarget {
     }`
 
   private accessToken: string | null = null
+  private userCache = { byToken: {}, byName: {} }
 
   public readonly setAccessToken = (accessToken: string | null) => {
     this.accessToken = accessToken;
@@ -55,16 +56,22 @@ class AniList extends EventTarget {
   }
 
   public readonly getUserInfo = async (userName: string): Promise<ALUserInfo | undefined> => {
-    if (userName.length === 0 && this.accessToken === null) {
+    if (userName.length === 0 && ! this.isLoggedIn()) {
       return undefined
     }
 
     let query = this.userQuery
     let variables = {}
-    if (this.accessToken !== null && userName === null) {
+    if (this.isLoggedIn() && userName === null) {
+      if (Object.hasOwn(this.userCache.byToken, this.accessToken!)) {
+        return this.userCache.byToken[this.accessToken!]
+      }
       query = this.authenticatedUserquery
     }
     if (userName.length > 0) {
+      if (Object.hasOwn(this.userCache.byName, userName)) {
+        return this.userCache.byName[userName]
+      }
       variables.userName = userName
     }
 
@@ -75,10 +82,14 @@ class AniList extends EventTarget {
     }
 
     if (userName.length > 0) {
+      if (response.data.User !== null) {
+        this.userCache.byName[userName] = response.data.User
+      }
       // If the user wasn't found response.data.User will contain null
       return response.data.User as ALUserInfo
     }
 
+    this.userCache.byToken[this.accessToken!] = response.data.Viewer
     return response.data.Viewer as ALUserInfo
   }
 }
