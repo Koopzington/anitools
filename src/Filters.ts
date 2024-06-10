@@ -372,7 +372,7 @@ class Filters extends EventTarget {
     deathdayUntil: HTMLInputElement | undefined,
   } = {}
 
-  private abortController: AbortController
+  private abortController: AbortController | undefined
   // We cache tags on initialization so the user can switch between grouped and non-grouped mode on the filter
   private tagCache: Object
 
@@ -475,7 +475,10 @@ class Filters extends EventTarget {
 
         // Reindex array and filter out empty lists
         lists = [...lists].sort(undefined).filter(a => a)
-      } catch (error) {}
+      } catch (error) {
+        this.abortController = undefined
+        return
+      }
     }
 
     this.filterMap[filterSet].forEach((filterName: string) => {
@@ -564,23 +567,6 @@ class Filters extends EventTarget {
     }
   }
 
-  private readonly updateRangeFilter = (filter, values) => {
-    // Prepare options object to update episode filter
-    const options = {
-      start: [filter.noUiSlider.get()[0], values[values.length - 1]],
-      range: {
-        min: 0,
-        max: values[values.length - 1]
-      }
-    }
-
-    // Calculate steps
-    for (let i = 0; i < values.length - 1; ++i) {
-      options.range[((values[i] / values[values.length - 1]) * 100).toString() + '%'] = values[i]
-    }
-    filter.noUiSlider.updateOptions(options, false)
-  }
-
   // Function for Tools to call upon unloading to stop any running requests
   public readonly abort = (): void => {
     this.abortController && this.abortController.abort()
@@ -589,6 +575,11 @@ class Filters extends EventTarget {
   // Function that updates the available options in the filters using the data the API returned
   public readonly updateFilters = async (filterSet: string): Promise<void> => {
       await this.insertFilters(filterSet)
+      // Only really happens if the username field is filled and the user switched between media types
+      // before the lists could get loaded
+      if (Object.entries(this.filters).length === 0) {
+        return
+      }
 
       this.abortController && this.abortController.abort()
       this.abortController = new AbortController()
@@ -602,7 +593,7 @@ class Filters extends EventTarget {
       } catch (error) {
         return
       }
-
+      
       const filterValues = await handleResponse(response)
       this.tagCache = filterValues.tags
       if (this.filters.format !== undefined) {
@@ -866,6 +857,23 @@ class Filters extends EventTarget {
       container.noUiSlider.set([null, maxField.value])
       this.filterChangeCallback()
     })
+  }
+
+  private readonly updateRangeFilter = (filter, values) => {
+    // Prepare options object to update episode filter
+    const options = {
+      start: [filter.noUiSlider.get()[0], values[values.length - 1]],
+      range: {
+        min: 0,
+        max: values[values.length - 1]
+      }
+    }
+
+    // Calculate steps
+    for (let i = 0; i < values.length - 1; ++i) {
+      options.range[((values[i] / values[values.length - 1]) * 100).toString() + '%'] = values[i]
+    }
+    filter.noUiSlider.updateOptions(options, false)
   }
 
   private readonly updateTagFilter = (): void => {

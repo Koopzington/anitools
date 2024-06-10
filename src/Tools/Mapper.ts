@@ -398,8 +398,8 @@ class Mapper implements Tool {
         '<tr>' +
         "<'row'lp>",
       initComplete: function () {
-        document.querySelector('.dt-length')!.classList.add('form-inline')
-        document.querySelector('.dt-length .dt-input')!.classList.add('form-control')
+        document.querySelector('.dt-length')?.classList.add('form-inline')
+        document.querySelector('.dt-length .dt-input')?.classList.add('form-control')
       },
       columns: [
         {
