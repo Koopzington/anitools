@@ -37,6 +37,8 @@ class Filters extends EventTarget {
       'staff',
       'episodes',
       'volumes',
+      'meanScore',
+      'avgScore',
       'mcCount',
       'showAdult',
     ],
@@ -60,6 +62,8 @@ class Filters extends EventTarget {
       'staff',
       'episodes',
       'volumes',
+      'meanScore',
+      'avgScore',
       'mcCount',
       'muPublisher',
       'muPublication',
@@ -91,6 +95,8 @@ class Filters extends EventTarget {
       'awcCommunityList',
       'episodes',
       'totalRuntime',
+      'meanScore',
+      'avgScore',
       'mcCount',
       'showAdult',
     ],
@@ -249,6 +255,14 @@ class Filters extends EventTarget {
       type: 'range',
       label: 'Main Characters',
     },
+    meanScore: {
+      type: 'range',
+      label: 'Mean Score',
+    },
+    avgScore: {
+      type: 'range',
+      label: 'Average Score',
+    },
     showAdult: {
       type: 'checkbox',
       label: 'Show Adult entries',
@@ -359,6 +373,8 @@ class Filters extends EventTarget {
     episodes: HTMLInputElement,
     volumes: HTMLInputElement,
     mcCount: HTMLInputElement,
+    meanScore: HTMLInputElement,
+    avgScore: HTMLInputElement,
     showAdult: HTMLInputElement,
     muPublisher: Tagify | undefined,
     muPublication: Tagify | undefined,
@@ -640,6 +656,12 @@ class Filters extends EventTarget {
       }
       if (this.filters.mcCount !== undefined) {
         this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
+      }
+      if (this.filters.meanScore !== undefined) {
+        this.updateRangeFilter(this.filters.meanScore, [0, 100])
+      }
+      if (this.filters.avgScore !== undefined) {
+        this.updateRangeFilter(this.filters.avgScore, [0, 100])
       }
       if (this.filters.bloodType !== undefined) {
         this.filters.bloodType.whitelist = filterValues.blood_type.map((v) => { return {value: v, text: v}})

@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-06-14
+- New Mean Score and Average Score filters were added [#149](https://github.com/Koopzington/anitools/issues/149)
+
 ## 2024-06-06
 - Improved handling of errors and abortion of running requests caused by user interactions
 - Mapper: Users can now get a list of past votes and are able to revoke them if they want to
