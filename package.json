@@ -24,7 +24,7 @@
     "@fontsource-variable/inter": "^5.0.18",
     "@fortawesome/fontawesome-free": "^6.5.2",
     "@popperjs/core": "^2.11",
-    "@yaireo/tagify": "^4.26",
+    "@yaireo/tagify": "^4.27",
     "datatables.net": "^2.0",
     "datatables.net-colreorder": "^2.0.1",
     "datatables.net-dt": "^2.0",
