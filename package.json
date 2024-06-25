@@ -24,14 +24,14 @@
     "@fontsource-variable/inter": "^5.0.18",
     "@fortawesome/fontawesome-free": "^6.5.2",
     "@popperjs/core": "^2.11",
-    "@yaireo/tagify": "^4.26",
+    "@yaireo/tagify": "^4.27",
     "datatables.net": "^2.0",
     "datatables.net-colreorder": "^2.0.1",
     "datatables.net-dt": "^2.0",
     "halfmoon": "^1.1.1",
     "inputmask": "^5.0",
     "jquery": "^3.7",
-    "marked": "^12.0",
+    "marked": "^13.0",
     "nouislider": "^15.8",
     "wnumb": "^1.2.0"
   },
@@ -40,8 +40,8 @@
     "htmlhint": "^1.1.4",
     "standard": "^17.1.0",
     "stylelint": "^16.6.0",
-    "stylelint-config-standard": "^36.0.0",
+    "stylelint-config-standard": "^36.0.1",
     "ts-standard": "^12.0.2",
-    "vite": "^5.2"
+    "vite": "^5.3"
   }
 }

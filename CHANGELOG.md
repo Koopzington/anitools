@@ -1,5 +1,13 @@
 # Changelog
 
+## 2024-06-25
+- Updated dependencies
+  - vite from 5.2.13 to 5.3.1
+  - @yaireo/tagify from 4.26.5 to 4.27.0
+  - stylelint-config-standard from 36.0.0 to 36.0.1
+  - nouislider from 15.8.0 to 15.8.1
+  - marked from 12.0.2 to 13.0.1
+
 ## 2024-06-14
 - New Mean Score and Average Score filters were added [#149](https://github.com/Koopzington/anitools/issues/149)
 

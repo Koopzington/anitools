@@ -17,6 +17,14 @@
     --tags-border-color: var(--dm-input-border-color);
 }
 
+.tagify__dropdown {
+    --tagify-dd-text-color: var(--lm-base-text-color);
+}
+
+.dark-mode .tagify__dropdown {
+    --tagify-dd-text-color: var(--dm-base-text-color);
+}
+
 /*
  * Because the dev was so clever to use :root for defining CSS variables it'd mean loading an additional
  * CSS file when dark mode is enabled to override the :root block that would be defined here. So instead
