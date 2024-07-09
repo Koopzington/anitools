@@ -1,5 +1,11 @@
 # Changelog
 
+## 2024-07-09
+- Updated dependencies
+  - @fontsource-variable/inter from 5.0.18 to 5.0.19
+  - marked from 13.0.1 to 13.0.1
+  - vite from 5.3.1 to 5.3.3
+
 ## 2024-06-25
 - Updated dependencies
   - vite from 5.2.13 to 5.3.1

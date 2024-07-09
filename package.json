@@ -21,27 +21,27 @@
     "defaults and fully supports es6-module"
   ],
   "dependencies": {
-    "@fontsource-variable/inter": "^5.0.18",
-    "@fortawesome/fontawesome-free": "^6.5.2",
+    "@fontsource-variable/inter": "^5.0",
+    "@fortawesome/fontawesome-free": "^6.5",
     "@popperjs/core": "^2.11",
     "@yaireo/tagify": "^4.27",
     "datatables.net": "^2.0",
-    "datatables.net-colreorder": "^2.0.1",
+    "datatables.net-colreorder": "^2.0",
     "datatables.net-dt": "^2.0",
     "halfmoon": "^1.1.1",
     "inputmask": "^5.0",
     "jquery": "^3.7",
     "marked": "^13.0",
     "nouislider": "^15.8",
-    "wnumb": "^1.2.0"
+    "wnumb": "^1.2"
   },
   "devDependencies": {
-    "@types/wnumb": "^1.2.3",
-    "htmlhint": "^1.1.4",
-    "standard": "^17.1.0",
-    "stylelint": "^16.6.0",
-    "stylelint-config-standard": "^36.0.1",
-    "ts-standard": "^12.0.2",
+    "@types/wnumb": "^1.2",
+    "htmlhint": "^1.1",
+    "standard": "^17.1",
+    "stylelint": "^16.6",
+    "stylelint-config-standard": "^36.0",
+    "ts-standard": "^12.0",
     "vite": "^5.3"
   }
 }
