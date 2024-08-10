@@ -28,6 +28,7 @@ class Columns {
       'repeat',
       'started',
       'completed',
+      'daysSpent',
       'episodes',
       'duration',
       'totalDuration',
@@ -73,6 +74,7 @@ class Columns {
       'repeat',
       'started',
       'completed',
+      'daysSpent',
       'episodes',
       'volumes',
       'source',
@@ -215,6 +217,7 @@ class Columns {
         'repeat',
         'started',
         'completed',
+        'daysSpent',
         'score',
         'notes',
         'references',
@@ -464,6 +467,11 @@ class Columns {
         title: 'Completed on',
         data: 'completed',
         render: (data: string | null) => data === null ? null : '<span title="Click to copy" class="copy-me">' + data + '</span>'
+      },
+      daysSpent: {
+        name: 'daysSpent',
+        title: 'Days spent',
+        data: 'daysSpent',
       },
       episodes: {
         name: 'episodes',

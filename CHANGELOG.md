@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-08-10
+- Added a new column showing how many days were spent on the completion of a medium (by subtracting the completion and start date)
+
 ## 2024-07-09
 - Updated dependencies
   - @fontsource-variable/inter from 5.0.18 to 5.0.19
