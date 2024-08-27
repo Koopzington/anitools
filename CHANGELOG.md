@@ -1,5 +1,13 @@
 # Changelog
 
+## 2024-08-27
+- Updated dependencies
+  - @fontsource-variable/inter from 5.0.19 to 5.0.20
+  - datatables.net from 2.0.8 to 2.1.4
+  - stylelint from 16.6.1 to 16.8.2
+  - vite from 5.3.3 to 5.4.2
+  - marked from 13.0.1 to 14.1.0
+
 ## 2024-08-10
 - Added a new column showing how many days were spent on the completion of a medium (by subtracting the completion and start date)
 
