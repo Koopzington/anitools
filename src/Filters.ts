@@ -984,8 +984,8 @@ class Filters extends EventTarget {
       }
       // Handle Range instances
       if (Object.hasOwn(f[1], 'noUiSlider')) {
-        params[f[0] + 'Min'] = f[1].noUiSlider.get(true)[0]
-        params[f[0] + 'Max'] = f[1].noUiSlider.get(true)[1]
+        params[f[0] + 'Min'] = f[1].noUiSlider.get()[0]
+        params[f[0] + 'Max'] = f[1].noUiSlider.get()[1]
 
         return
       }

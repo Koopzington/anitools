@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2024-08-27
+- Fixed a bug where sliders would pass decimal numbers to the API (e.g. UI shows 6 main characters but sends 5.6785)
 - Updated dependencies
   - @fontsource-variable/inter from 5.0.19 to 5.0.20
   - datatables.net from 2.0.8 to 2.1.4
