@@ -2,6 +2,12 @@
 
 ## 2024-09-10
 - Debounce inputs for sliders to improve user experience while entering numbers
+- Updated dependencies
+  - stylelint from 16.8.2 to 16.9.0
+  - datatables.net-dt from 2.1.4 to 2.1.6
+  - datatables.net from 2.1.4 to 2.1.6
+  - marked from 14.1.0 to 14.1.2
+  - @fontsource-variable/inter from 5.0.20 to 5.0.21
 
 ## 2024-08-27
 - Fixed a bug where sliders would pass decimal numbers to the API (e.g. UI shows 6 main characters but sends 5.6785)
