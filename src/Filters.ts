@@ -870,14 +870,22 @@ class Filters extends EventTarget {
       }
     })
 
+    let debouncer: number
+
     minField.addEventListener('keyup', () => {
+      clearTimeout(debouncer)
+      debouncer = setTimeout(() => {
       container.noUiSlider.set([minField.value, null])
       this.filterChangeCallback()
+      }, 500);
     })
 
     maxField.addEventListener('keyup', () => {
+      clearTimeout(debouncer)
+      debouncer = setTimeout(() => {
       container.noUiSlider.set([null, maxField.value])
       this.filterChangeCallback()
+      }, 500);
     })
   }
 

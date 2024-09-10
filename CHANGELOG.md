@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-09-10
+- Debounce inputs for sliders to improve user experience while entering numbers
+
 ## 2024-08-27
 - Fixed a bug where sliders would pass decimal numbers to the API (e.g. UI shows 6 main characters but sends 5.6785)
 - Updated dependencies
