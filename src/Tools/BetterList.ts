@@ -114,6 +114,7 @@ class BetterList implements Tool {
     // Column filters
     this.Filters.removeEventListener('filter-changed', this.filterChangeHandler)
     this.Filters.abort()
+    this.Filters.removeFilters()
     
     document.querySelector('#load')!.removeEventListener('click', this.request)
 

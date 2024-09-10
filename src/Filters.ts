@@ -402,8 +402,7 @@ class Filters extends EventTarget {
     this.andOrSwitch.title = 'All values must match'
   }
 
-  // Function to setup all filters
-  public readonly insertFilters = async (filterSet: string) => {
+  public readonly removeFilters = () => {
     // First we clean up all existing ones
     Object.entries(this.filters).forEach((filter) => {
       if (filter[1] instanceof Tagify) {
@@ -425,6 +424,14 @@ class Filters extends EventTarget {
     })
 
     this.filterContainer.innerHTML = ''
+    // Remove the container from the DOM (doesn't delete it)
+    this.filterContainer.remove()
+  }
+
+  // Function to setup all filters
+  public readonly insertFilters = async (filterSet: string) => {
+    this.removeFilters()
+    document.querySelector('.sidebar .sidebar-content')?.insertAdjacentElement('beforeend', this.filterContainer)
 
     const clearBtn = document.createElement('button')
     clearBtn.classList.add('btn', 'btn-danger')

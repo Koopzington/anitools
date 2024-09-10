@@ -285,6 +285,7 @@ class Mapper implements Tool {
     this.unloadCurSection()
     document.querySelector('#page-content')!.innerHTML = ''
     document.querySelector('#mapper-section')?.remove()
+    this.Filters.removeFilters()
 
     this.mediaTypeSelect.classList.remove('d-none')
     console.log('Module Mapper unloaded.')
