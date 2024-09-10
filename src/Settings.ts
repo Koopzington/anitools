@@ -57,6 +57,7 @@ class Settings extends EventTarget {
     callback(this[settingName]);
   }
 
+  // Responsible for setting the site's theme
   private readonly initTheme = (): void => {
     const siteThemeSelect: HTMLSelectElement = document.querySelector('#site-theme')!
     const enableTheme = (theme: string): void => {
@@ -66,18 +67,23 @@ class Settings extends EventTarget {
       link.href = 'themes/' + theme + '.css'
       document.querySelector('head')!.appendChild(link)
     }
+    // Handle the switching
     siteThemeSelect.addEventListener('change', () => {
-      document.querySelectorAll('.site-theme').forEach((e) => {
+      // Remove any currently loaded stylesheet
+      document.querySelectorAll('link.site-theme').forEach((e) => {
         e.remove()
       })
 
+      // Default theme is selected
       if (siteThemeSelect.value === '') {
         localStorage.removeItem('site-theme')
+        this.dispatchEvent(new Event('theme-changed'))
         return
       }
 
       enableTheme(siteThemeSelect.value)
       localStorage.setItem('site-theme', siteThemeSelect.value)
+      this.dispatchEvent(new Event('theme-changed'))
     })
     const siteTheme = localStorage.getItem('site-theme')
     if (siteTheme !== null) {
@@ -86,6 +92,7 @@ class Settings extends EventTarget {
     }
   }
 
+  // Responsible for moving the sidebar to the left or right side
   private readonly initSideBarPosition = (): void => {
     const sideBarPositionSelect: HTMLSelectElement = document.querySelector('#sidebar-position')!
     const moveSideBarToRightSide = (): void => {
