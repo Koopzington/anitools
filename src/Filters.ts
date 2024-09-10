@@ -7,7 +7,7 @@ import Settings from './Settings'
 import { handleError, handleResponse } from './commonLib'
 
 class Filters extends EventTarget {
-  private readonly filterContainer: HTMLDivElement = document!.querySelector('#filters')!
+  private readonly filterContainer: HTMLDivElement = document!.createElement('div')!
   private readonly mediaTypeSelect: HTMLSelectElement = document!.querySelector('.media-type')!
   private readonly userNameField: HTMLInputElement = document!.querySelector('#al-user')!
   private readonly AniTools: AniTools
@@ -394,6 +394,7 @@ class Filters extends EventTarget {
 
   constructor (anitools: AniTools, settings: Settings) {
     super()
+    this.filterContainer.id = 'filters'
     settings.addEventListener('tag-grouping-updated', this.updateTagFilter)
     this.AniTools = anitools
     this.ATSettings = settings
