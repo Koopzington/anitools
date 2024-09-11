@@ -472,6 +472,7 @@ class Columns {
         name: 'daysSpent',
         title: 'Days spent',
         data: 'daysSpent',
+      description: 'Displays difference between start and completion date in days'
       },
       episodes: {
         name: 'episodes',
@@ -537,31 +538,36 @@ class Columns {
         name: 'statusCurrent',
         title: '# Current',
         data: 'statusCurrent',
-        render: data => data ?? 0
+      render: data => data ?? 0,
+      description: 'Displays how many people currently watch/read the media'
       },
       statusPlanning: {
         name: 'statusPlanning',
         title: '# Planning',
         data: 'statusPlanning',
-        render: data => data ?? 0
+      render: data => data ?? 0,
+      description: 'Displays how many people are planning to watch/read the media'
       },
       statusCompleted: {
         name: 'statusCompleted',
         title: '# Completed',
         data: 'statusCompleted',
-        render: data => data ?? 0
+      render: data => data ?? 0,
+      description: 'Displays how many people completed watching/reading the media'
       },
       statusDropped: {
         name: 'statusDropped',
         title: '# Dropped',
         data: 'statusDropped',
-        render: data => data ?? 0
+      render: data => data ?? 0,
+      description: 'Displays how many people dropped the media'
       },
       statusPaused: {
         name: 'statusPaused',
         title: '# Paused',
         data: 'statusPaused',
-        render: data => data ?? 0
+      render: data => data ?? 0,
+      description: 'Displays how many people paused watching/reading the media'
       },
       hasReview: {
         name: 'hasReview',
@@ -572,7 +578,8 @@ class Columns {
       notes: {
         name: 'notes',
         title: 'Notes',
-        data: 'notes'
+      data: 'notes',
+      description: 'Displays the user\'s notes on the media'
       },
       isAdult: {
         name: 'isAdult',
@@ -632,6 +639,10 @@ class Columns {
         name: 'nameNative',
         title: 'Native Name',
         data: 'nameNative',
+      render: (data: string, _type, row: CharacterStaff) => {
+        const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+      }
       },
       description: {
         name: 'description',
