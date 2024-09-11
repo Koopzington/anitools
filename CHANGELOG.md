@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024-09-11
+- Updated dependencies
+  - vite from 5.3.3 to 5.3.4
+
 ## 2024-09-10
 - Debounce inputs for sliders to improve user experience while entering numbers
 - Updated dependencies
