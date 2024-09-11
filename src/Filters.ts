@@ -14,6 +14,7 @@ class Filters extends EventTarget {
   private readonly ATSettings: Settings
   private curFilterValues: any
   private readonly andOrSwitch: HTMLButtonElement = document.createElement('button')
+  private readonly regexSwitch: HTMLButtonElement = document.createElement('button')
   private readonly dateMask = '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$'
 
   private readonly filterMap = {
@@ -130,6 +131,7 @@ class Filters extends EventTarget {
       logic: 'AND',
       label: 'Title',
       urlOrData: [],
+      regex: true,
     },
     notesLike: {
       type: 'text',
@@ -288,8 +290,9 @@ class Filters extends EventTarget {
     },
     nameLike: {
       type: 'text',
-      logic: 'OR',
+      logic: 'AND',
       label: 'Name',
+      regex: true,
     },
     bloodType: {
       type: 'tagify',
@@ -401,6 +404,9 @@ class Filters extends EventTarget {
     this.andOrSwitch.classList.add('btn', 'btn-primary', 'and-or-switch')
     this.andOrSwitch.innerText = 'AND'
     this.andOrSwitch.title = 'All values must match'
+    this.regexSwitch.classList.add('btn', 'regex-switch')
+    this.regexSwitch.innerText = '.*'
+    this.regexSwitch.title = 'Default algorithm will be used for matching'
   }
 
   public readonly removeFilters = () => {
@@ -433,7 +439,7 @@ class Filters extends EventTarget {
   public readonly insertFilters = async (filterSet: string) => {
     this.removeFilters()
     document.querySelector('.sidebar .sidebar-content')?.insertAdjacentElement('beforeend', this.filterContainer)
-
+    
     const clearBtn = document.createElement('button')
     clearBtn.classList.add('btn', 'btn-danger')
     clearBtn.innerText = 'Clear filters'
@@ -509,7 +515,7 @@ class Filters extends EventTarget {
       const filterDef = this.filterDefs[filterName]
       switch (filterDef.type) {
         case 'text':
-          this.addText(filterName, filterDef.label, filterDef.mask ?? null)
+          this.addText(filterName, filterDef.label, filterDef.mask ?? null, filterDef.regex ?? false)
           break;
         case 'tagify':
           this.addTagify(filterName, filterDef.label, filterDef.urlOrData, filterDef.logic, filterDef.experimental ?? false)
@@ -690,6 +696,19 @@ class Filters extends EventTarget {
     this.curFilterValues = newValues
   }
 
+  private readonly regexSwitchCallback = (ev) => {
+    const regexSwitch = ev.target
+    const field = this.filters[regexSwitch.dataset.filter]
+    const newMode = field.dataset.regex === 'regex' ? 'default' : 'regex'
+    field.dataset.regex = newMode
+    regexSwitch.classList.toggle('btn-primary', newMode === 'regex')
+    regexSwitch.title = newMode === 'regex'
+      ? 'RegEx pattern will be used for matching. Patterns need to be wrapped in delimiters like /, ~, @ or #.' 
+        +' You can append an "i" behind it for a case insensitive search. Example: /(Do|Re|Mi)/i'
+      : 'Default algorithm will be used for matching'
+    this.filterChangeCallback()
+  }
+
   private readonly logicSwitchCallback = (ev) => {
     const logicSwitch = ev.target
     const field = this.filters[logicSwitch.dataset.filter].DOM.originalInput
@@ -700,7 +719,8 @@ class Filters extends EventTarget {
     this.filterChangeCallback()
   }
 
-  private readonly addText = (col: string, label: string, mask: string | null = null) => {
+  private readonly addText = (col: string, label: string, mask: string | null = null, regex: boolean) => {
+    const container = document.createElement('div')
     const input = document.createElement('input')
     input.classList.add('column-filter', 'form-control')
     input.dataset.column = col
@@ -710,8 +730,19 @@ class Filters extends EventTarget {
       Inputmask({ regex: mask }).mask(input)
     }
 
+    if (regex) {
+      container.classList.add('d-flex')
+      const regexSwitch: HTMLButtonElement = this.regexSwitch.cloneNode(true)
+      regexSwitch.dataset.filter = col
+      regexSwitch.addEventListener('click', this.regexSwitchCallback)
+
+      container.insertAdjacentElement('afterbegin', regexSwitch)
+    }
+
     this.filters[col] = input
-    this.filterContainer.insertAdjacentElement('beforeend', input)
+
+    container.insertAdjacentElement('beforeend', input)
+    this.filterContainer.insertAdjacentElement('beforeend', container)
     input.addEventListener('keyup', this.filterChangeCallback)
   }
 
@@ -883,16 +914,16 @@ class Filters extends EventTarget {
     minField.addEventListener('keyup', () => {
       clearTimeout(debouncer)
       debouncer = setTimeout(() => {
-      container.noUiSlider.set([minField.value, null])
-      this.filterChangeCallback()
+        container.noUiSlider.set([minField.value, null])
+        this.filterChangeCallback()
       }, 500);
     })
 
     maxField.addEventListener('keyup', () => {
       clearTimeout(debouncer)
       debouncer = setTimeout(() => {
-      container.noUiSlider.set([null, maxField.value])
-      this.filterChangeCallback()
+        container.noUiSlider.set([null, maxField.value])
+        this.filterChangeCallback()
       }, 500);
     })
   }
@@ -1008,7 +1039,14 @@ class Filters extends EventTarget {
       if (f[1]?.tagName === 'INPUT' && f[1].type === 'text' && f[1].value.length > 0) {
         // Validate value against regex pattern if present
         if (! Object.hasOwn(this.filterDefs[f[0]], 'mask') || f[1].value.match(this.filterDefs[f[0]].mask) !== null) {
-          params[f[0]] = f[1].value
+          if (Object.hasOwn(this.filterDefs[f[0]], 'regex') && this.filterDefs[f[0]].regex === true) {
+            params[f[0]] = {
+              regex: f[1].dataset.regex === 'regex',
+              value: f[1].value
+            }
+          } else {
+            params[f[0]] = f[1].value
+          }
         }
       }
     })

@@ -135,13 +135,13 @@ html.show-covers-on-title-hover table a[style]::after {
     background-color: unset;
 }
 
-#filters {
+.sidebar .sidebar-content > div {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-.and-or-switch {
+.and-or-switch, .regex-switch {
 	padding: 0;
     width: 3.1rem;
 	margin-right: 0.3rem;
@@ -391,4 +391,8 @@ img[src="null"] {
 
 @keyframes l19 { 
     100%{transform: rotate(1turn)}
+}
+
+#alert-container:empty {
+    margin: 0;
 }

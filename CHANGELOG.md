@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2024-09-11
+- Added a RegEx switch for the title and name filters
 - Updated dependencies
   - vite from 5.3.3 to 5.3.4
 
