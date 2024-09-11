@@ -236,6 +236,380 @@ class Columns {
     'format'
   ]
 
+  private readonly columnDefs = {
+    title: {
+      name: 'title',
+      title: 'Romaji Title',
+      data: 'title',
+      render: (data: string, _type, row: Media) => {
+        const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+      }
+    },
+    titleEng: {
+      name: 'titleEng',
+      title: 'English Title',
+      data: 'titleEng',
+      render: (data: string, _type, row: Media) => {
+        const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + (data ?? row.title) + '</a>'
+      }
+    },
+    titleNat: {
+      name: 'titleNat',
+      title: 'Native Title',
+      data: 'titleNat',
+      render: (data: string, _type, row: Media) => {
+        const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+      }
+    },
+    rowNum: {
+      name: 'rowNum',
+      title: '#',
+      data: 'rowNum',
+      description: 'Shows the row number',
+      orderable: false
+    },
+    id: {
+      name: 'id',
+      title: 'ID',
+      data: 'id',
+      className: 'copy-me'
+    },
+    seasonYear: {
+      name: 'seasonYear',
+      title: 'Season/Year',
+      data: 'seasonYear'
+    },
+    season: {
+      name: 'season',
+      title: 'Season',
+      data: 'season'
+    },
+    year: {
+      name: 'year',
+      title: 'Year',
+      data: 'year'
+    },
+    airStart: {
+      name: 'airStart',
+      title: 'Started Airing',
+      data: 'airStart',
+    },
+    airEnd: {
+      name: 'airEnd',
+      title: 'Ended Airing',
+      data: 'airEnd',
+    },
+    airStatus: {
+      name: 'airStatus',
+      title: 'Airing Status',
+      data: 'airStatus',
+    },
+    score: {
+      name: 'score',
+      title: 'Score',
+      data: 'score'
+    },
+    format: {
+      name: 'format',
+      title: 'Format',
+      data: 'format',
+      render: (data: string | null) => data !== null ? data.charAt(0).toUpperCase() + data.slice(1) : null
+    },
+    country: {
+      name: 'country',
+      title: 'Country',
+      data: 'country'
+    },
+    genres: {
+      name: 'genres',
+      title: 'Genres',
+      data: 'genres',
+      render: (data: string[] | null) => data !== null ? data.join(', ') : null,
+      sortable: false
+    },
+    tags: {
+      name: 'tags',
+      title: 'Tags',
+      data: 'tags',
+      render: (data: MediaTag[]) => {
+        if (data === null) {
+          return data
+        }
+        const tags: string[] = []
+        data.forEach(t => tags.push(t.tag))
+        return tags.join(', ')
+      },
+      sortable: false
+    },
+    status: {
+      name: 'status',
+      title: 'Status',
+      data: 'status'
+    },
+    progress: {
+      name: 'progress',
+      title: 'Progress',
+      data: 'progress'
+    },
+    progressVolumes: {
+      name: 'progressVolumes',
+      title: 'Progress (Volumes)',
+      data: 'progressVolumes'
+    },
+    repeat: {
+      name: 'repeat',
+      title: 'Rewatches',
+      data: 'repeat'
+    },
+    started: {
+      name: 'started',
+      title: 'Started on',
+      data: 'started',
+      render: (data: string | null, _type, row: Media) => {
+        if (data === null) {
+          return null
+        } else {
+          let output = '<span title="Click to copy" class="copy-me">' + data + '</span>'
+          if (data > row.completed) {
+            output = this.warning.outerHTML + output
+          }
+          return output
+        }
+      }
+    },
+    completed: {
+      name: 'completed',
+      title: 'Completed on',
+      data: 'completed',
+      render: (data: string | null) => data === null ? null : '<span title="Click to copy" class="copy-me">' + data + '</span>'
+    },
+    daysSpent: {
+      name: 'daysSpent',
+      title: 'Days spent',
+      data: 'daysSpent',
+      description: 'Displays difference between start and completion date in days'
+    },
+    episodes: {
+      name: 'episodes',
+      title: 'Episodes',
+      buttonLabel: 'Episodes/Chapters',
+      data: 'episodes'
+    },
+    volumes: {
+      name: 'volumes',
+      title: 'Volumes',
+      data: 'volumes'
+    },
+    duration: {
+      name: 'duration',
+      title: 'Episode Length',
+      data: 'duration'
+    },
+    totalDuration: {
+      name: 'totalDuration',
+      title: 'Total Length',
+      data: 'totalDuration'
+    },
+    source: {
+      name: 'source',
+      title: 'Source',
+      data: 'source'
+    },
+    avgScore: {
+      name: 'avgScore',
+      title: 'Average Score',
+      data: 'avgScore'
+    },
+    meanScore: {
+      name: 'meanScore',
+      title: 'Mean Score',
+      data: 'meanScore'
+    },
+    popularity: {
+      name: 'popularity',
+      title: 'Popularity',
+      data: 'popularity'
+    },
+    favourites: {
+      name: 'favourites',
+      title: 'Favourites',
+      data: 'favourites'
+    },
+    studios: {
+      name: 'studios',
+      title: 'Studios',
+      data: 'studios',
+      render: (data: string[] | null) => data !== null ? data.join(', ') : null,
+      sortable: false
+    },
+    producers: {
+      name: 'producers',
+      title: 'Producers',
+      data: 'producers',
+      render: (data: string[] | null) => data !== null ? data.join(', ') : null,
+      sortable: false
+    },
+    statusCurrent: {
+      name: 'statusCurrent',
+      title: '# Current',
+      data: 'statusCurrent',
+      render: data => data ?? 0,
+      description: 'Displays how many people currently watch/read the media'
+    },
+    statusPlanning: {
+      name: 'statusPlanning',
+      title: '# Planning',
+      data: 'statusPlanning',
+      render: data => data ?? 0,
+      description: 'Displays how many people are planning to watch/read the media'
+    },
+    statusCompleted: {
+      name: 'statusCompleted',
+      title: '# Completed',
+      data: 'statusCompleted',
+      render: data => data ?? 0,
+      description: 'Displays how many people completed watching/reading the media'
+    },
+    statusDropped: {
+      name: 'statusDropped',
+      title: '# Dropped',
+      data: 'statusDropped',
+      render: data => data ?? 0,
+      description: 'Displays how many people dropped the media'
+    },
+    statusPaused: {
+      name: 'statusPaused',
+      title: '# Paused',
+      data: 'statusPaused',
+      render: data => data ?? 0,
+      description: 'Displays how many people paused watching/reading the media'
+    },
+    hasReview: {
+      name: 'hasReview',
+      title: 'Has review',
+      data: 'hasReview',
+      render: (data: number) => data === 1 ? '✓' : '✗'
+    },
+    notes: {
+      name: 'notes',
+      title: 'Notes',
+      data: 'notes',
+      description: 'Displays the user\'s notes on the media'
+    },
+    isAdult: {
+      name: 'isAdult',
+      title: 'R18',
+      description: 'Displays whether the media contains adult content or not',
+      data: 'isAdult',
+      render: (data: number) => data === 1 ? '✓' : '✗'
+    },
+    references: {
+      name: 'references',
+      title: '# References',
+      description: 'Displays how many references to the media exist in other lists of the user',
+      data: 'references',
+      render: (data: string[] | null) => data === null ? null : '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
+    },
+    activity: {
+      name: 'activity',
+      title: 'Activities',
+      description: 'Displays a button that shows a popup containing the user\'s activities for the media',
+      render: (_data, _type, row: Media) => '<a role="button" href="#activity-modal" data-id="' + row.id.toString() + '" class="btn btn-sm show-activity">Show Activity</button>'
+    },
+    code: {
+      name: 'code',
+      title: 'Challenge Code',
+      description: 'Displays a button that copies the link title, start and finish date for the media formatted for AWC challenges',
+      render: (_data, _type, row: Media) => '<button data-id="' + row.id.toString() + '" class="btn btn-sm copy-code">Copy Code</button>'
+    },
+    nameFirst: {
+      name: 'nameFirst',
+      title: 'First Name',
+      data: 'nameFirst',
+      render: (data: string, _type, row: CharacterStaff) => {
+        const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+      }
+    },
+    nameMiddle: {
+      name: 'nameMiddle',
+      title: 'Middle Name',
+      data: 'nameMiddle',
+    },
+    nameLast: {
+      name: 'nameLast',
+      title: 'Last Name',
+      data: 'nameLast',
+    },
+    nameFull: {
+      name: 'nameFull',
+      title: 'Full Name',
+      data: 'nameFull',
+      render: (data: string, _type, row: CharacterStaff) => {
+        const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+      }
+    },
+    nameNative: {
+      name: 'nameNative',
+      title: 'Native Name',
+      data: 'nameNative',
+      render: (data: string, _type, row: CharacterStaff) => {
+        const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+      }
+    },
+    description: {
+      name: 'description',
+      title: 'Description',
+      data: 'description',
+    },
+    gender: {
+      name: 'gender',
+      title: 'Gender',
+      data: 'gender',
+    },
+    dateOfBirth: {
+      name: 'dateOfBirth',
+      title: 'Birthday',
+      data: 'dateOfBirth',
+    },
+    dateOfDeath: {
+      name: 'dateOfDeath',
+      title: 'Deathday',
+      data: 'dateOfDeath',
+    },
+    bloodType: {
+      name: 'bloodType',
+      title: 'Blood Type',
+      data: 'bloodType',
+    },
+    homeTown: {
+      name: 'homeTown',
+      title: 'Home Town',
+      data: 'homeTown',
+    },
+    yearsActiveFrom: {
+      name: 'yearsActiveFrom',
+      title: 'Active From',
+      data: 'yearsActiveFrom'
+    },
+    yearsActiveUntil: {
+      name: 'yearsActiveUntil',
+      title: 'Active Until',
+      data: 'yearsActiveUntil'
+    },
+    appearances: {
+      name: 'appearances',
+      title: 'Appearances',
+      description: 'Displays the amount of appearances of this character in media',
+      data: 'appearances',
+    },
+  }
+
   constructor () {
     this.warning.classList.add('fa', 'fa-triangle-exclamation', 'text-danger')
     this.warning.title = 'Start date is after Completion date!'
@@ -253,7 +627,7 @@ class Columns {
       groupContainer.classList.add('d-flex', 'flex-wrap')
       groupContainer.style.gap = '0.5rem'
 
-      const colDefs = this.getColumnDefs()
+      const colDefs = this.columnDefs
 
       group[1].cols.forEach((col) => {
         const b: HTMLButtonElement = btn.cloneNode(true)
@@ -292,9 +666,9 @@ class Columns {
     })
   }
 
-  public getColumns = (mediaType): any[] => {
+  public readonly getColumns = (mediaType): any[] => {
     const cols = this.colMap[mediaType]
-    const columnDefs = this.getColumnDefs()
+    const columnDefs = this.columnDefs
     // Add 'visible' property to all column configs
     Object.keys(columnDefs).forEach((c) => {
       const btn = document.querySelector('.toggle-column[data-column="' + c + '"]')
@@ -303,394 +677,18 @@ class Columns {
       }
     })
 
+    if (cols.indexOf('episodes') > -1 && this.mediaTypeSelect.value === 'MANGA') {
+      columnDefs['episodes'].title = 'Chapters'
+    }
+
     const columns = []
     cols.forEach((k) => {
       if (Object.hasOwn(columnDefs, k)) {
-        let t = columnDefs[k]
-        if (t.name === 'episodes' && this.mediaTypeSelect.value === 'MANGA') {
-          t.title = 'Chapters'
-        }
-        columns.push(t)
+        columns.push(columnDefs[k])
       }
     })
 
     return columns
-  }
-
-  private readonly getColumnDefs = (): any => {
-    return {
-      title: {
-        name: 'title',
-        title: 'Romaji Title',
-        data: 'title',
-        render: (data: string, _type, row: Media) => {
-          const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
-        }
-      },
-      titleEng: {
-        name: 'titleEng',
-        title: 'English Title',
-        data: 'titleEng',
-        render: (data: string, _type, row: Media) => {
-          const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + (data ?? row.title) + '</a>'
-        }
-      },
-      titleNat: {
-        name: 'titleNat',
-        title: 'Native Title',
-        data: 'titleNat',
-        render: (data: string, _type, row: Media) => {
-          const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
-        }
-      },
-      rowNum: {
-        name: 'rowNum',
-        title: '#',
-        data: 'rowNum',
-        description: 'Shows the row number',
-        orderable: false
-      },
-      id: {
-        name: 'id',
-        title: 'ID',
-        data: 'id',
-        className: 'copy-me'
-      },
-      seasonYear: {
-        name: 'seasonYear',
-        title: 'Season/Year',
-        data: 'seasonYear'
-      },
-      season: {
-        name: 'season',
-        title: 'Season',
-        data: 'season'
-      },
-      year: {
-        name: 'year',
-        title: 'Year',
-        data: 'year'
-      },
-      airStart: {
-        name: 'airStart',
-        title: 'Started Airing',
-        data: 'airStart',
-      },
-      airEnd: {
-        name: 'airEnd',
-        title: 'Ended Airing',
-        data: 'airEnd',
-      },
-      airStatus: {
-        name: 'airStatus',
-        title: 'Airing Status',
-        data: 'airStatus',
-      },
-      score: {
-        name: 'score',
-        title: 'Score',
-        data: 'score'
-      },
-      format: {
-        name: 'format',
-        title: 'Format',
-        data: 'format',
-        render: (data: string | null) => data !== null ? data.charAt(0).toUpperCase() + data.slice(1) : null
-      },
-      country: {
-        name: 'country',
-        title: 'Country',
-        data: 'country'
-      },
-      genres: {
-        name: 'genres',
-        title: 'Genres',
-        data: 'genres',
-        render: (data: string[] | null) => data !== null ? data.join(', ') : null,
-        sortable: false
-      },
-      tags: {
-        name: 'tags',
-        title: 'Tags',
-        data: 'tags',
-        render: (data: MediaTag[]) => {
-          if (data === null) {
-            return data
-          }
-          const tags: string[] = []
-          data.forEach(t => tags.push(t.tag))
-          return tags.join(', ')
-        },
-        sortable: false
-      },
-      status: {
-        name: 'status',
-        title: 'Status',
-        data: 'status'
-      },
-      progress: {
-        name: 'progress',
-        title: 'Progress',
-        data: 'progress'
-      },
-      progressVolumes: {
-        name: 'progressVolumes',
-        title: 'Progress (Volumes)',
-        data: 'progressVolumes'
-      },
-      repeat: {
-        name: 'repeat',
-        title: 'Rewatches',
-        data: 'repeat'
-      },
-      started: {
-        name: 'started',
-        title: 'Started on',
-        data: 'started',
-        render: (data: string | null, _type, row: Media) => {
-          if (data === null) {
-            return null
-          } else {
-            let output = '<span title="Click to copy" class="copy-me">' + data + '</span>'
-            if (data > row.completed) {
-              output = this.warning.outerHTML + output
-            }
-            return output
-          }
-        }
-      },
-      completed: {
-        name: 'completed',
-        title: 'Completed on',
-        data: 'completed',
-        render: (data: string | null) => data === null ? null : '<span title="Click to copy" class="copy-me">' + data + '</span>'
-      },
-      daysSpent: {
-        name: 'daysSpent',
-        title: 'Days spent',
-        data: 'daysSpent',
-      description: 'Displays difference between start and completion date in days'
-      },
-      episodes: {
-        name: 'episodes',
-        title: 'Episodes',
-        buttonLabel: 'Episodes/Chapters',
-        data: 'episodes'
-      },
-      volumes: {
-        name: 'volumes',
-        title: 'Volumes',
-        data: 'volumes'
-      },
-      duration: {
-        name: 'duration',
-        title: 'Episode Length',
-        data: 'duration'
-      },
-      totalDuration: {
-        name: 'totalDuration',
-        title: 'Total Length',
-        data: 'totalDuration'
-      },
-      source: {
-        name: 'source',
-        title: 'Source',
-        data: 'source'
-      },
-      avgScore: {
-        name: 'avgScore',
-        title: 'Average Score',
-        data: 'avgScore'
-      },
-      meanScore: {
-        name: 'meanScore',
-        title: 'Mean Score',
-        data: 'meanScore'
-      },
-      popularity: {
-        name: 'popularity',
-        title: 'Popularity',
-        data: 'popularity'
-      },
-      favourites: {
-        name: 'favourites',
-        title: 'Favourites',
-        data: 'favourites'
-      },
-      studios: {
-        name: 'studios',
-        title: 'Studios',
-        data: 'studios',
-        render: (data: string[] | null) => data !== null ? data.join(', ') : null,
-        sortable: false
-      },
-      producers: {
-        name: 'producers',
-        title: 'Producers',
-        data: 'producers',
-        render: (data: string[] | null) => data !== null ? data.join(', ') : null,
-        sortable: false
-      },
-      statusCurrent: {
-        name: 'statusCurrent',
-        title: '# Current',
-        data: 'statusCurrent',
-      render: data => data ?? 0,
-      description: 'Displays how many people currently watch/read the media'
-      },
-      statusPlanning: {
-        name: 'statusPlanning',
-        title: '# Planning',
-        data: 'statusPlanning',
-      render: data => data ?? 0,
-      description: 'Displays how many people are planning to watch/read the media'
-      },
-      statusCompleted: {
-        name: 'statusCompleted',
-        title: '# Completed',
-        data: 'statusCompleted',
-      render: data => data ?? 0,
-      description: 'Displays how many people completed watching/reading the media'
-      },
-      statusDropped: {
-        name: 'statusDropped',
-        title: '# Dropped',
-        data: 'statusDropped',
-      render: data => data ?? 0,
-      description: 'Displays how many people dropped the media'
-      },
-      statusPaused: {
-        name: 'statusPaused',
-        title: '# Paused',
-        data: 'statusPaused',
-      render: data => data ?? 0,
-      description: 'Displays how many people paused watching/reading the media'
-      },
-      hasReview: {
-        name: 'hasReview',
-        title: 'Has review',
-        data: 'hasReview',
-        render: (data: number) => data === 1 ? '✓' : '✗'
-      },
-      notes: {
-        name: 'notes',
-        title: 'Notes',
-      data: 'notes',
-      description: 'Displays the user\'s notes on the media'
-      },
-      isAdult: {
-        name: 'isAdult',
-        title: 'R18',
-        description: 'Displays whether the media contains adult content or not',
-        data: 'isAdult',
-        render: (data: number) => data === 1 ? '✓' : '✗'
-      },
-      references: {
-        name: 'references',
-        title: '# References',
-        description: 'Displays how many references to the media exist in other lists of the user',
-        data: 'references',
-        render: (data: string[] | null) => data === null ? null : '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
-      },
-      activity: {
-        name: 'activity',
-        title: 'Activities',
-        description: 'Displays a button that shows a popup containing the user\'s activities for the media',
-        render: (_data, _type, row: Media) => '<a role="button" href="#activity-modal" data-id="' + row.id.toString() + '" class="btn btn-sm show-activity">Show Activity</button>'
-      },
-      code: {
-        name: 'code',
-        title: 'Challenge Code',
-        description: 'Displays a button that copies the link title, start and finish date for the media formatted for AWC challenges',
-        render: (_data, _type, row: Media) => '<button data-id="' + row.id.toString() + '" class="btn btn-sm copy-code">Copy Code</button>'
-      },
-      nameFirst: {
-        name: 'nameFirst',
-        title: 'First Name',
-        data: 'nameFirst',
-        render: (data: string, _type, row: CharacterStaff) => {
-          const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
-        }
-      },
-      nameMiddle: {
-        name: 'nameMiddle',
-        title: 'Middle Name',
-        data: 'nameMiddle',
-      },
-      nameLast: {
-        name: 'nameLast',
-        title: 'Last Name',
-        data: 'nameLast',
-      },
-      nameFull: {
-        name: 'nameFull',
-        title: 'Full Name',
-        data: 'nameFull',
-        render: (data: string, _type, row: CharacterStaff) => {
-          const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-          return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
-        }
-      },
-      nameNative: {
-        name: 'nameNative',
-        title: 'Native Name',
-        data: 'nameNative',
-      render: (data: string, _type, row: CharacterStaff) => {
-        const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
-      }
-      },
-      description: {
-        name: 'description',
-        title: 'Description',
-        data: 'description',
-      },
-      gender: {
-        name: 'gender',
-        title: 'Gender',
-        data: 'gender',
-      },
-      dateOfBirth: {
-        name: 'dateOfBirth',
-        title: 'Birthday',
-        data: 'dateOfBirth',
-      },
-      dateOfDeath: {
-        name: 'dateOfDeath',
-        title: 'Deathday',
-        data: 'dateOfDeath',
-      },
-      bloodType: {
-        name: 'bloodType',
-        title: 'Blood Type',
-        data: 'bloodType',
-      },
-      homeTown: {
-        name: 'homeTown',
-        title: 'Home Town',
-        data: 'homeTown',
-      },
-      yearsActiveFrom: {
-        name: 'yearsActiveFrom',
-        title: 'Active From',
-        data: 'yearsActiveFrom'
-      },
-      yearsActiveUntil: {
-        name: 'yearsActiveUntil',
-        title: 'Active Until',
-        data: 'yearsActiveUntil'
-      },
-      appearances: {
-        name: 'appearances',
-        title: 'Appearances',
-        description: 'Displays the amount of appearances of this character in media',
-        data: 'appearances',
-      },
-    }
   }
 }
 
