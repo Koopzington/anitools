@@ -106,6 +106,12 @@ interface ALActivity {
   }
 }
 
+interface Staff {
+  id: number
+  name: string
+  role: string
+}
+
 interface ALUserInfo {
   id: number
   name: string

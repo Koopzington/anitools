@@ -617,7 +617,7 @@ class Mapper implements Tool {
     const startDate = [alEntry.start_date_y, alEntry.start_date_m, alEntry.start_date_d].filter(Boolean).join('-')
     this.curYearRegex = new RegExp(alEntry.start_date_y)
     this.curStaffRegex = []
-    let staff: string[] = []
+    let staff: Staff[] = []
     alEntry.authors.forEach((author) => {
       // Remove superfluous spaces, just in case
       author.name_last = author.name_last !== null ? author.name_last.trim() : null
@@ -629,10 +629,12 @@ class Mapper implements Tool {
       regName = regName.replaceAll(/uu?/g, 'uu?').replaceAll(/ou?/g, 'ou?')
 
       this.curStaffRegex.push(new RegExp('(' + regName + ')|(' + regName.split(' ').reverse().join(' ') + ')', 'gi'))
-      if (author.role !== null) {
-        name += ' (' + author.role + ')'
-      }
-      staff.push(name)
+
+      staff.push({
+        id: author.id,
+        name: name,
+        role: author.role
+      })
     });
 
     let mediacard = this.getCard(
@@ -696,14 +698,18 @@ class Mapper implements Tool {
   }
 
   private readonly getSuggestionCard = (suggestion: MapperSuggestion) => {
-    let authors: Array<string> = []
+    let staff: Staff[] = []
     suggestion.authors.forEach((author) => {
       // If the last name is all uppercase, make it normal
       let exp = author.name.split(' ')
       if (exp.length > 1 && exp[0].split('').filter(a => a === a.toLowerCase()).length === 0) {
         author.name = exp[0][0] + exp[0].substring(1).toLowerCase() + ' ' + exp[1]
       }
-      authors.push(author.name + ' (' + author.type + ')')
+      staff.push({
+        id: author.author_id,
+        name: author.name,
+        role: author.type,
+      });
     });
     let title: string = suggestion.titles.shift()!
     let nativeRegex: RegExp = this.japaneseRegex
@@ -726,7 +732,7 @@ class Mapper implements Tool {
       suggestion.type,
       suggestion.original_status,
       suggestion.year,
-      authors,
+      staff,
       suggestion.description,
       suggestion.score,
       suggestion.voters
@@ -781,7 +787,7 @@ class Mapper implements Tool {
     type: string,
     status: string,
     release: string,
-    authors: string[] = [],
+    authors: Staff[] = [],
     description: string | null = null,
     score: number | null = null,
     voters: string[] | null = null
@@ -792,7 +798,24 @@ class Mapper implements Tool {
     mediacard.querySelector('.type')!.innerText = type
     mediacard.querySelector('.status')!.innerHTML = status
     mediacard.querySelector('.release')!.innerText = release
-    mediacard.querySelector('.author')!.innerHTML = authors.join('<br>\n')
+    let authorList: string[] = [];
+    authors.forEach((author) => {
+      // TODO: Maybe finde a better way to differentiate between AL and MU staff
+      let link = ''
+      if (score === null) {
+        link = 'https://anilist.co/staff/' + author.id
+      } else {
+        link = 'https://www.mangaupdates.com/authors.html?id=' + author.id
+      }
+
+      let label = author.name
+      if (author.role !== null) {
+        label += ' (' + author.role + ')'
+      }
+
+      authorList.push('<a href="' + link + '">' + label + '</a>')
+    });
+    mediacard.querySelector('.author')!.innerHTML = authorList.join('<br>\n')
     mediacard.querySelector('.other-titles')!.innerHTML = '<span>' + otherTitles.join('</span><span>') + '</span>'
     if (description !== "" && description !== null) {
       mediacard.querySelector('.description')!.innerHTML = description

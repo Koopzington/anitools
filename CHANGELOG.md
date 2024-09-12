@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-09-12
+- Staff in the Mapper is now directly linked for more convenience
+
 ## 2024-09-11
 - Added a RegEx switch for the title and name filters
 - Updated dependencies
