@@ -27,7 +27,7 @@
     "@yaireo/tagify": "^4.27",
     "datatables.net": "^2.0",
     "datatables.net-colreorder": "^2.0",
-    "datatables.net-dt": "^2.0",
+    "datatables.net-dt": "^2.1",
     "halfmoon": "^1.1.1",
     "inputmask": "^5.0",
     "jquery": "^3.7",
