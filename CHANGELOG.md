@@ -1,12 +1,21 @@
 # Changelog
 
+## 2024-09-27
+- Use selfsigned SSL certs for development environments
+- Updated dependencies
+  - vite from 5.4.4 to 5.4.7
+  - datatables.net from 2.1.6 to 2.1.7
+  - datatables.net-dt from 2.1.6 to 2.1.7
+  - @fontsource-variable/inter from 5.0.21 to 5.1.0
+  - standard from 17.1.0 to 17.1.2
+
 ## 2024-09-12
 - Staff in the Mapper is now directly linked for more convenience
 
 ## 2024-09-11
 - Added a RegEx switch for the title and name filters
 - Updated dependencies
-  - vite from 5.3.3 to 5.3.4
+  - vite from 5.3.3 to 5.4.4
 
 ## 2024-09-10
 - Debounce inputs for sliders to improve user experience while entering numbers
