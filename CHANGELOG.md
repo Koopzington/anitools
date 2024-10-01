@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-10-01
+- Add support for ranges in the year filter
+
 ## 2024-09-27
 - Use selfsigned SSL certs for development environments
 - Updated dependencies

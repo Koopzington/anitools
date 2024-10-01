@@ -394,6 +394,8 @@ class Filters extends EventTarget {
   private abortController: AbortController | undefined
   // We cache tags on initialization so the user can switch between grouped and non-grouped mode on the filter
   private tagCache: Object
+  // We cache years on initialization so the user can switch between single years and year ranges on the filter
+  private yearCache: Object
 
   constructor (anitools: AniTools, settings: Settings) {
     super()
@@ -642,7 +644,9 @@ class Filters extends EventTarget {
         this.filters.season.whitelist = filterValues.season.map((v) => { return {value: v, text: v}})
       }
       if (this.filters.year !== undefined) {
-        this.filters.year.whitelist = filterValues.season_year.map((v) => { return {value: v, text: v}})
+        let values = filterValues.season_year.map((v) => { return {value: v, text: v}})
+        this.filters.year.whitelist = values
+        this.yearCache = values
       }
       if (this.filters.source !== undefined) {
         this.filters.source.whitelist = filterValues.source.map((v) => { return {value: v, text: v}})
@@ -747,7 +751,13 @@ class Filters extends EventTarget {
   }
 
   // Function to add a Tagify type filter
-  private readonly addTagify = (col: string, label: string, urlOrData: string[] | string, logic: string, experimental: boolean) => {
+  private readonly addTagify = (
+    col: string,
+    label: string,
+    urlOrData: string[] | string,
+    logic: string,
+    experimental: boolean
+  ) => {
     const container = document.createElement('div')
     const field = document.createElement('input')
     field.setAttribute('placeholder', label)
@@ -824,7 +834,32 @@ class Filters extends EventTarget {
 
       tagify.on('input', (e) => {
         tagifyInputHandler(e.detail.tagify.state.inputText)
-      })    
+      })
+      // Ideally this shouldn't be here but it's the only usecase
+    } else if (col === 'year') {
+      const tagifyInputHandler = (value: string) => {
+        if (value.indexOf('-') === -1) {
+          this.filters.year.whitelist = this.yearCache
+          this.filters.year.dropdown.show(value)
+          return
+        }
+        const split = value.split('-').map(parseInt)
+        let newWhitelist: TagifyValue[] = [];
+        this.yearCache.forEach(element => {
+          if (element.value > split[0]) {
+            newWhitelist.push({
+              value: split[0] + '-' + element.value,
+              label: split[0] + '-' + element.value,
+            })
+          }
+        });
+        this.filters.year.whitelist = newWhitelist
+        this.filters.year.dropdown.show(value)
+      }
+
+      tagify.on('input', (e) => {
+        tagifyInputHandler(e.detail.tagify.state.inputText)
+      })
     }
 
     tagify.on('click', (e) => {
