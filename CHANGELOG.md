@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-10-20
+- Updated URL format for MangaUpdates links on the Mapper
+
 ## 2024-10-01
 - Add support for ranges in the year filter
 

@@ -425,7 +425,7 @@ class Mapper implements Tool {
             let output: string[] = []
             data.forEach((muEntry) => {
               const coverData = muEntry.cover ? '<img loading="lazy" src="' + muEntry.cover + '">' : ''
-              output.push('<a target="_blank" href="https://mangaupdates.com/series.html?id=' + muEntry.id.toString() + '">' + coverData + muEntry.titles[0] + '</a>')
+              output.push('<a target="_blank" href="https://mangaupdates.com/series/' + muEntry.id.toString(36) + '">' + coverData + muEntry.titles[0] + '</a>')
             })
 
             return output.join('<br>')
@@ -443,7 +443,7 @@ class Mapper implements Tool {
             let output: string[] = []
             data.forEach((muEntry) => {
               const coverData = muEntry.cover ? '<img loading="lazy" src="' + muEntry.cover + '">' : ''
-              output.push('<a target="_blank" href="https://mangaupdates.com/series.html?id=' + muEntry.id.toString() + '">' + coverData + muEntry.titles[0] + '</a>')
+              output.push('<a target="_blank" href="https://mangaupdates.com/series/' + muEntry.id.toString(36) + '">' + coverData + muEntry.titles[0] + '</a>')
             })
 
             return output.join('<br>')
@@ -726,7 +726,7 @@ class Mapper implements Tool {
     }).shift();
     delete suggestion.titles[nativeTitle]
     let card = this.getCard(
-      '<a target="_blank" href="https://mangaupdates.com/series.html?id=' + suggestion.id + '">' + title + '<br>(' + nativeTitle + ')</a>',
+      '<a target="_blank" href="https://mangaupdates.com/series/' + suggestion.id.toString(36) + '">' + title + '<br>(' + nativeTitle + ')</a>',
       suggestion.titles,
       suggestion.cover,
       suggestion.type,
@@ -805,7 +805,7 @@ class Mapper implements Tool {
       if (score === null) {
         link = 'https://anilist.co/staff/' + author.id
       } else {
-        link = 'https://www.mangaupdates.com/authors.html?id=' + author.id
+        link = 'https://www.mangaupdates.com/author/' + author.id.toString(36)
       }
 
       let label = author.name
