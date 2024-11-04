@@ -25,6 +25,7 @@ class Columns {
       'tags',
       'status',
       'progress',
+      'remaining',
       'repeat',
       'started',
       'completed',
@@ -70,6 +71,7 @@ class Columns {
       'tags',
       'status',
       'progress',
+      'remaining',
       'progressVolumes',
       'repeat',
       'started',
@@ -213,6 +215,7 @@ class Columns {
       cols: [
         'status',
         'progress',
+        'remaining',
         'progressVolumes',
         'repeat',
         'started',
@@ -358,6 +361,12 @@ class Columns {
       name: 'progressVolumes',
       title: 'Progress (Volumes)',
       data: 'progressVolumes'
+    },
+    remaining: {
+      name: 'remaining',
+      title: 'Remaining',
+      data: 'remaining',
+      description: 'Remaining episodes/chapters'
     },
     repeat: {
       name: 'repeat',

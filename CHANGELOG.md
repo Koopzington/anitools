@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-11-04
+- Added new column showing the remaining episodes/chapters (so the opposite of Progress)
+
 ## 2024-10-20
 - Updated URL format for MangaUpdates links on the Mapper
 
