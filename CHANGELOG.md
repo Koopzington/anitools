@@ -2,6 +2,13 @@
 
 ## 2024-11-04
 - Added new column showing the remaining episodes/chapters (so the opposite of Progress)
+- Updated dependencies
+  - vite from 5.4.7 to 5.4.10
+  - stylelint from 16.9.0 to 16.10.0
+  - datatables.net from 2.1.7 to 2.1.8
+  - datatables.net-dt from 2.1.7 to 2.1.8
+  - @yaireo/tagify from 4.27.0 to 4.31.6
+  - marked from 14.1.2 to 14.1.3
 
 ## 2024-10-20
 - Updated URL format for MangaUpdates links on the Mapper
