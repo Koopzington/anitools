@@ -485,32 +485,56 @@ class Filters extends EventTarget {
       this.abortController && this.abortController.abort()
       this.abortController = new AbortController()
 
+      let forceReload = ''
+      if (document.querySelector('#load')!.classList.contains('btn-secondary')) {
+        document.querySelector('#load')!.classList.remove('btn-secondary')
+        document.querySelector('#load')!.title = ''
+        forceReload = '&force_reload=true'
+      }
+
+      let response
       try {
-        const response = await this.AniTools.fetch(
-          '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value,
+        response = await this.AniTools.fetch(
+          '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value + forceReload,
           { signal: this.abortController.signal }
         )
-
-        const data: UserList[] = await handleResponse(response);
-
-        data.forEach(function (list) {
-          lists.push({
-            label: list.name,
-            value: list.id,
-            customProperties: {
-              completion: Object.hasOwn(list, 'amount_completed')
-                ? ' (' + list.amount_completed.toString() + '/' + list.amount_total.toString() + ') ' + Math.floor(list.amount_completed / list.amount_total * 100).toString() + '%'
-                : ' (' + list.amount_total.toString() + ')'
-            }
-          })
-        }, this)
-
-        // Reindex array and filter out empty lists
-        lists = [...lists].sort(undefined).filter(a => a)
       } catch (error) {
         this.abortController = undefined
         return
       }
+
+      const json = await response.json()
+
+      if (Object.hasOwn(json, 'error')) {
+        json.error.forEach((e) => {
+          this.AniTools.alert(e.message)
+        })
+      }
+      if (Object.hasOwn(json, 'warnings')) {
+        json.warnings.forEach((e) => {
+          this.AniTools.alert(e.message, 'warning')
+          if (Object.hasOwn(e, 'type') && e.type === 'timeout') {
+            document.querySelector('#load')!.classList.add('btn-secondary')
+            document.querySelector('#load')!.title = 'Force reloading may take a bit of time.'
+          }
+        })
+      }
+      const data: UserList[] = json.data
+
+      data.forEach(function (list) {
+        lists.push({
+          label: list.name,
+          value: list.id,
+          customProperties: {
+            completion: Object.hasOwn(list, 'amount_completed')
+              ? ' (' + list.amount_completed.toString() + '/' + list.amount_total.toString() + ') ' + Math.floor(list.amount_completed / list.amount_total * 100).toString() + '%'
+              : ' (' + list.amount_total.toString() + ')'
+          }
+        })
+      }, this)
+
+      // Reindex array and filter out empty lists
+      lists = [...lists].sort(undefined).filter(a => a)
     }
 
     this.filterMap[filterSet].forEach((filterName: string) => {

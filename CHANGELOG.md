@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-11-18
+- Implemented the possibility to work with the last fetched lists of a user if they don't want to wait for AL's API to become more stable
+
 ## 2024-11-04
 - Added new column showing the remaining episodes/chapters (so the opposite of Progress)
 - Updated dependencies
