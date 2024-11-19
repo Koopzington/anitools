@@ -31,7 +31,7 @@
     "halfmoon": "^1.1.1",
     "inputmask": "^5.0",
     "jquery": "^3.7",
-    "marked": "^14.1",
+    "marked": "^15.0",
     "nouislider": "^15.8",
     "wnumb": "^1.2"
   },
