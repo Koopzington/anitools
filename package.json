@@ -43,6 +43,6 @@
     "stylelint": "^16.10",
     "stylelint-config-standard": "^36.0",
     "ts-standard": "^12.0",
-    "vite": "^5.4"
+    "vite": "^6.0"
   }
 }
