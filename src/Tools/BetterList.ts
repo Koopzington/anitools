@@ -25,6 +25,7 @@ class BetterList implements Tool {
   private copyLinkHandler: EventListener | undefined
   private copyCodeHandler: EventListener | undefined
   private activityButtonHandler: EventListener | undefined
+  private spoilerHandler: EventListener | undefined
   private debouncer: number
   private curUserInfo: ALUserInfo | undefined
   private abortController: AbortController
@@ -46,6 +47,10 @@ class BetterList implements Tool {
     col.visible(!col.visible())
     // We need to reload the page because previously invisible data might not be present now
     this.updateTable()
+  }
+
+  private readonly spoilerEventListener: EventListener = (ev): void => {
+    ev.target!.classList.remove('spoiler')
   }
 
   private readonly request = async (): Promise<void> => {
@@ -85,6 +90,8 @@ class BetterList implements Tool {
 
     this.activityButtonHandler = on('#table', 'click', '.show-activity', this.activityButtonEventListener)
 
+    this.spoilerHandler = on('#table', 'click', '.spoiler', this.spoilerEventListener)
+
     // Column filters
     this.Filters.addEventListener('filter-changed', this.filterChangeHandler)
 
@@ -103,6 +110,8 @@ class BetterList implements Tool {
     delete this.copyCodeHandler
     document.querySelector('#table')!.removeEventListener('click', this.activityButtonHandler!)
     delete this.activityButtonHandler
+    document.querySelector('#table')!.removeEventListener('click', this.spoilerEventListener!)
+    delete this.spoilerHandler
     if (this.table !== undefined) {
       this.table.destroy()
       this.table = undefined

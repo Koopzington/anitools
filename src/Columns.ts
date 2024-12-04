@@ -103,6 +103,8 @@ class Columns {
       'nameLast',
       'nameFull',
       'nameNative',
+      'nameAlternatives',
+      'nameAlternativesSpoiler',
       'id',
       //'description',
       'gender',
@@ -118,6 +120,7 @@ class Columns {
       'nameLast',
       'nameFull',
       'nameNative',
+      'nameAlternatives',
       'id',
       //'description',
       'homeTown',
@@ -194,6 +197,8 @@ class Columns {
         'nameLast',
         'nameFull',
         'nameNative',
+        'nameAlternatives',
+        'nameAlternativesSpoiler',
         'description',
         'gender',
         'dateOfBirth',
@@ -570,6 +575,20 @@ class Columns {
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
         return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
+    },
+    nameAlternatives: {
+      name: 'nameAlternatives',
+      title: 'Alternative Names',
+      data: 'nameAlternatives',
+      render: (data: string[] | null) => data !== null ? data.join(', ') : null,
+      sortable: false
+    },
+    nameAlternativesSpoiler: {
+      name: 'nameAlternativesSpoiler',
+      title: 'Alternative Spoiler Names',
+      data: 'nameAlternativesSpoiler',
+      render: (data: string[] | null) => data !== null ? '<span class="spoiler">' + data.join('</span>, <span class="spoiler">') + '</span>' : null,
+      sortable: false
     },
     description: {
       name: 'description',
