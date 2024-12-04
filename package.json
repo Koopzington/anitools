@@ -22,27 +22,27 @@
   ],
   "dependencies": {
     "@fontsource-variable/inter": "^5.1",
-    "@fortawesome/fontawesome-free": "^6.5",
+    "@fortawesome/fontawesome-free": "^6.7",
     "@popperjs/core": "^2.11",
-    "@yaireo/tagify": "^4.27",
+    "@yaireo/tagify": "^4.32",
     "datatables.net": "^2.1",
     "datatables.net-colreorder": "^2.0",
     "datatables.net-dt": "^2.1",
     "halfmoon": "^1.1.1",
     "inputmask": "^5.0",
     "jquery": "^3.7",
-    "marked": "^14.1",
+    "marked": "^15.0",
     "nouislider": "^15.8",
     "wnumb": "^1.2"
   },
   "devDependencies": {
     "@types/wnumb": "^1.2",
-    "@vitejs/plugin-basic-ssl": "^1.1.0",
+    "@vitejs/plugin-basic-ssl": "^1.2.0",
     "htmlhint": "^1.1",
     "standard": "^17.1",
     "stylelint": "^16.10",
     "stylelint-config-standard": "^36.0",
     "ts-standard": "^12.0",
-    "vite": "^5.4"
+    "vite": "^6.0"
   }
 }

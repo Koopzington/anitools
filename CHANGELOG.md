@@ -2,6 +2,12 @@
 
 ## 2024-12-04
 - New columns for alternative names of characters and staff as well as spoiler names for characters have been added
+- Updated dependencies
+  - vite from 5.4.10 to 6.0.2
+  - marked from 14.1.3 to 15.0.3
+  - @vitejs/plugin-basic-ssl from 1.1.0 to 1.2.0
+  - @fortawesome/fontawesome-free from 6.6.0 to 6.7.1
+  - @yaireo/tagify from 4.31.6 to 4.32.1
 
 ## 2024-12-03
 - The values for the filters Format, Source, Country, Airing Status, Season and Season Year now support exclusion mode
