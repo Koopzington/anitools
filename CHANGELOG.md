@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-12-03
+- The values for the filters Format, Source, Country, Airing Status, Season and Season Year now support exclusion mode.
+
 ## 2024-11-18
 - Implemented the possibility to work with the last fetched lists of a user if they don't want to wait for AL's API to become more stable
 

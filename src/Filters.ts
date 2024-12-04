@@ -887,11 +887,9 @@ class Filters extends EventTarget {
     }
 
     tagify.on('click', (e) => {
-      if (this.filterDefs[col].logic === 'AND') {
-        const {tag:tagElm, data:tagData} = e.detail;
-        tagData.exclude = tagData.exclude !== true
-        tagify.replaceTag(tagElm, tagData)
-      }
+      const {tag:tagElm, data:tagData} = e.detail;
+      tagData.exclude = tagData.exclude !== true
+      tagify.replaceTag(tagElm, tagData)
     })
 
     this.filters[col] = tagify
