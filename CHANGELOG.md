@@ -1,5 +1,10 @@
 # Changelog
 
+## 2024-12-09
+- Updated dependencies
+  - vite from 6.0.2 to 6.0.3
+  - @yaireo/tagify from 4.32.1 to 4.32.2 (Dropdowns no longer stay open)
+
 ## 2024-12-04
 - New columns for alternative names of characters and staff as well as spoiler names for characters have been added
 - Updated dependencies
