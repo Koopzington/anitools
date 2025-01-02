@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-01-02
+- Add a tooltip next to the year filter to inform about the hidden range selection
+
 ## 2024-12-09
 - Updated dependencies
   - vite from 6.0.2 to 6.0.3

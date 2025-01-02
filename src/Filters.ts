@@ -16,6 +16,7 @@ class Filters extends EventTarget {
   private readonly andOrSwitch: HTMLButtonElement = document.createElement('button')
   private readonly regexSwitch: HTMLButtonElement = document.createElement('button')
   private readonly dateMask = '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$'
+  private readonly mangaUpdatesWarning = 'Experimental (Only a third of AL manga is currently covered with data for this)'
 
   private readonly filterMap = {
     MAPPER: [
@@ -204,6 +205,7 @@ class Filters extends EventTarget {
       logic: 'OR',
       label: 'Season Year',
       urlOrData: [],
+      tooltip: 'For easy range selection you can enter them like "2010-2015"',
     },
     externalLink: {
       type: 'tagify',
@@ -274,19 +276,19 @@ class Filters extends EventTarget {
       logic: 'AND',
       label: 'Publisher',
       urlOrData: '/searchForFilter/muPublisher',
-      experimental: true,
+      tooltip: this.mangaUpdatesWarning,
     },
     muPublication: {
       type: 'tagify',
       logic: 'AND',
       label: 'Publication',
       urlOrData: '/searchForFilter/muPublication',
-      experimental: true,
+      tooltip: this.mangaUpdatesWarning,
     },
     onlyScanlated: {
       type: 'checkbox',
       label: 'Only fully scanlated',
-      experimental: true,
+      tooltip: this.mangaUpdatesWarning,
     },
     nameLike: {
       type: 'text',
@@ -541,13 +543,13 @@ class Filters extends EventTarget {
       const filterDef = this.filterDefs[filterName]
       switch (filterDef.type) {
         case 'text':
-          this.addText(filterName, filterDef.label, filterDef.mask ?? null, filterDef.regex ?? false)
+          this.addText(filterName, filterDef)
           break;
         case 'tagify':
-          this.addTagify(filterName, filterDef.label, filterDef.urlOrData, filterDef.logic, filterDef.experimental ?? false)
+          this.addTagify(filterName, filterDef)
           break;
         case 'checkbox':
-          this.addCheckbox(filterName, filterDef.label, filterDef.experimental ?? false)
+          this.addCheckbox(filterName, filterDef)
           break;
         case 'range':
           // Switch labels for the Episodes filter depending on media type
@@ -558,7 +560,7 @@ class Filters extends EventTarget {
             filterDef.label = 'Episodes'
           }
 
-          this.addRange(filterName, filterDef.label, filterDef.experimental ?? false)
+          this.addRange(filterName, filterDef)
           break;
         case 'userList':
           if (this.userNameField.value.length === 0 || lists.length === 0) {
@@ -747,18 +749,19 @@ class Filters extends EventTarget {
     this.filterChangeCallback()
   }
 
-  private readonly addText = (col: string, label: string, mask: string | null = null, regex: boolean) => {
+  private readonly addText = (col: string, filterDef: FilterDefinition) => {
     const container = document.createElement('div')
     const input = document.createElement('input')
     input.classList.add('column-filter', 'form-control')
     input.dataset.column = col
-    input.placeholder = label
+    input.placeholder = filterDef.label
 
-    if (mask !== null) {
-      Inputmask({ regex: mask }).mask(input)
+    if (Object.hasOwn(filterDef, 'mask') && filterDef.mask !== null) {
+      Inputmask({ regex: filterDef.mask }).mask(input)
     }
 
-    if (regex) {
+    // Add a button to switch to regex mode if the filter supports it
+    if (Object.hasOwn(filterDef, 'regex') && filterDef.regex === true) {
       container.classList.add('d-flex')
       const regexSwitch: HTMLButtonElement = this.regexSwitch.cloneNode(true)
       regexSwitch.dataset.filter = col
@@ -775,21 +778,15 @@ class Filters extends EventTarget {
   }
 
   // Function to add a Tagify type filter
-  private readonly addTagify = (
-    col: string,
-    label: string,
-    urlOrData: string[] | string,
-    logic: string,
-    experimental: boolean
-  ) => {
+  private readonly addTagify = (col: string, filterDef: FilterDefinition) => {
     const container = document.createElement('div')
     const field = document.createElement('input')
-    field.setAttribute('placeholder', label)
+    field.setAttribute('placeholder', filterDef.label)
     field.classList.add('column-filter', 'form-control')
-    field.dataset.logic = logic
+    field.dataset.logic = filterDef.logic
     field.addEventListener('change', this.filterChangeCallback)
     container.insertAdjacentElement('beforeend', field)
-    if (logic === 'AND') {
+    if (filterDef.logic === 'AND') {
       container.classList.add('d-flex')
       const logicSwitch: HTMLButtonElement = this.andOrSwitch.cloneNode(true)
       logicSwitch.dataset.filter = col
@@ -797,34 +794,36 @@ class Filters extends EventTarget {
       container.insertAdjacentElement('afterbegin', logicSwitch)
     }
     this.filterContainer.insertAdjacentElement('beforeend', container)
-    if (experimental === true) {
+
+    if (Object.hasOwn(filterDef, 'tooltip') && filterDef.tooltip.length > 0) {
       container.style.display = 'flex'
       container.style.gap = '0.25em'
-      const warning = document.querySelector('#mangaupdates-warning').content.firstElementChild.cloneNode(true)
-      container.insertAdjacentElement('beforeend', warning)
+      const info = document.querySelector('#filter-info').content.firstElementChild.cloneNode(true)
+      info.dataset.title = filterDef.tooltip
+      container.insertAdjacentElement('beforeend', info)
     }
 
-    const tagify: Tagify = new Tagify(field, {
-      enforceWhitelist: true,
+    const options = {
       whitelist: [],
       tagTextProp: 'text',
       pasteAsTags: false,
       editTags: false,
       dropdown: {
         maxItems: Infinity,
-        enabled: typeof urlOrData === 'string' ? 1 : 0,
+        enabled: typeof filterDef.urlOrData === 'string' ? 1 : 0,
         searchKeys: ['value', 'text'],
         mapValueTo: 'text',
         highlightFirst: true,
-        closeOnSelect: typeof urlOrData === 'string'
+        closeOnSelect: typeof filterDef.urlOrData === 'string'
       },
       transformTag: (tagData) => {
         tagData.exclude = false
       }
-    })
+    }
+    const tagify: Tagify = new Tagify(field, options)
 
     // We received an URL for fetching tags remotely
-    if (typeof urlOrData === 'string') {
+    if (typeof filterDef.urlOrData === 'string') {
       // Trigger the InputHandler when somebody pastes into the field
       tagify.settings.hooks.beforePaste = async function (_tagify, pastedText) {
         // It wants a promise? It get's a promise
@@ -847,7 +846,7 @@ class Filters extends EventTarget {
           tagify.loading(false)
           return
         }
-        this.AniTools.fetch(urlOrData + '?q=' + value, { signal: controller.signal })
+        this.AniTools.fetch(filterDef.urlOrData + '?q=' + value, { signal: controller.signal })
           .then(async response => await response.json())
           .then((newWhitelist) => {
             tagify.whitelist = newWhitelist // update whitelist Array in-place
@@ -895,12 +894,12 @@ class Filters extends EventTarget {
     this.filters[col] = tagify
   }
 
-  private readonly addCheckbox = (col: string, label: string, experimental: boolean): void => {
+  private readonly addCheckbox = (col: string, filterDef: FilterDefinition): void => {
     const cswitch = document.createElement('div')
     cswitch.classList.add('custom-switch')
     const labelElement: HTMLLabelElement = document.createElement('label')
     labelElement.htmlFor = col
-    labelElement.innerHTML = label
+    labelElement.innerHTML = filterDef.label
     const field = document.createElement('input')
     field.type = 'checkbox'
     field.id = col
@@ -909,11 +908,12 @@ class Filters extends EventTarget {
     cswitch.insertAdjacentElement('beforeend', field)
     cswitch.insertAdjacentElement('beforeend', labelElement)
 
-    if (experimental === true) {
+    if (Object.hasOwn(filterDef, 'tooltip') && filterDef.tooltip.length > 0) {
       cswitch.style.display = 'flex'
       cswitch.style.gap = '0.25em'
-      const warning = document.querySelector('#mangaupdates-warning').content.firstElementChild.cloneNode(true)
-      cswitch.insertAdjacentElement('beforeend', warning)
+      const info = document.querySelector('#filter-info').content.firstElementChild.cloneNode(true)
+      info.dataset.title = filterDef.tooltip
+      cswitch.insertAdjacentElement('beforeend', info)
     }
 
     this.filters[col] = field
@@ -921,13 +921,13 @@ class Filters extends EventTarget {
     this.filterContainer.insertAdjacentElement('beforeend', cswitch)
   }
 
-  private readonly addRange = (col: string, label: string, experimental: boolean): void => {
+  private readonly addRange = (col: string, filterDef: FilterDefinition): void => {
     const formInline = document.createElement('div')
     formInline.classList.add('form-inline')
 
     const labelElement = document.createElement('span')
     labelElement.classList.add('column-filter-label')
-    labelElement.innerHTML = label + ':'
+    labelElement.innerHTML = filterDef.label + ':'
     this.filterContainer.insertAdjacentElement('beforeend', labelElement)
 
     const minField: HTMLInputElement = document.createElement('input')

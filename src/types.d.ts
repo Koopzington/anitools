@@ -163,3 +163,14 @@ interface MapperSuggestion {
     total_unvoted_filtered: number
   }
 }
+
+interface FilterDefinition {
+  type: string
+  label: string
+  logic: 'OR' | 'AND'
+  regex: boolean
+  urlOrData: string | TagifyValue[]
+  mask: string
+  experimental: boolean
+  tooltip: string
+}
