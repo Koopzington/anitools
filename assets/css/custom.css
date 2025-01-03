@@ -144,7 +144,6 @@ html.show-covers-on-title-hover table a[style]::after {
 .and-or-switch, .regex-switch {
 	padding: 0;
     width: 3.1rem;
-	margin-right: 0.3rem;
     font-size: 0.9rem;
 }
 
@@ -402,4 +401,23 @@ span.spoiler {
     color: transparent;
     transition: color .2s ease,background .2s ease;
     border-radius: 4px;
+}
+
+#filters > .d-flex {
+    gap: 0.25em;
+}
+
+#filters > .d-flex > div:first-child {
+    flex-basis: min-content;
+}
+
+#filters tags .clear-filter {
+    align-self: center;
+    margin-right: 0.25em;
+    display: none;
+}
+
+/* Show the button when at least one tag is selected */
+#filters tags:has(tag) .clear-filter {
+    display: inherit;
 }

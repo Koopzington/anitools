@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-01-03
+- Add "Remove all values" buttons on Tagify instances
+- Add a tooltip next to the tag filter to inform about the category grouping setting
+
 ## 2025-01-02
 - Add a tooltip next to the year filter to inform about the hidden range selection
 

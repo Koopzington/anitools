@@ -4,7 +4,7 @@ import noUiSlider from 'nouislider'
 import wNumb from 'wnumb'
 import Inputmask from 'inputmask'
 import Settings from './Settings'
-import { handleError, handleResponse } from './commonLib'
+import { handleResponse } from './commonLib'
 
 class Filters extends EventTarget {
   private readonly filterContainer: HTMLDivElement = document!.createElement('div')!
@@ -189,6 +189,7 @@ class Filters extends EventTarget {
       logic: 'AND',
       label: 'Tags',
       urlOrData: [],
+      tooltip: 'You can enable/disable grouping tags by their categories in the settings',
     },
     tagPercentage: {
       type: 'range',
@@ -786,8 +787,8 @@ class Filters extends EventTarget {
     field.dataset.logic = filterDef.logic
     field.addEventListener('change', this.filterChangeCallback)
     container.insertAdjacentElement('beforeend', field)
-    if (filterDef.logic === 'AND') {
       container.classList.add('d-flex')
+    if (filterDef.logic === 'AND') {
       const logicSwitch: HTMLButtonElement = this.andOrSwitch.cloneNode(true)
       logicSwitch.dataset.filter = col
       logicSwitch.addEventListener('click', this.logicSwitchCallback);
@@ -816,11 +817,29 @@ class Filters extends EventTarget {
         highlightFirst: true,
         closeOnSelect: typeof filterDef.urlOrData === 'string'
       },
+      // Set default properties of tags
       transformTag: (tagData) => {
         tagData.exclude = false
+      },
+      // Custom wrapper template to add a "Remove all" button
+      templates: {
+        wrapper(input, _s){
+          return `<tags class="${_s.classNames.namespace} ${_s.mode ? `${_s.classNames[_s.mode + "Mode"]}` : ""} ${input.className}"
+                      ${_s.readonly ? 'readonly' : ''}
+                      ${_s.disabled ? 'disabled' : ''}
+                      ${_s.required ? 'required' : ''}
+                      ${_s.mode === 'select' ? "spellcheck='false'" : ''}
+                      tabIndex="-1">
+                      ${this.settings.templates.input.call(this)}
+                  <i class="clear-filter fa fa-circle-xmark" title="Remove all values"></i>
+          </tags>`
+      },
       }
     }
+    }
     const tagify: Tagify = new Tagify(field, options)
+    // Make the "Remove all" button remove all selected values
+    tagify.DOM.scope.querySelector('.clear-filter').addEventListener('click', tagify.removeAllTags.bind(tagify))
 
     // We received an URL for fetching tags remotely
     if (typeof filterDef.urlOrData === 'string') {
@@ -885,6 +904,7 @@ class Filters extends EventTarget {
       })
     }
 
+    // Invert value of exclude property on click
     tagify.on('click', (e) => {
       const {tag:tagElm, data:tagData} = e.detail;
       tagData.exclude = tagData.exclude !== true
