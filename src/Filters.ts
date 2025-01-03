@@ -834,7 +834,6 @@ class Filters extends EventTarget {
                   <i class="clear-filter fa fa-circle-xmark" title="Remove all values"></i>
           </tags>`
       },
-      }
     }
     }
     const tagify: Tagify = new Tagify(field, options)
