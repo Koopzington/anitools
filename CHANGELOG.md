@@ -1,4 +1,6 @@
 # Changelog
+## 2025-01-04
+- Added more tooltips for date filters to inform about the possibility to use "*" as wildcards
 
 ## 2025-01-03
 - Add "Remove all values" buttons on Tagify instances

@@ -4,7 +4,7 @@ import noUiSlider from 'nouislider'
 import wNumb from 'wnumb'
 import Inputmask from 'inputmask'
 import Settings from './Settings'
-import { handleResponse } from './commonLib'
+import { handleResponse, htmlToNode } from './commonLib'
 
 class Filters extends EventTarget {
   private readonly filterContainer: HTMLDivElement = document!.createElement('div')!
@@ -17,6 +17,12 @@ class Filters extends EventTarget {
   private readonly regexSwitch: HTMLButtonElement = document.createElement('button')
   private readonly dateMask = '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$'
   private readonly mangaUpdatesWarning = 'Experimental (Only a third of AL manga is currently covered with data for this)'
+  private readonly tooltipElement: HTMLSpanElement = htmlToNode(
+    `<span class="custom-tooltip" style="align-self: center;" data-title="">
+      <i class="fa fa-info-circle"></i>
+    </span>`
+  )
+  private readonly filterTemplate: HTMLDivElement = htmlToNode('<div class="d-flex"></div>')
 
   private readonly filterMap = {
     MAPPER: [
@@ -170,6 +176,7 @@ class Filters extends EventTarget {
       label: 'Started Airing',
       mask: this.dateMask,
       urlOrData: [],
+      tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     airingFinish: {
       type: 'text',
@@ -177,6 +184,7 @@ class Filters extends EventTarget {
       label: 'Finished Airing',
       mask: this.dateMask,
       urlOrData: [],
+      tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     genre: {
       type: 'tagify',
@@ -315,6 +323,7 @@ class Filters extends EventTarget {
       label: 'Birthday from',
       mask: this.dateMask,
       urlOrData: [],
+      tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     birthdayUntil: {
       type: 'text',
@@ -322,6 +331,7 @@ class Filters extends EventTarget {
       label: 'Birthday until',
       mask: this.dateMask,
       urlOrData: [],
+      tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     deathdayFrom: {
       type: 'text',
@@ -329,6 +339,7 @@ class Filters extends EventTarget {
       label: 'Deathday from',
       mask: this.dateMask,
       urlOrData: [],
+      tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     deathdayUntil: {
       type: 'text',
@@ -336,6 +347,7 @@ class Filters extends EventTarget {
       label: 'Deathday until',
       mask: this.dateMask,
       urlOrData: [],
+      tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     userStartFrom: {
       type: 'text',
@@ -343,6 +355,7 @@ class Filters extends EventTarget {
       label: 'Started on',
       mask: this.dateMask,
       urlOrData: [],
+      tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     userFinishUntil: {
       type: 'text',
@@ -350,6 +363,7 @@ class Filters extends EventTarget {
       label: 'Completed on',
       mask: this.dateMask,
       urlOrData: [],
+      tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
   }
 
@@ -568,14 +582,13 @@ class Filters extends EventTarget {
             return
           }
 
-          const container = document.createElement('div')
+          const container = this.filterTemplate.cloneNode(true)
           const field = document.createElement('input')
           field.setAttribute('placeholder', filterDef.label)
           field.classList.add('column-filter', 'form-control')
           field.dataset.logic = filterDef.logic
           field.value = lists[0].label
           field.addEventListener('change', this.filterChangeCallback)
-          container.classList.add('d-flex')
           const logicSwitch: HTMLButtonElement = this.andOrSwitch.cloneNode(true)
           logicSwitch.dataset.filter = 'userList'
           logicSwitch.addEventListener('click', this.logicSwitchCallback);
@@ -751,7 +764,7 @@ class Filters extends EventTarget {
   }
 
   private readonly addText = (col: string, filterDef: FilterDefinition) => {
-    const container = document.createElement('div')
+    const container = this.filterTemplate.cloneNode(true)
     const input = document.createElement('input')
     input.classList.add('column-filter', 'form-control')
     input.dataset.column = col
@@ -763,7 +776,6 @@ class Filters extends EventTarget {
 
     // Add a button to switch to regex mode if the filter supports it
     if (Object.hasOwn(filterDef, 'regex') && filterDef.regex === true) {
-      container.classList.add('d-flex')
       const regexSwitch: HTMLButtonElement = this.regexSwitch.cloneNode(true)
       regexSwitch.dataset.filter = col
       regexSwitch.addEventListener('click', this.regexSwitchCallback)
@@ -774,20 +786,26 @@ class Filters extends EventTarget {
     this.filters[col] = input
 
     container.insertAdjacentElement('beforeend', input)
+
+    if (Object.hasOwn(filterDef, 'tooltip') && filterDef.tooltip.length > 0) {
+      const info = this.tooltipElement.cloneNode(true)
+      info.dataset.title = filterDef.tooltip
+      container.insertAdjacentElement('beforeend', info)
+    }
+
     this.filterContainer.insertAdjacentElement('beforeend', container)
     input.addEventListener('keyup', this.filterChangeCallback)
   }
 
   // Function to add a Tagify type filter
   private readonly addTagify = (col: string, filterDef: FilterDefinition) => {
-    const container = document.createElement('div')
+    const container = this.filterTemplate.cloneNode(true)
     const field = document.createElement('input')
     field.setAttribute('placeholder', filterDef.label)
     field.classList.add('column-filter', 'form-control')
     field.dataset.logic = filterDef.logic
     field.addEventListener('change', this.filterChangeCallback)
     container.insertAdjacentElement('beforeend', field)
-      container.classList.add('d-flex')
     if (filterDef.logic === 'AND') {
       const logicSwitch: HTMLButtonElement = this.andOrSwitch.cloneNode(true)
       logicSwitch.dataset.filter = col
@@ -797,9 +815,7 @@ class Filters extends EventTarget {
     this.filterContainer.insertAdjacentElement('beforeend', container)
 
     if (Object.hasOwn(filterDef, 'tooltip') && filterDef.tooltip.length > 0) {
-      container.style.display = 'flex'
-      container.style.gap = '0.25em'
-      const info = document.querySelector('#filter-info').content.firstElementChild.cloneNode(true)
+      const info = this.tooltipElement.cloneNode(true)
       info.dataset.title = filterDef.tooltip
       container.insertAdjacentElement('beforeend', info)
     }
@@ -930,7 +946,7 @@ class Filters extends EventTarget {
     if (Object.hasOwn(filterDef, 'tooltip') && filterDef.tooltip.length > 0) {
       cswitch.style.display = 'flex'
       cswitch.style.gap = '0.25em'
-      const info = document.querySelector('#filter-info').content.firstElementChild.cloneNode(true)
+      const info = this.tooltipElement.cloneNode(true)
       info.dataset.title = filterDef.tooltip
       cswitch.insertAdjacentElement('beforeend', info)
     }

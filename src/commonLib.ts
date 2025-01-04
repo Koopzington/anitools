@@ -35,6 +35,22 @@ const on = function (wrapperSelector: string, eventName: string, targetSelector:
   return handler
 }
 
+const htmlToNode = (html) => {
+  const template = document.createElement('template');
+  template.innerHTML = html;
+  const nNodes = template.content.childNodes.length;
+  if (nNodes !== 1) {
+    throw new Error(
+        `html parameter must represent a single node; got ${nNodes}. ` +
+        'Note that leading or trailing spaces around an element in your ' +
+        'HTML, like " <img/> ", get parsed as text nodes neighbouring ' +
+        'the element; call .trim() on your input to avoid this.'
+    );
+  }
+
+  return template.content.firstChild;
+}
+
 DataTable.ext.classes.paging.button = 'page-link'
 DataTable.ext.classes.paging.active = 'active'
 /* We still require the dataTable class for the vendor CSS rules */
@@ -43,4 +59,5 @@ DataTable.ext.classes.table = 'dataTable dt-table'
 export {
   on,
   handleResponse,
+  htmlToNode,
 }
