@@ -83,7 +83,7 @@ html.show-covers-on-title-hover table a[style]::after {
 
     /* Position the tooltip */
     position: absolute;
-    z-index: 1;
+    z-index: 10;
     top: -60px;
     margin-left: 10px;
     box-shadow: 0 2px 20px #3136444d;
@@ -106,7 +106,7 @@ html.show-covers-on-title-hover table a[style]::after {
 
     /* Position the tooltip */
     position: absolute;
-    z-index: 1;
+    z-index: 10;
     top: -5px;
     right: 105%;
 }

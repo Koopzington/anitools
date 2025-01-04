@@ -66,6 +66,23 @@
                 </div>
             </div>
         </div>
+        <!-- Feedback Modal -->
+        <div class="modal" id="feedback-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="width: 50em;">
+                    <a href="#" class="close" role="button" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                    <h5>Questions/Issues/Feature requests?</h5>
+                    <div>If you have any questions, issues, feature requests or other type of feedback, please choose one of the following methods to contact me:</div>
+                    <ul>
+                        <li>If you already happen to have a GitHub account: <a href="%VITE_GITHUB_REPO%">Create an issue</a></li>
+                        <li>If you are on the AWC or AniList Discord, ping @koopz or try to DM me there, although i might mistake you for an artist scammer</li>
+                        <li>Write an email to <a href="mailto:anitools@koopz.rocks">anitools@koopz.rocks</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <!-- Changelog Modal -->
         <div class="modal" id="changelog-modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
@@ -107,7 +124,6 @@
                         <button type="button" class="btn" id="use-tag-groups" title="Enable/Disable the grouping of tags in the dropdown">Show tag categories in dropdown</button>
                         <button type="button" class="btn" id="use-embeds-for-code-copy" title="By default the 'Copy Code' button uses the [Media_Title](link) format. Enabling this will turn it into just the link so AL turns it into an embed.">Use embeds for 'Copy Code' button</button>
                         <button type="button" class="btn" id="show-covers-on-title-hover" title="">Show covers while hovering over titles</button>
-                        <a class="btn" target="_blank" rel="noopener" href="%VITE_GITHUB_REPO%">Report issues/feature requests on <i class="fab fa-github"></i></a>
                         <a class="btn" id="show-changelog" title="Show the Changelog" href="#changelog-modal">Show changelog</a>
                         <a id="al-login-btn" class="btn d-inline-flex align-items-center" rel="noopener" href="https://anilist.co/api/v2/oauth/authorize?client_id=%VITE_ANILIST_CLIENT_ID%&response_type=token">Login with
                             <img alt="AniList Icon" class="pl-5" style="height: 50%;" src="assets/al-icon.svg">
@@ -161,6 +177,7 @@
                     <button class="dark-mode-toggler btn btn-action" type="button"  aria-label="Toggle dark mode">
                         <i class="fa" aria-hidden="true"></i>
                     </button>
+                    <a class="btn" href="#feedback-modal">Issues/Feature requests?</a>
                 </form>
                 <form id="navsidebar-nav" class="navbar-content form-inline d-none d-sm-flex ml-auto">
                     <select id="tool-dropdown" class="form-control"></select>
@@ -191,6 +208,7 @@
                             <button class="dark-mode-toggler btn btn-action" type="button" aria-label="Toggle dark mode">
                                 <i class="fa" aria-hidden="true"></i>
                             </button>
+                            <a class="btn" href="#feedback-modal">Issues/Feature requests?</a>
                         </div>
                     </div>
                 </div>

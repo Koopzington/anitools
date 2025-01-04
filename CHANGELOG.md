@@ -1,6 +1,8 @@
 # Changelog
 ## 2025-01-04
 - Added more tooltips for date filters to inform about the possibility to use "*" as wildcards
+- Fixed a CSS issue where tooltips weren't shown on top of other content
+- Moved the feedback button from the Settings to the header/sidebar
 
 ## 2025-01-03
 - Add "Remove all values" buttons on Tagify instances
