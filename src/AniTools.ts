@@ -15,21 +15,24 @@ import BetterList from './Tools/BetterList'
 import Filters from './Filters'
 import AniList from './AniList'
 import Mapper from './Tools/Mapper'
+import { htmlToNode } from './commonLib'
+import { mediaTypeSelect, userNameField, loadButton } from './GlobalElements'
 
 class AniTools {
   // Tools which can be loaded and unloaded
   private readonly Tools: { BetterList: BetterList } = {}
   private readonly AniList: AniList
+  private readonly toolSelect: HTMLSelectElement = htmlToNode('<select id="tool-dropdown" class="form-control"></select>')
   private activeModule: string | undefined
-  private toolSelect: HTMLSelectElement
 
-  private readonly alertTemplate = `
+  private readonly alertElement: HTMLDivElement = htmlToNode(`
   <div class="alert" role="alert">
     <button class="close" data-dismiss="alert" type="button" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
     <span class="message"></span>
-  </div>`
+    </div>`.trim()
+  )
 
   constructor () {
     this.AniList = new AniList()
@@ -37,13 +40,13 @@ class AniTools {
 
   public readonly init = async (): Promise<void> => {
     this.initALLoginButton()
+    this.handleInputs()
     // Check for stored username and replace default value if it exists
     const userName = localStorage.getItem('userName')
     if (userName !== null) {
-      document.querySelector<HTMLInputElement>('#al-user')!.value = userName
+      userNameField.value = userName
     }
 
-    this.toolSelect = document.querySelector('#tool-dropdown')!
     halfmoon.onDOMContentLoaded()
     document.querySelector('#toggle-sidebar-btn')!.addEventListener('click', () => { halfmoon.toggleSidebar() })
     document.querySelectorAll('.dark-mode-toggler').forEach((e) => e.addEventListener('click', () => { halfmoon.toggleDarkMode() }))
@@ -61,6 +64,7 @@ class AniTools {
     this.initToolSelect()
     this.route()
     this.initChangelog()
+    window.onresize = this.handleInputs
   }
 
   private readonly initALLoginButton = (): void =>  {
@@ -149,12 +153,20 @@ class AniTools {
 
   // Function moving elements around depending on screen width
   private readonly handleInputs = (): void => {
+    const movingElements = [
+      loadButton,
+      userNameField,
+      mediaTypeSelect,
+      this.toolSelect,
+    ]
+
+    let targetContainer = document.querySelector('#navsidebar-sidebar')
     if (window.innerWidth >= 768) {
-      return
+      targetContainer = document.querySelector('#navsidebar-nav')
     }
 
-    Object.values(document.querySelector('#navsidebar-nav')!.children).forEach((e) => {
-      document.querySelector('#navsidebar-sidebar')!.insertAdjacentElement('beforeend', e)
+    movingElements.forEach((e) => {
+      targetContainer?.insertAdjacentElement('afterbegin', e)
     })
   }
 
@@ -215,10 +227,9 @@ class AniTools {
   }
 
   public readonly alert = (msg: string, type: string = '', autoremove: boolean = true) => {
-    let alert = document.createElement('div')
-    alert.innerHTML = this.alertTemplate
+    let alert = this.alertElement.cloneNode(true)
     if (type.length > 0) {
-      alert.querySelector('.alert')!.classList.add('alert-' +  type)
+      alert.classList.add('alert-' +  type)
     }
     alert.querySelector('.message')!.innerHTML = msg
     document.querySelector('#alert-container')?.insertAdjacentElement('beforeend', alert)

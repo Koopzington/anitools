@@ -10,6 +10,7 @@ import Settings from 'Settings'
 import AniList from 'AniList'
 import DataTable from 'datatables.net-dt'
 import AniTools from 'AniTools'
+import { mediaTypeSelect, userNameField, loadButton } from '../GlobalElements'
 
 class BetterList implements Tool {
   private readonly Settings: Settings
@@ -18,8 +19,6 @@ class BetterList implements Tool {
   private readonly ActivityLister: ActivityLister
   private readonly AniList: AniList
   private readonly AniTools: AniTools
-  private readonly userNameField: HTMLInputElement = document.querySelector('#al-user')!
-  private readonly mediaTypeSelect: HTMLSelectElement = document.querySelector('.media-type')!
   private table: Api<HTMLTableElement> | undefined
   private currentPageData: Media[] = []
   private copyLinkHandler: EventListener | undefined
@@ -54,16 +53,16 @@ class BetterList implements Tool {
   }
 
   private readonly request = async (): Promise<void> => {
-    document.querySelector('#load')!.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'
+    loadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'
 
-    localStorage.setItem('userName', this.userNameField.value)
-    if (this.userNameField.value.length > 0) {
-      this.curUserInfo = await this.AniList.getUserInfo(this.userNameField.value)
+    localStorage.setItem('userName', userNameField.value)
+    if (userNameField.value.length > 0) {
+      this.curUserInfo = await this.AniList.getUserInfo(userNameField.value)
     } else {
       this.curUserInfo = undefined
     }
-    await this.Filters.updateFilters(this.mediaTypeSelect.value)
-    document.querySelector('#load')!.innerHTML = 'Reload'
+    await this.Filters.updateFilters(mediaTypeSelect.value)
+    loadButton.innerHTML = 'Reload'
     this.updateTable()
   }
 
@@ -80,8 +79,8 @@ class BetterList implements Tool {
       b.addEventListener('click', this.colVisibilityHandler)
     })
 
-    this.mediaTypeSelect.value = localStorage.getItem('mediaType') ?? 'ANIME'
-    this.mediaTypeSelect.addEventListener('change', this.mediaTypeChangeHandler)
+    mediaTypeSelect.value = localStorage.getItem('mediaType') ?? 'ANIME'
+    mediaTypeSelect.addEventListener('change', this.mediaTypeChangeHandler)
 
     // Setup Copy-Links
     this.copyLinkHandler = on('#table', 'click', '.copy-me', this.copyLinkEventListener)
@@ -95,7 +94,7 @@ class BetterList implements Tool {
     // Column filters
     this.Filters.addEventListener('filter-changed', this.filterChangeHandler)
 
-    document.querySelector('#load')!.addEventListener('click', this.request)
+    loadButton.addEventListener('click', this.request)
 
     await this.request()
 
@@ -103,7 +102,7 @@ class BetterList implements Tool {
   }
 
   public readonly unload = (): void => {
-    this.mediaTypeSelect.removeEventListener('change', this.mediaTypeChangeHandler)
+    mediaTypeSelect.removeEventListener('change', this.mediaTypeChangeHandler)
     document.querySelector('#table')!.removeEventListener('click', this.copyLinkHandler!)
     delete this.copyLinkHandler
     document.querySelector('#table')!.removeEventListener('click', this.copyCodeHandler!)
@@ -125,7 +124,7 @@ class BetterList implements Tool {
     this.Filters.abort()
     this.Filters.removeFilters()
     
-    document.querySelector('#load')!.removeEventListener('click', this.request)
+    loadButton.removeEventListener('click', this.request)
 
     // Toggle visibility of columns via click
     document.querySelectorAll('.toggle-column').forEach((b) => {
@@ -145,12 +144,12 @@ class BetterList implements Tool {
   // Function responsible for showing the total amount of chapters/minutes of the current selection and the user's completion in %
   private readonly statsHandler = (_ev, _settings, json: MediaSearchResult): void => {
     let data: string = ''
-    if (this.mediaTypeSelect.value === 'ANIME' && Object.hasOwn(json, 'total_runtime')) {
+    if (mediaTypeSelect.value === 'ANIME' && Object.hasOwn(json, 'total_runtime')) {
       data = json.filtered_runtime.toString() + ' minutes'
       if (json.total_runtime > json.filtered_runtime) {
         data += ' (filtered from ' + json.total_runtime.toString() + ' minutes)'
       }
-    } else if (this.mediaTypeSelect.value === 'MANGA' && Object.hasOwn(json, 'total_episodes')) {
+    } else if (mediaTypeSelect.value === 'MANGA' && Object.hasOwn(json, 'total_episodes')) {
       data = json.filtered_episodes.toString() + ' chapters, ' + json.filtered_volumes.toString() + ' volumes'
       if (json.total_episodes > json.filtered_episodes) {
         data += ' (filtered from ' + json.total_episodes.toString() + ' chapters, ' + json.total_volumes.toString() + ' volumes)'
@@ -158,7 +157,7 @@ class BetterList implements Tool {
     }
 
     let completion = ''
-    if (this.userNameField.value.length > 0 && Object.hasOwn(json, 'total_completed')) {
+    if (userNameField.value.length > 0 && Object.hasOwn(json, 'total_completed')) {
       completion = (Math.floor(json.total_completed) / json.recordsTotal * 100).toFixed(2) + '% Completed, '
     }
 
@@ -184,8 +183,8 @@ class BetterList implements Tool {
       })
     }
 
-    params.userName = this.userNameField.value
-    params.mediaType = this.mediaTypeSelect.value
+    params.userName = userNameField.value
+    params.mediaType = mediaTypeSelect.value
 
     // Get the values of the filters
     const filterValues = this.Filters.getFilterParams()
@@ -206,7 +205,7 @@ class BetterList implements Tool {
       return
     }
 
-    const colDefs = this.Columns.getColumns(this.mediaTypeSelect.value.toLowerCase())
+    const colDefs = this.Columns.getColumns(mediaTypeSelect.value.toLowerCase())
     const options = {
       serverSide: true,
       ajax: async (data, callback, settings) => {
@@ -271,7 +270,7 @@ class BetterList implements Tool {
       this.table.destroy()
       this.table = undefined
     }
-    localStorage.setItem('mediaType', this.mediaTypeSelect.value)
+    localStorage.setItem('mediaType', mediaTypeSelect.value)
     document.querySelector('#table')!.innerHTML = ''
     await this.request()
   }
@@ -291,7 +290,7 @@ class BetterList implements Tool {
   private readonly copyCodeEventListener: EventListener = async (e) => {
     const media = this.currentPageData.filter((m) => m.id === parseInt(e.target.dataset.id))[0]
     if (navigator.clipboard !== undefined) {
-      let firstLine = 'https://anilist.co/' + this.mediaTypeSelect.value.toLowerCase() + '/' + media.id.toString()
+      let firstLine = 'https://anilist.co/' + mediaTypeSelect.value.toLowerCase() + '/' + media.id.toString()
       if (!this.Settings.shouldUseEmbedsForCodeCopy()) {
         firstLine = '[' + media.title + '](' + firstLine + ')'
       }

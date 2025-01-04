@@ -1,7 +1,8 @@
 /* global localStorage */
 
+import { mediaTypeSelect } from "./GlobalElements"
+
 class Columns {
-  private readonly mediaTypeSelect: HTMLSelectElement = document.querySelector('.media-type')!
   private readonly anilistBaseLink: string = 'https://anilist.co/'
   private readonly warning: HTMLElement = document.createElement('i')
 
@@ -251,7 +252,7 @@ class Columns {
       data: 'title',
       render: (data: string, _type, row: Media) => {
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
     },
     titleEng: {
@@ -260,7 +261,7 @@ class Columns {
       data: 'titleEng',
       render: (data: string, _type, row: Media) => {
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + (data ?? row.title) + '</a>'
+        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + (data ?? row.title) + '</a>'
       }
     },
     titleNat: {
@@ -269,7 +270,7 @@ class Columns {
       data: 'titleNat',
       render: (data: string, _type, row: Media) => {
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
     },
     rowNum: {
@@ -545,7 +546,7 @@ class Columns {
       data: 'nameFirst',
       render: (data: string, _type, row: CharacterStaff) => {
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
     },
     nameMiddle: {
@@ -564,7 +565,7 @@ class Columns {
       data: 'nameFull',
       render: (data: string, _type, row: CharacterStaff) => {
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
     },
     nameNative: {
@@ -573,7 +574,7 @@ class Columns {
       data: 'nameNative',
       render: (data: string, _type, row: CharacterStaff) => {
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-        return '<a target="_blank" href="' + this.anilistBaseLink + this.mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
     },
     nameAlternatives: {
@@ -705,7 +706,7 @@ class Columns {
       }
     })
 
-    if (cols.indexOf('episodes') > -1 && this.mediaTypeSelect.value === 'MANGA') {
+    if (cols.indexOf('episodes') > -1 && mediaTypeSelect.value === 'MANGA') {
       columnDefs['episodes'].title = 'Chapters'
     }
 

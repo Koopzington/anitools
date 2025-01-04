@@ -5,11 +5,10 @@ import wNumb from 'wnumb'
 import Inputmask from 'inputmask'
 import Settings from './Settings'
 import { handleResponse, htmlToNode } from './commonLib'
+import { mediaTypeSelect, userNameField, loadButton } from './GlobalElements'
 
 class Filters extends EventTarget {
   private readonly filterContainer: HTMLDivElement = document!.createElement('div')!
-  private readonly mediaTypeSelect: HTMLSelectElement = document!.querySelector('.media-type')!
-  private readonly userNameField: HTMLInputElement = document!.querySelector('#al-user')!
   private readonly AniTools: AniTools
   private readonly ATSettings: Settings
   private curFilterValues: any
@@ -498,21 +497,21 @@ class Filters extends EventTarget {
     })
 
     let lists: TagifyValue[] = [];
-    if (this.userNameField.value.length > 0 && this.filterMap[filterSet].includes('userList')) {
+    if (userNameField.value.length > 0 && this.filterMap[filterSet].includes('userList')) {
       this.abortController && this.abortController.abort()
       this.abortController = new AbortController()
 
       let forceReload = ''
-      if (document.querySelector('#load')!.classList.contains('btn-secondary')) {
-        document.querySelector('#load')!.classList.remove('btn-secondary')
-        document.querySelector('#load')!.title = ''
+      if (loadButton.classList.contains('btn-secondary')) {
+        loadButton.classList.remove('btn-secondary')
+        loadButton.title = ''
         forceReload = '&force_reload=true'
       }
 
       let response
       try {
         response = await this.AniTools.fetch(
-          '/userLists?user_name=' + this.userNameField.value + '&media_type=' + this.mediaTypeSelect.value + forceReload,
+          '/userLists?user_name=' + userNameField.value + '&media_type=' + mediaTypeSelect.value + forceReload,
           { signal: this.abortController.signal }
         )
       } catch (error) {
@@ -531,8 +530,8 @@ class Filters extends EventTarget {
         json.warnings.forEach((e) => {
           this.AniTools.alert(e.message, 'warning')
           if (Object.hasOwn(e, 'type') && e.type === 'timeout') {
-            document.querySelector('#load')!.classList.add('btn-secondary')
-            document.querySelector('#load')!.title = 'Force reloading may take a bit of time.'
+            loadButton.classList.add('btn-secondary')
+            loadButton.title = 'Force reloading may take a bit of time.'
           }
         })
       }
@@ -578,7 +577,7 @@ class Filters extends EventTarget {
           this.addRange(filterName, filterDef)
           break;
         case 'userList':
-          if (this.userNameField.value.length === 0 || lists.length === 0) {
+          if (userNameField.value.length === 0 || lists.length === 0) {
             return
           }
 
@@ -659,7 +658,7 @@ class Filters extends EventTarget {
       let response: Response
       try {
         response = await this.AniTools.fetch(
-          '/filterValues?media_type=' + this.mediaTypeSelect.value,
+          '/filterValues?media_type=' + mediaTypeSelect.value,
           { signal: this.abortController.signal }
         )
       } catch (error) {

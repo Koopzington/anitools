@@ -4,9 +4,9 @@ import Tool from "Interfaces/Tool"
 import { on } from "../commonLib"
 import { Api } from "datatables.net"
 import DataTable from "datatables.net-dt"
+import { mediaTypeSelect } from "../GlobalElements"
 
 class Mapper implements Tool {
-  private readonly mediaTypeSelect: HTMLSelectElement = document.querySelector('.media-type')!
   private AniTools: AniTools
   private Filters: Filters
 
@@ -265,8 +265,8 @@ class Mapper implements Tool {
   public readonly load = (): void => {
     // Hide the real media type select and replace it with a hidden input to force it to Manga until the day where
     // we may need to map anime to another platform
-    this.mediaTypeSelect.value = 'MANGA'
-    this.mediaTypeSelect.classList.add('d-none')
+    mediaTypeSelect.value = 'MANGA'
+    mediaTypeSelect.classList.add('d-none')
 
     if (!this.AniTools.isLoggedIn()) {
       document.querySelector('#page-content')!.innerHTML = this.notLoggedInContent
@@ -287,7 +287,7 @@ class Mapper implements Tool {
     document.querySelector('#mapper-section')?.remove()
     this.Filters.removeFilters()
 
-    this.mediaTypeSelect.classList.remove('d-none')
+    mediaTypeSelect.classList.remove('d-none')
     console.log('Module Mapper unloaded.')
   }
 
