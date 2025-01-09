@@ -60,7 +60,6 @@ class AniTools {
     
     settings.initSettings()
     columns.initToggles()
-    this.handleInputs()
     this.initToolSelect()
     this.route()
     this.initChangelog()
