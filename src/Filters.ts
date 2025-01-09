@@ -25,6 +25,7 @@ class Filters extends EventTarget {
 
   private readonly filterMap = {
     MAPPER: [
+      'id',
       'titleLike',
       'notesLike',
       'userList',
@@ -50,6 +51,7 @@ class Filters extends EventTarget {
       'showAdult',
     ],
     MANGA: [
+      'id',
       'titleLike',
       'notesLike',
       'userList',
@@ -78,6 +80,7 @@ class Filters extends EventTarget {
       'showAdult',
     ],
     ANIME: [
+      'id',
       'titleLike',
       'notesLike',
       'userList',
@@ -108,6 +111,7 @@ class Filters extends EventTarget {
       'showAdult',
     ],
     CHARACTER: [
+      'id',
       'nameLike',
       'bloodType',
       'gender',
@@ -115,6 +119,7 @@ class Filters extends EventTarget {
       'birthdayUntil',
     ],
     STAFF: [
+      'id',
       'nameLike',
       'bloodType',
       'gender',
@@ -131,6 +136,13 @@ class Filters extends EventTarget {
       logic: 'AND',
       label: 'List',
       urlOrData: [],
+    },
+    id: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'ID',
+      urlOrData: '*',
+      tooltip: 'Enter "99" if the ID should contain "99"',
     },
     titleLike: {
       type: 'text',
@@ -369,6 +381,7 @@ class Filters extends EventTarget {
   // Object to hold all added filters
   private filters: {
     userList: Tagify | undefined,
+    id: Tagify | undefined,
     titleLike: HTMLInputElement | undefined,
     notesLike: HTMLInputElement | undefined,
     format: Tagify | undefined,
@@ -848,15 +861,18 @@ class Filters extends EventTarget {
                       ${this.settings.templates.input.call(this)}
                   <i class="clear-filter fa fa-circle-xmark" title="Remove all values"></i>
           </tags>`
-      },
+        },
+      }
     }
+    if (filterDef.urlOrData !== '*') {
+      options['enforceWhitelist'] = true
     }
     const tagify: Tagify = new Tagify(field, options)
     // Make the "Remove all" button remove all selected values
     tagify.DOM.scope.querySelector('.clear-filter').addEventListener('click', tagify.removeAllTags.bind(tagify))
 
     // We received an URL for fetching tags remotely
-    if (typeof filterDef.urlOrData === 'string') {
+    if (typeof filterDef.urlOrData === 'string' && filterDef.urlOrData !== '*') {
       // Trigger the InputHandler when somebody pastes into the field
       tagify.settings.hooks.beforePaste = async function (_tagify, pastedText) {
         // It wants a promise? It get's a promise

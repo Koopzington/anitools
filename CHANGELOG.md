@@ -1,4 +1,8 @@
 # Changelog
+
+## 2025-01-09
+- Added new ID filter
+
 ## 2025-01-04
 - Added more tooltips for date filters to inform about the possibility to use "*" as wildcards
 - Fixed a CSS issue where tooltips weren't shown on top of other content
