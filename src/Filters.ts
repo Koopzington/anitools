@@ -71,6 +71,7 @@ class Filters extends EventTarget {
       'staff',
       'episodes',
       'volumes',
+      'relationToAWCCommunityList',
       'meanScore',
       'avgScore',
       'mcCount',
@@ -263,6 +264,13 @@ class Filters extends EventTarget {
       label: 'Community List',
       urlOrData: [],
     },
+    relationToAWCCommunityList: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Rel to Com. List',
+      urlOrData: [],
+      tooltip: 'Relation to an anime on an AWC community list'
+    },
     totalRuntime: {
       type: 'range',
       label: 'Total Runtime'
@@ -401,6 +409,7 @@ class Filters extends EventTarget {
     studio: Tagify | undefined,
     producer: Tagify | undefined,
     awcCommunityList: Tagify | undefined,
+    relationToAWCCommunityList: Tagify | undefined,
     totalRuntime: HTMLInputElement,
     episodes: HTMLInputElement,
     volumes: HTMLInputElement,
@@ -708,6 +717,9 @@ class Filters extends EventTarget {
       }
       if (this.filters.awcCommunityList !== undefined) {
         this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists.map((v) => { return {value: v, text: v}})
+      }
+      if (this.filters.relationToAWCCommunityList !== undefined) {
+        this.filters.relationToAWCCommunityList.whitelist = filterValues.awc_community_lists.map((v) => { return {value: v, text: v}})
       }
       if (this.filters.tag !== undefined) {
         this.updateTagFilter()
