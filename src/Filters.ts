@@ -267,7 +267,7 @@ class Filters extends EventTarget {
     relationToAWCCommunityList: {
       type: 'tagify',
       logic: 'AND',
-      label: 'Rel to Com. List',
+      label: 'Rel. to Com. List',
       urlOrData: [],
       tooltip: 'Relation to an anime on an AWC community list'
     },
