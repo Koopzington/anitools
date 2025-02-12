@@ -74,6 +74,7 @@ class Filters extends EventTarget {
       'relationToAWCCommunityList',
       'meanScore',
       'avgScore',
+      'popularity',
       'mcCount',
       'muPublisher',
       'muPublication',
@@ -108,6 +109,7 @@ class Filters extends EventTarget {
       'totalRuntime',
       'meanScore',
       'avgScore',
+      'popularity',
       'mcCount',
       'showAdult',
     ],
@@ -295,6 +297,10 @@ class Filters extends EventTarget {
       type: 'range',
       label: 'Average Score',
     },
+    popularity: {
+      type: 'range',
+      label: 'Popularity',
+    },
     showAdult: {
       type: 'checkbox',
       label: 'Show Adult entries',
@@ -416,6 +422,7 @@ class Filters extends EventTarget {
     mcCount: HTMLInputElement,
     meanScore: HTMLInputElement,
     avgScore: HTMLInputElement,
+    popularity: HTMLInputElement,
     showAdult: HTMLInputElement,
     muPublisher: Tagify | undefined,
     muPublication: Tagify | undefined,
@@ -744,6 +751,9 @@ class Filters extends EventTarget {
       }
       if (this.filters.avgScore !== undefined) {
         this.updateRangeFilter(this.filters.avgScore, [0, 100])
+      }
+      if (this.filters.popularity !== undefined) {
+        this.updateRangeFilter(this.filters.popularity, [0, filterValues.popularity])
       }
       if (this.filters.bloodType !== undefined) {
         this.filters.bloodType.whitelist = filterValues.blood_type.map((v) => { return {value: v, text: v}})

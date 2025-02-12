@@ -2,6 +2,7 @@
 
 ## 2025-02-12
 - Added new "Relation to an anime on an AWC Community List" filter for manga
+- Added new Popularity filter
 
 ## 2025-01-09
 - Added new ID filter
