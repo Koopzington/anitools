@@ -2,6 +2,8 @@
 
 ## 2025-02-25
 - Added new Description filter for anime, manga, characters and staff
+- Added new Age (character) and Primary Occupation (staff) columns
+- Added new Primary Occupation filter for staff
 
 ## 2025-02-12
 - Added new "Relation to an anime on an AWC Community List" filter for manga

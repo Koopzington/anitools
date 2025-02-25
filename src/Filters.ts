@@ -131,6 +131,7 @@ class Filters extends EventTarget {
       'descriptionLike',
       'bloodType',
       'gender',
+      'primaryOccupation',
       'birthdayFrom',
       'birthdayUntil',
       'deathdayFrom',
@@ -354,6 +355,12 @@ class Filters extends EventTarget {
       label: 'Gender',
       urlOrData: [],
     },
+    primaryOccupation: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Primary Occupation',
+      urlOrData: [],
+    },
     birthdayFrom: {
       type: 'text',
       logic: 'OR',
@@ -443,6 +450,7 @@ class Filters extends EventTarget {
     nameLike: HTMLInputElement | undefined,
     bloodType: Tagify | undefined,
     gender: Tagify | undefined,
+    primaryOccupation: Tagify | undefined,
     birthdayFrom: HTMLInputElement | undefined,
     birthdayUntil: HTMLInputElement | undefined,
     deathdayFrom: HTMLInputElement | undefined,
@@ -706,40 +714,42 @@ class Filters extends EventTarget {
       } catch (error) {
         return
       }
+
+      const defaultValMap = (v) => { return {value: v, text: v}}
       
       const filterValues = await handleResponse(response)
       this.tagCache = filterValues.tags
       if (this.filters.format !== undefined) {
-        this.filters.format.whitelist = filterValues.format.map((v) => { return {value: v, text: v}})
+        this.filters.format.whitelist = filterValues.format.map(defaultValMap)
       }
       if (this.filters.genre !== undefined) {
-        this.filters.genre.whitelist = filterValues.genres.map((v) => { return {value: v, text: v}})
+        this.filters.genre.whitelist = filterValues.genres.map(defaultValMap)
       }
       if (this.filters.country !== undefined) {
-        this.filters.country.whitelist = filterValues.country_of_origin.map((v) => { return {value: v, text: v}})
+        this.filters.country.whitelist = filterValues.country_of_origin.map(defaultValMap)
       }
       if (this.filters.externalLink !== undefined) {
-        this.filters.externalLink.whitelist = filterValues.external_links.map((v) => { return {value: v, text: v}})
+        this.filters.externalLink.whitelist = filterValues.external_links.map(defaultValMap)
       }
       if (this.filters.season !== undefined) {
-        this.filters.season.whitelist = filterValues.season.map((v) => { return {value: v, text: v}})
+        this.filters.season.whitelist = filterValues.season.map(defaultValMap)
       }
       if (this.filters.year !== undefined) {
-        let values = filterValues.season_year.map((v) => { return {value: v, text: v}})
+        let values = filterValues.season_year.map(defaultValMap)
         this.filters.year.whitelist = values
         this.yearCache = values
       }
       if (this.filters.source !== undefined) {
-        this.filters.source.whitelist = filterValues.source.map((v) => { return {value: v, text: v}})
+        this.filters.source.whitelist = filterValues.source.map(defaultValMap)
       }
       if (this.filters.airStatus !== undefined) {
-        this.filters.airStatus.whitelist = filterValues.status.map((v) => { return {value: v, text: v}})
+        this.filters.airStatus.whitelist = filterValues.status.map(defaultValMap)
       }
       if (this.filters.awcCommunityList !== undefined) {
-        this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists.map((v) => { return {value: v, text: v}})
+        this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists.map(defaultValMap)
       }
       if (this.filters.relationToAWCCommunityList !== undefined) {
-        this.filters.relationToAWCCommunityList.whitelist = filterValues.awc_community_lists.map((v) => { return {value: v, text: v}})
+        this.filters.relationToAWCCommunityList.whitelist = filterValues.awc_community_lists.map(defaultValMap)
       }
       if (this.filters.tag !== undefined) {
         this.updateTagFilter()
@@ -769,10 +779,13 @@ class Filters extends EventTarget {
         this.updateRangeFilter(this.filters.popularity, [0, filterValues.popularity])
       }
       if (this.filters.bloodType !== undefined) {
-        this.filters.bloodType.whitelist = filterValues.blood_type.map((v) => { return {value: v, text: v}})
+        this.filters.bloodType.whitelist = filterValues.blood_type.map(defaultValMap)
       }
       if (this.filters.gender !== undefined) {
-        this.filters.gender.whitelist = filterValues.gender.map((v) => { return {value: v, text: v}})
+        this.filters.gender.whitelist = filterValues.gender.map(defaultValMap)
+      }
+      if (this.filters.primaryOccupation !== undefined) {
+        this.filters.primaryOccupation.whitelist = filterValues.primary_occupations.map(defaultValMap)
       }
       
       this.curFilterValues = this.getFilterParams()

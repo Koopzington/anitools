@@ -109,6 +109,7 @@ class Columns {
       'id',
       //'description',
       'gender',
+      'age',
       'dateOfBirth',
       'bloodType',
       'favourites',
@@ -131,6 +132,7 @@ class Columns {
       'dateOfBirth',
       'dateOfDeath',
       'bloodType',
+      'primaryOccupations',
       'favourites',
       'appearances',
     ]
@@ -207,6 +209,12 @@ class Columns {
         'appearances'
       ]
     },
+    'Character columns': {
+      description: '',
+      cols: [
+        'age'
+      ]
+    },
     'Staff columns': {
       description: '',
       cols: [
@@ -214,6 +222,7 @@ class Columns {
         'homeTown',
         'yearsActiveFrom',
         'yearsActiveUntil',
+        'primaryOccupations',
       ]
     },
     'User related columns': {
@@ -615,6 +624,17 @@ class Columns {
       name: 'bloodType',
       title: 'Blood Type',
       data: 'bloodType',
+    },
+    age: {
+      name: 'age',
+      title: 'Age',
+      data: 'age',
+    },
+    primaryOccupations: {
+      name: 'primaryOccupations',
+      title: 'Primary Occupations',
+      data: 'primaryOccupations',
+      render: (data: string[] | null) => data !== null ? data.join(', ') : null,
     },
     homeTown: {
       name: 'homeTown',
