@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-02-25
+- Added new Description filter for anime, manga, characters and staff
+
 ## 2025-02-12
 - Added new "Relation to an anime on an AWC Community List" filter for manga
 - Added new Popularity filter
