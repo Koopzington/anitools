@@ -271,7 +271,7 @@ class Filters extends EventTarget {
       type: 'tagify',
       logic: 'AND',
       label: 'Producer',
-      urlOrData: '/searchForFilter/studio',
+      urlOrData: '/searchForFilter/producer',
     },
     awcCommunityList: {
       type: 'tagify',

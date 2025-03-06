@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-03-06
+- Splitted search for studio/producer filter
+
 ## 2025-02-25
 - Added new Description filter for anime, manga, characters and staff
 - Added new Age (character) and Primary Occupation (staff) columns
