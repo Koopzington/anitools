@@ -527,7 +527,11 @@ class Filters extends EventTarget {
 
         // Handle Range instances
         if (Object.hasOwn(f[1], 'noUiSlider')) {
-          f[1].noUiSlider.reset()
+          // We manually update the values because .reset() defaults to the ones set on creation
+          f[1].noUiSlider.set([
+            f[1].noUiSlider.options.range.min,
+            f[1].noUiSlider.options.range.max
+          ])
 
           return
         }
