@@ -235,7 +235,6 @@ tag[exclude="true"] {
     width: 100%;
     color: #fff;
     padding: 4px 6px;
-    font-style: bold;
     background: var(--green-color);
     font-weight: 600;
 }
@@ -377,9 +376,7 @@ img[src="null"] {
 .loader::after {    
     content: "";
     grid-area: 1/1;
-    background:
-        linear-gradient(currentcolor 0 0) center,
-        linear-gradient(currentcolor 0 0) center;
+    background: linear-gradient(currentcolor 0 0) center, linear-gradient(currentcolor 0 0) center;
     background-size: 100% 25px,25px 100%;
     background-repeat: no-repeat;
 }
