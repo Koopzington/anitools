@@ -23,7 +23,9 @@ class Columns {
       'format',
       'country',
       'genres',
+      'genreCount',
       'tags',
+      'tagCount',
       'status',
       'progress',
       'remaining',
@@ -69,7 +71,9 @@ class Columns {
       'format',
       'country',
       'genres',
+      'genreCount',
       'tags',
+      'tagCount',
       'status',
       'progress',
       'remaining',
@@ -160,7 +164,9 @@ class Columns {
         'format',
         'country',
         'genres',
+        'genreCount',
         'tags',
+        'tagCount',
         'episodes',
         'source',
         'avgScore',
@@ -348,6 +354,12 @@ class Columns {
       render: (data: string[] | null) => data !== null ? data.join(', ') : null,
       sortable: false
     },
+    genreCount: {
+      name: 'genreCount',
+      title: '# Genres',
+      data: 'genreCount',
+      render: data => data ?? 0,
+    },
     tags: {
       name: 'tags',
       title: 'Tags',
@@ -361,6 +373,12 @@ class Columns {
         return tags.join(', ')
       },
       sortable: false
+    },
+    tagCount: {
+      name: 'tagCount',
+      title: '# Tags',
+      data: 'tagCount',
+      render: data => data ?? 0,
     },
     status: {
       name: 'status',
