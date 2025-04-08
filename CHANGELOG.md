@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-04-08
+- Added new Genre and Tag Count columns
+
 ## 2025-03-17
 - Fixed range sliders incorrectly resetting to max values of 9999 [#212](https://github.com/Koopzington/anitools/issues/212)
 
