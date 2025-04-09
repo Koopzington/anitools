@@ -31,11 +31,11 @@
  * we'll just bypass the stupid variables.
  */
 .tagify__dropdown[position='text'] {
-    box-shadow: 0 0 0 3px rgba(var(--lm-primary-color) / 10%);
+    box-shadow: 0 0 0 3px rgb(var(--lm-primary-color) / 10%);
 }
 
 .dark-mode .tagify__dropdown[position='text'] {
-    box-shadow: 0 0 0 3px rgba(var(--dm-primary-color) / 10%);
+    box-shadow: 0 0 0 3px rgb(var(--dm-primary-color) / 10%);
 }
 
 .tagify__dropdown__wrapper {

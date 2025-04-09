@@ -372,11 +372,17 @@ img[src="null"] {
     animation: l19 2s infinite linear;
 }
 
+/* 
+ * Disabling stylelint on background property in the following rule due to csstree currently not being
+ * able to recognize it as valid CSS
+ */
 .loader::before,
 .loader::after {    
     content: "";
     grid-area: 1/1;
+    /* stylelint-disable */
     background: linear-gradient(currentcolor 0 0) center, linear-gradient(currentcolor 0 0) center;
+    /* stylelint-enable */
     background-size: 100% 25px,25px 100%;
     background-repeat: no-repeat;
 }
