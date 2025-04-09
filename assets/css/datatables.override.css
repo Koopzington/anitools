@@ -46,9 +46,8 @@
 }
 
 /* Move pagination buttons to the right */
-.dt-container > .row:last-child {
-    justify-content: flex-end;
-    padding-top: 0.5rem;
+.dt-container .dt-bottom {
+    justify-content: end;
 }
 
 /* Align the "X entries per page" select with rest of look & feel */

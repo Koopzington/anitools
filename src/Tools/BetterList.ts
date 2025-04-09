@@ -246,7 +246,7 @@ class BetterList implements Tool {
       },
       dom: "<'row'i<'#stats'>>" +
            '<tr>' +
-           "<'row'lp>",
+           "<'row dt-bottom'lp>",
       initComplete: function () {
         document.querySelector('.dt-length')!.classList.add('form-inline')
         document.querySelector('.dt-length .dt-input')!.classList.add('form-control')
