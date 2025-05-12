@@ -52,6 +52,7 @@ class Columns {
       'notes',
       'isAdult',
       'references',
+      'isPrivate',
       'activity',
       'code',
     ],
@@ -98,6 +99,7 @@ class Columns {
       'notes',
       'isAdult',
       'references',
+      'isPrivate',
       'activity',
       'code',
     ],
@@ -245,6 +247,7 @@ class Columns {
         'score',
         'notes',
         'references',
+        'isPrivate',
         'activity',
         'code',
       ]
@@ -554,6 +557,13 @@ class Columns {
       description: 'Displays how many references to the media exist in other lists of the user',
       data: 'references',
       render: (data: string[] | null) => data === null ? null : '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
+    },
+    isPrivate: {
+      name: 'isPrivate',
+      title: 'Private',
+      description: 'Displays whether the media was marked as private on the user\'s list',
+      data: 'isPrivate',
+      render: (data: boolean) => data === true ? '✓' : '✗'
     },
     activity: {
       name: 'activity',

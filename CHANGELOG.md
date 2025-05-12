@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-05-12
+- Added support for media marked as private as well as a column for that info
+
 ## 2025-04-08
 - Added new Genre and Tag Count columns
 
