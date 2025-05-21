@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-05-21
+- Added support for regex on the notes filter
+
 ## 2025-05-12
 - Added support for media marked as private as well as a column for that info
 

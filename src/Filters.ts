@@ -165,6 +165,7 @@ class Filters extends EventTarget {
       logic: 'AND',
       label: 'Notes',
       urlOrData: [],
+      regex: true,
     },
     descriptionLike: {
       type: 'text',
