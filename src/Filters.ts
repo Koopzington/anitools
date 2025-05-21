@@ -577,9 +577,7 @@ class Filters extends EventTarget {
       const json = await response.json()
 
       if (Object.hasOwn(json, 'error')) {
-        json.error.forEach((e) => {
-          this.AniTools.alert(e.message)
-        })
+        this.AniTools.alert(json.error)
       }
       if (Object.hasOwn(json, 'warnings')) {
         json.warnings.forEach((e) => {
