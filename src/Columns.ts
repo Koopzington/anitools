@@ -52,6 +52,7 @@ class Columns {
       'notes',
       'isAdult',
       'references',
+      'synonyms',
       'isPrivate',
       'activity',
       'code',
@@ -99,6 +100,7 @@ class Columns {
       'notes',
       'isAdult',
       'references',
+      'synonyms',
       'isPrivate',
       'activity',
       'code',
@@ -159,6 +161,7 @@ class Columns {
         'title',
         'titleEng',
         'titleNat',
+        'synonyms',
         'year',
         'airStart',
         'airEnd',
@@ -290,6 +293,19 @@ class Columns {
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
         return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
+    },
+    synonyms: {
+      name: 'synonyms',
+      title: 'Synonyms',
+      data: 'synonyms',
+      render: (data: string[] | null) => {
+        if (data === null){
+          return null
+        }
+        const t = data.join(',\n')
+        return '<span class="custom-tooltip wide" data-title="' + t + '">' + t.substring(0, 50) + (t.length > 50 ? '...' : '') + '</span>'
+      },
+      sortable: false
     },
     rowNum: {
       name: 'rowNum',

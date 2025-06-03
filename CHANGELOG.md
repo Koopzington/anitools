@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-06-03
+- Added new Synonyms column
+
 ## 2025-05-21
 - Added support for regex on the notes filter
 
