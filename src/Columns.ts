@@ -558,7 +558,8 @@ class Columns {
       name: 'notes',
       title: 'Notes',
       data: 'notes',
-      description: 'Displays the user\'s notes on the media'
+      description: 'Displays the user\'s notes on the media',
+      render: (data: string | null) => data === null ? null : '<span class="custom-tooltip wide" data-title="' + data + '">' + data.substring(0, 50) + (data.length > 50 ? '...' : '') + '</span>'
     },
     isAdult: {
       name: 'isAdult',
@@ -572,7 +573,7 @@ class Columns {
       title: '# References',
       description: 'Displays how many references to the media exist in other lists of the user',
       data: 'references',
-      render: (data: string[] | null) => data === null ? null : '<span class="custom-tooltip" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
+      render: (data: string[] | null) => data === null ? null : '<span class="custom-tooltip wide" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
     },
     isPrivate: {
       name: 'isPrivate',

@@ -2,6 +2,7 @@
 
 ## 2025-06-03
 - Added new Synonyms column
+- Cut off notes and display them fully in tooltips while hovering over them
 
 ## 2025-05-21
 - Added support for regex on the notes filter

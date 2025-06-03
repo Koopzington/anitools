@@ -121,7 +121,7 @@ html.show-covers-on-title-hover table a[style]::after {
     visibility: visible;
 }
 
-.custom-tooltip .wide::after {
+.custom-tooltip.wide::after {
     width: 250px;
 }
 
