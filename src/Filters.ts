@@ -12,7 +12,9 @@ class Filters extends EventTarget {
   private readonly AniTools: AniTools
   private readonly ATSettings: Settings
   private curFilterValues: any
-  private readonly andOrSwitch: HTMLButtonElement = document.createElement('button')
+  private readonly andOrSwitch: HTMLButtonElement = htmlToNode(
+    `<button class="btn btn-primary and-or-switch" title="All values must match">AND</button>`
+  )
   private readonly regexSwitch: HTMLButtonElement = document.createElement('button')
   private readonly dateMask = '^(\\d{4}|\\*)-([0]\\d|1[0-2]|\\*)-([0-2]\\d|3[01]|\\*)$'
   private readonly mangaUpdatesWarning = 'Experimental (Only a third of AL manga is currently covered with data for this)'
@@ -458,6 +460,35 @@ class Filters extends EventTarget {
     deathdayUntil: HTMLInputElement | undefined,
   } = {}
 
+  // Object to hold whitelists for Tagify filters
+  private filterWhitelists = {
+    format: [],
+    genre: [],
+    country: [],
+    externalLink: [],
+    season: [],
+    year: [],
+    source: [],
+    airStatus: [],
+    awcCommunityList: [],
+    relationToAWCCommunityList: [],
+    bloodType: [],
+    gender: [],
+    primaryOccupation: []
+  }
+
+  // Object to hold value ranges for Range filters
+  private filterRanges = {
+    tagPercentage: [0, 100],
+    totalRuntime: [],
+    episodes: [],
+    volumes: [],
+    mcCount: [],
+    meanScore: [0, 100],
+    avgScore: [0, 100],
+    popularity: []
+  }
+
   private abortController: AbortController | undefined
   // We cache tags on initialization so the user can switch between grouped and non-grouped mode on the filter
   private tagCache: Object
@@ -470,9 +501,6 @@ class Filters extends EventTarget {
     settings.addEventListener('tag-grouping-updated', this.updateTagFilter)
     this.AniTools = anitools
     this.ATSettings = settings
-    this.andOrSwitch.classList.add('btn', 'btn-primary', 'and-or-switch')
-    this.andOrSwitch.innerText = 'AND'
-    this.andOrSwitch.title = 'All values must match'
     this.regexSwitch.classList.add('btn', 'regex-switch')
     this.regexSwitch.innerText = '.*'
     this.regexSwitch.title = 'Default algorithm will be used for matching'
@@ -505,7 +533,7 @@ class Filters extends EventTarget {
   }
 
   // Function to setup all filters
-  public readonly insertFilters = async (filterSet: string) => {
+  private readonly insertFilters = async (filterSet: string) => {
     this.removeFilters()
     document.querySelector('.sidebar .sidebar-content')?.insertAdjacentElement('beforeend', this.filterContainer)
     
@@ -606,14 +634,27 @@ class Filters extends EventTarget {
       lists = [...lists].sort(undefined).filter(a => a)
     }
 
-    this.filterMap[filterSet].forEach((filterName: string) => {
+    // Check if the last selected values were stored. if yes, load them them
+    let filterValues = localStorage.getItem('filters-' + mediaTypeSelect.value.toLowerCase())
+    if (filterValues !== null) {
+      this.curFilterValues = JSON.parse(filterValues)
+      // Move tagPercentage to the right place
+      if (Object.hasOwn(this.curFilterValues.and, 'tag')) {
+        this.curFilterValues.and.tagPercentageMin = this.curFilterValues.and.tag.tagPercentageMin
+        this.curFilterValues.and.tagPercentageMax = this.curFilterValues.and.tag.tagPercentageMax
+        delete this.curFilterValues.and.tag.tagPercentageMin
+        delete this.curFilterValues.and.tag.tagPercentageMax
+      }
+    }
+
+    await Promise.all(this.filterMap[filterSet].map(async (filterName: string) => {
       const filterDef = this.filterDefs[filterName]
       switch (filterDef.type) {
         case 'text':
           this.addText(filterName, filterDef)
           break;
         case 'tagify':
-          this.addTagify(filterName, filterDef)
+          await this.addTagify(filterName, filterDef)
           break;
         case 'checkbox':
           this.addCheckbox(filterName, filterDef)
@@ -638,12 +679,20 @@ class Filters extends EventTarget {
           const field = document.createElement('input')
           field.setAttribute('placeholder', filterDef.label)
           field.classList.add('column-filter', 'form-control')
-          field.dataset.logic = filterDef.logic
-          field.value = lists[0].label
+          // Use previously selected values if present
+          if(this.curFilterValues && this.curFilterValues.and.userList) {
+            const v = Object.entries(this.curFilterValues.and.userList)[0]
+            field.dataset.logic = v[0].toUpperCase()
+            field.value = lists.filter(l => v[1].includes(l.value)).map(v => v.label).join(', ')
+          } else {
+            field.dataset.logic = filterDef.logic
+            field.value = lists[0].label
+          }
           field.addEventListener('change', this.filterChangeCallback)
           const logicSwitch: HTMLButtonElement = this.andOrSwitch.cloneNode(true)
           logicSwitch.dataset.filter = 'userList'
           logicSwitch.addEventListener('click', this.logicSwitchCallback);
+          this.setLogicSwitchMode(logicSwitch, field.dataset.logic)
           container.insertAdjacentElement('afterbegin', logicSwitch)
           container.insertAdjacentElement('beforeend', field)
           this.filterContainer.insertAdjacentElement('beforeend', container)
@@ -683,7 +732,7 @@ class Filters extends EventTarget {
           })
           break;
       }
-    })
+    }))
 
     // Backup the dropdown rendering function to switch between the custom one for tag groups and the normal one
     if (this.filters.tag !== undefined) {
@@ -698,13 +747,6 @@ class Filters extends EventTarget {
 
   // Function that updates the available options in the filters using the data the API returned
   public readonly updateFilters = async (filterSet: string): Promise<void> => {
-      await this.insertFilters(filterSet)
-      // Only really happens if the username field is filled and the user switched between media types
-      // before the lists could get loaded
-      if (Object.entries(this.filters).length === 0) {
-        return
-      }
-
       this.abortController && this.abortController.abort()
       this.abortController = new AbortController()
 
@@ -719,76 +761,71 @@ class Filters extends EventTarget {
       }
 
       const defaultValMap = (v) => { return {value: v, text: v}}
-      
+
       const filterValues = await handleResponse(response)
-      this.tagCache = filterValues.tags
-      if (this.filters.format !== undefined) {
-        this.filters.format.whitelist = filterValues.format.map(defaultValMap)
+      if (Object.hasOwn(filterValues, 'format')) {
+        this.filterWhitelists.format = filterValues.format.map(defaultValMap)
       }
-      if (this.filters.genre !== undefined) {
-        this.filters.genre.whitelist = filterValues.genres.map(defaultValMap)
+      if (Object.hasOwn(filterValues, 'genres')) {
+        this.filterWhitelists.genre = filterValues.genres.map(defaultValMap)
       }
-      if (this.filters.country !== undefined) {
-        this.filters.country.whitelist = filterValues.country_of_origin.map(defaultValMap)
+      if (Object.hasOwn(filterValues, 'country_of_origin')) {
+        this.filterWhitelists.country = filterValues.country_of_origin.map(defaultValMap)
       }
-      if (this.filters.externalLink !== undefined) {
-        this.filters.externalLink.whitelist = filterValues.external_links.map(defaultValMap)
+      if (Object.hasOwn(filterValues, 'external_links')) {
+        this.filterWhitelists.externalLink = filterValues.external_links.map(defaultValMap)
       }
-      if (this.filters.season !== undefined) {
-        this.filters.season.whitelist = filterValues.season.map(defaultValMap)
+      if (Object.hasOwn(filterValues, 'season')) {
+        this.filterWhitelists.season = filterValues.season.map(defaultValMap)
       }
-      if (this.filters.year !== undefined) {
-        let values = filterValues.season_year.map(defaultValMap)
-        this.filters.year.whitelist = values
-        this.yearCache = values
+      if (Object.hasOwn(filterValues, 'season_year')) {
+        this.yearCache = filterValues.season_year.map(defaultValMap)
+        this.filterWhitelists.year = this.yearCache
       }
-      if (this.filters.source !== undefined) {
-        this.filters.source.whitelist = filterValues.source.map(defaultValMap)
+      if (Object.hasOwn(filterValues, 'source')) {
+        this.filterWhitelists.source = filterValues.source.map(defaultValMap)
       }
-      if (this.filters.airStatus !== undefined) {
-        this.filters.airStatus.whitelist = filterValues.status.map(defaultValMap)
+      if (Object.hasOwn(filterValues, 'status')) {
+        this.filterWhitelists.airStatus = filterValues.status.map(defaultValMap)
       }
-      if (this.filters.awcCommunityList !== undefined) {
-        this.filters.awcCommunityList.whitelist = filterValues.awc_community_lists.map(defaultValMap)
+      if (Object.hasOwn(filterValues, 'awc_community_lists')) {
+        this.filterWhitelists.awcCommunityList = filterValues.awc_community_lists.map(defaultValMap)
       }
-      if (this.filters.relationToAWCCommunityList !== undefined) {
-        this.filters.relationToAWCCommunityList.whitelist = filterValues.awc_community_lists.map(defaultValMap)
+      if (Object.hasOwn(filterValues, 'awc_community_lists')) {
+        this.filterWhitelists.relationToAWCCommunityList = filterValues.awc_community_lists.map(defaultValMap)
       }
+      if (Object.hasOwn(filterValues, 'blood_type')) {
+        this.filterWhitelists.bloodType = filterValues.blood_type.map(defaultValMap)
+      }
+      if (Object.hasOwn(filterValues, 'gender')) {
+        this.filterWhitelists.gender = filterValues.gender.map(defaultValMap)
+      }
+      if (Object.hasOwn(filterValues, 'primary_occupations')) {
+        this.filterWhitelists.primaryOccupation = filterValues.primary_occupations.map(defaultValMap)
+      }
+      if (Object.hasOwn(filterValues, 'tags')) {
+        this.tagCache = filterValues.tags
+      }
+      if (Object.hasOwn(filterValues, 'total_runtime')) {
+        this.filterRanges.totalRuntime = filterValues.total_runtime
+      }
+      if (Object.hasOwn(filterValues, 'episodes')) {
+        this.filterRanges.episodes = filterValues.episodes
+      }
+      if (Object.hasOwn(filterValues, 'volumes')) {
+        this.filterRanges.volumes = filterValues.volumes
+      }
+      if (Object.hasOwn(filterValues, 'mcCount')) {
+        this.filterRanges.mcCount = filterValues.mcCount
+      }
+      if (Object.hasOwn(filterValues, 'popularity')) {
+        this.filterRanges.popularity = [0, filterValues.popularity]
+      }
+
+      await this.insertFilters(filterSet)
+      
       if (this.filters.tag !== undefined) {
         this.updateTagFilter()
-      }
-      if (this.filters.tagPercentage !== undefined) {
-        this.updateRangeFilter(this.filters.tagPercentage, [0, 100])
-      }
-      if (this.filters.totalRuntime !== undefined) {
-        this.updateRangeFilter(this.filters.totalRuntime, filterValues.total_runtime)
-      }
-      if (this.filters.episodes !== undefined) {
-        this.updateRangeFilter(this.filters.episodes, filterValues.episodes)
-      }
-      if (this.filters.volumes !== undefined) {
-        this.updateRangeFilter(this.filters.volumes, filterValues.volumes)
-      }
-      if (this.filters.mcCount !== undefined) {
-        this.updateRangeFilter(this.filters.mcCount, filterValues.mcCount)
-      }
-      if (this.filters.meanScore !== undefined) {
-        this.updateRangeFilter(this.filters.meanScore, [0, 100])
-      }
-      if (this.filters.avgScore !== undefined) {
-        this.updateRangeFilter(this.filters.avgScore, [0, 100])
-      }
-      if (this.filters.popularity !== undefined) {
-        this.updateRangeFilter(this.filters.popularity, [0, filterValues.popularity])
-      }
-      if (this.filters.bloodType !== undefined) {
-        this.filters.bloodType.whitelist = filterValues.blood_type.map(defaultValMap)
-      }
-      if (this.filters.gender !== undefined) {
-        this.filters.gender.whitelist = filterValues.gender.map(defaultValMap)
-      }
-      if (this.filters.primaryOccupation !== undefined) {
-        this.filters.primaryOccupation.whitelist = filterValues.primary_occupations.map(defaultValMap)
       }
       
       this.curFilterValues = this.getFilterParams()
@@ -801,6 +838,8 @@ class Filters extends EventTarget {
       this.dispatchEvent(new Event('filter-changed'))
     }
     this.curFilterValues = newValues
+    // Store selected values so we can initialize them on page reloads
+    localStorage.setItem('filters-' + mediaTypeSelect.value.toLowerCase(), JSON.stringify(newValues))
   }
 
   private readonly regexSwitchCallback = (ev) => {
@@ -821,17 +860,26 @@ class Filters extends EventTarget {
     const field = this.filters[logicSwitch.dataset.filter].DOM.originalInput
     const newLogic = field.dataset.logic === 'AND' ? 'OR' : 'AND'
     field.dataset.logic = newLogic
-    logicSwitch.innerText = newLogic
-    logicSwitch.title = newLogic === 'AND' ? 'All values must match' : 'Any values may match'
+    this.setLogicSwitchMode(logicSwitch, newLogic)
     this.filterChangeCallback()
+  }
+
+  private readonly setLogicSwitchMode = (e: HTMLButtonElement, newMode: string) => {
+    newMode = newMode.toUpperCase()
+    e.innerText = newMode
+    e.title = newMode === 'AND' ? 'All values must match' : 'Any values may match'
   }
 
   private readonly addText = (col: string, filterDef: FilterDefinition) => {
     const container = this.filterTemplate.cloneNode(true)
+    this.filterContainer.insertAdjacentElement('beforeend', container)
     const input = document.createElement('input')
     input.classList.add('column-filter', 'form-control')
     input.dataset.column = col
     input.placeholder = filterDef.label
+    if (this.curFilterValues && this.curFilterValues.and[col]) {
+      input.value = this.curFilterValues.and[col].value
+    }
 
     if (Object.hasOwn(filterDef, 'mask') && filterDef.mask !== null) {
       Inputmask({ regex: filterDef.mask }).mask(input)
@@ -842,6 +890,10 @@ class Filters extends EventTarget {
       const regexSwitch: HTMLButtonElement = this.regexSwitch.cloneNode(true)
       regexSwitch.dataset.filter = col
       regexSwitch.addEventListener('click', this.regexSwitchCallback)
+      if (this.curFilterValues && this.curFilterValues.and[col] && this.curFilterValues.and[col].regex === true) {
+        input.dataset.regex = 'regex'
+        regexSwitch.classList.add('btn-primary')
+      }
 
       container.insertAdjacentElement('afterbegin', regexSwitch)
     }
@@ -856,26 +908,68 @@ class Filters extends EventTarget {
       container.insertAdjacentElement('beforeend', info)
     }
 
-    this.filterContainer.insertAdjacentElement('beforeend', container)
     input.addEventListener('keyup', this.filterChangeCallback)
   }
 
   // Function to add a Tagify type filter
-  private readonly addTagify = (col: string, filterDef: FilterDefinition) => {
+  private readonly addTagify = async (col: string, filterDef: FilterDefinition) => {
     const container = this.filterTemplate.cloneNode(true)
+    this.filterContainer.insertAdjacentElement('beforeend', container)
     const field = document.createElement('input')
     field.setAttribute('placeholder', filterDef.label)
     field.classList.add('column-filter', 'form-control')
-    field.dataset.logic = filterDef.logic
+    if(this.curFilterValues && this.curFilterValues.and[col]) {
+      let foundLogic = 'and'
+      let values = [];
+      await Promise.all(Object.entries(this.curFilterValues.and[col]).map(async (v) => {
+        // Filter values can only contain either 'and' or 'or' and optionally 'not'
+        // So we set the logic to the not-'not' we find
+        if (v[0] !== 'not') {
+          foundLogic = v[0].toUpperCase()
+        }
+        // Check values against whitelist
+        if (Object.hasOwn(this.filterWhitelists, col)) {
+          this.filterWhitelists[col].filter(l => v[1].includes(l.value)).forEach((val) => {
+            val.exclude = v[0] === 'not' ? true : false
+            values.push(val)
+          })
+        } else {
+          await Promise.all(v[1].map(async (val) => {
+            let t: TagifyValue = {
+              value: val
+            }
+            // Fetch the associated label from the backend if needed
+            if (typeof filterDef.urlOrData === 'string' && filterDef.urlOrData !== '*') {
+              const result = await this.AniTools.fetch(filterDef.urlOrData + '?q=' + val)
+              const data = await result.json()
+              // In case the backend no longer finds the value skip it
+              if (data.length === 0) {
+                return
+              }
+              t = data[0]
+            }
+            t.exclude = v[0] === 'not' ? true : false
+            values.push(t)
+          }))
+        }
+      }))
+      field.value = JSON.stringify(values)
+      field.dataset.logic = foundLogic
+    } else {
+      field.dataset.logic = filterDef.logic
+    }
+
     field.addEventListener('change', this.filterChangeCallback)
     container.insertAdjacentElement('beforeend', field)
+    // This might be confusing but we only need the switches for the filters that start with AND
+    // Because the filters that start as OR are filtering fields that can only have one value
     if (filterDef.logic === 'AND') {
       const logicSwitch: HTMLButtonElement = this.andOrSwitch.cloneNode(true)
       logicSwitch.dataset.filter = col
+      this.setLogicSwitchMode(logicSwitch, field.dataset.logic)
       logicSwitch.addEventListener('click', this.logicSwitchCallback);
       container.insertAdjacentElement('afterbegin', logicSwitch)
     }
-    this.filterContainer.insertAdjacentElement('beforeend', container)
 
     if (Object.hasOwn(filterDef, 'tooltip') && filterDef.tooltip.length > 0) {
       const info = this.tooltipElement.cloneNode(true)
@@ -883,8 +977,20 @@ class Filters extends EventTarget {
       container.insertAdjacentElement('beforeend', info)
     }
 
+    let whitelist: any[] = []
+    if (Object.hasOwn(this.filterWhitelists, col)) {
+      whitelist = this.filterWhitelists[col]
+    } else if (field.value.length> 0 && typeof filterDef.urlOrData === 'string' && filterDef.urlOrData !== '*') {
+      whitelist = JSON.parse(field.value).map((v) => {
+        delete v['exclude']
+        return v
+      })
+    } else if (col === 'tag') {
+      whitelist = this.getTagFilterWhitelist()
+    }
+
     const options = {
-      whitelist: [],
+      whitelist: whitelist,
       tagTextProp: 'text',
       pasteAsTags: false,
       editTags: false,
@@ -896,9 +1002,11 @@ class Filters extends EventTarget {
         highlightFirst: true,
         closeOnSelect: typeof filterDef.urlOrData === 'string'
       },
-      // Set default properties of tags
+      // Add the exclude property to tags if they don't have them yet
       transformTag: (tagData) => {
-        tagData.exclude = false
+        if (! Object.hasOwn(tagData, 'exclude')) {
+          tagData.exclude = false
+        }
       },
       // Custom wrapper template to add a "Remove all" button
       templates: {
@@ -918,23 +1026,22 @@ class Filters extends EventTarget {
     if (filterDef.urlOrData !== '*') {
       options['enforceWhitelist'] = true
     }
-    const tagify: Tagify = new Tagify(field, options)
-    // Make the "Remove all" button remove all selected values
-    tagify.DOM.scope.querySelector('.clear-filter').addEventListener('click', tagify.removeAllTags.bind(tagify))
 
     // We received an URL for fetching tags remotely
     if (typeof filterDef.urlOrData === 'string' && filterDef.urlOrData !== '*') {
       // Trigger the InputHandler when somebody pastes into the field
-      tagify.settings.hooks.beforePaste = async function (_tagify, pastedText) {
-        // It wants a promise? It get's a promise
-        return await new Promise(function (resolve) {
-          tagifyInputHandler(pastedText.pastedText)
-          resolve()
-        })
+      options.hooks = {
+        beforePaste: (_e, data) => {
+          // It wants a promise? It get's a promise
+          return new Promise(function (resolve) {
+            tagifyInputHandler(data.tagify, data.pastedText)
+            resolve()
+          })
+        }
       }
 
       let controller: AbortController
-      const tagifyInputHandler = (value: string) => {
+      const tagifyInputHandler = (tagify: Tagify, value: string) => {
         tagify.whitelist = null // reset the whitelist
 
         controller && controller.abort()
@@ -955,10 +1062,11 @@ class Filters extends EventTarget {
           .catch(() => null)
       }
 
-      tagify.on('input', (e) => {
-        tagifyInputHandler(e.detail.tagify.state.inputText)
-      })
-      // Ideally this shouldn't be here but it's the only usecase
+      options.callbacks = {
+        input: (e) => {
+          tagifyInputHandler(e.detail.tagify, e.detail.tagify.state.inputText)
+        }
+      }
     } else if (col === 'year') {
       const tagifyInputHandler = (value: string) => {
         if (value.indexOf('-') === -1) {
@@ -980,10 +1088,16 @@ class Filters extends EventTarget {
         this.filters.year.dropdown.show(value)
       }
 
-      tagify.on('input', (e) => {
-        tagifyInputHandler(e.detail.tagify.state.inputText)
-      })
+      options.callbacks = {
+        input: (e) => {
+          tagifyInputHandler(e.detail.tagify.state.inputText)
+        }
+      }
     }
+
+    const tagify: Tagify = new Tagify(field, options)
+    // Make the "Remove all" button remove all selected values
+    tagify.DOM.scope.querySelector('.clear-filter').addEventListener('click', tagify.removeAllTags.bind(tagify))
 
     // Invert value of exclude property on click
     tagify.on('click', (e) => {
@@ -997,6 +1111,7 @@ class Filters extends EventTarget {
 
   private readonly addCheckbox = (col: string, filterDef: FilterDefinition): void => {
     const cswitch = document.createElement('div')
+    this.filterContainer.insertAdjacentElement('beforeend', cswitch)
     cswitch.classList.add('custom-switch')
     const labelElement: HTMLLabelElement = document.createElement('label')
     labelElement.htmlFor = col
@@ -1005,6 +1120,9 @@ class Filters extends EventTarget {
     field.type = 'checkbox'
     field.id = col
     field.classList.add('column-filter')
+    if (this.curFilterValues && this.curFilterValues.and[col]) {
+      field.checked = this.curFilterValues.and[col] === true
+    }
     field.addEventListener('click', this.filterChangeCallback)
     cswitch.insertAdjacentElement('beforeend', field)
     cswitch.insertAdjacentElement('beforeend', labelElement)
@@ -1018,8 +1136,6 @@ class Filters extends EventTarget {
     }
 
     this.filters[col] = field
-
-    this.filterContainer.insertAdjacentElement('beforeend', cswitch)
   }
 
   private readonly addRange = (col: string, filterDef: FilterDefinition): void => {
@@ -1044,15 +1160,41 @@ class Filters extends EventTarget {
     maxField.classList.add('column-filter', 'form-control')
     formInline.insertAdjacentElement('beforeend', maxField)
 
+    const firstVal = 0
+    const lastVal = this.filterRanges[col][this.filterRanges[col].length - 1]
+
+    let startMin = firstVal
+    let startMax = lastVal
+    if (this.curFilterValues && this.curFilterValues.and[col + 'Min']) {
+      startMin = this.curFilterValues.and[col + 'Min']
+    }
+    if (this.curFilterValues && this.curFilterValues.and[col + 'Max']) {
+      startMax = this.curFilterValues.and[col + 'Max']
+    }
+
     this.filterContainer.insertAdjacentElement('beforeend', formInline)
 
-    this.filters[col] = container
-    noUiSlider.create(container, {
-      start: [0, 9999],
+    let options = {
+      start: [startMin, startMax],
       connect: true,
       format: wNumb({ decimals: 0 }),
-      range: { min: 0, max: 9999 }
-    })
+      range: {
+        min: 0,
+        max: lastVal
+      }
+    }
+
+    // Calculate steps
+    for (let i = 0; i < this.filterRanges[col].length - 1; ++i) {
+      options.range[
+        (
+          (this.filterRanges[col][i] / this.filterRanges[col][this.filterRanges[col].length - 1]) * 100
+        ).toString() + '%'
+      ] = this.filterRanges[col][i]
+    }
+
+    this.filters[col] = container
+    noUiSlider.create(container, options)
     container.noUiSlider.on('set', () => {
       container.dispatchEvent(new Event('change'))
       this.filterChangeCallback()
@@ -1086,26 +1228,10 @@ class Filters extends EventTarget {
     })
   }
 
-  private readonly updateRangeFilter = (filter, values) => {
-    // Prepare options object to update episode filter
-    const options = {
-      start: [filter.noUiSlider.get()[0], values[values.length - 1]],
-      range: {
-        min: 0,
-        max: values[values.length - 1]
-      }
-    }
-
-    // Calculate steps
-    for (let i = 0; i < values.length - 1; ++i) {
-      options.range[((values[i] / values[values.length - 1]) * 100).toString() + '%'] = values[i]
-    }
-    filter.noUiSlider.updateOptions(options, false)
-  }
-
-  private readonly updateTagFilter = (): void => {
+  private readonly getTagFilterWhitelist = (): any[] => {
+    let whitelist: any[] = []
     if (!this.tagCache) {
-      return
+      return whitelist
     }
     const values: any[] = []
     Object.entries(this.tagCache).forEach((group) => {
@@ -1117,7 +1243,22 @@ class Filters extends EventTarget {
         })
       })
     })
-    this.filters.tag.whitelist = values
+    whitelist = values
+
+    if (this.ATSettings.shouldGroupTags()) {
+    } else {
+      // Sort values alphabetically
+      values.sort((x,y) => { if (x.value < y.value) { return -1 } if (x.value > y.value) { return 1 } return 0 } );
+      whitelist = values
+    }
+
+    return whitelist
+  }
+
+  private readonly updateTagFilter = (): void => {
+    if (!this.tagCache) {
+      return
+    }
 
     if (this.ATSettings.shouldGroupTags()) {
       this.filters.tag.dropdown.createListHTML = (suggestionList) => {
@@ -1147,12 +1288,11 @@ class Filters extends EventTarget {
           }).join("")
       }
     } else {
-      // Sort values alphabetically
-      values.sort((x,y) => { if (x.value < y.value) { return -1 } if (x.value > y.value) { return 1 } return 0 } );
-      this.filters.tag.whitelist = values
       // Reset Dropdown rendering function to default
       this.filters.tag.dropdown.createListHTML = this.filters.tag.dropdown.createListHTMLoriginal
     }
+
+    this.filters.tag.whitelist = this.getTagFilterWhitelist()
   }
 
   public getFilters = (): any => this.filters

@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-06-04
+- Filter values are now stored and reused between sessions
+
 ## 2025-06-03
 - Added new Synonyms column
 - Cut off notes and display them fully in tooltips while hovering over them
