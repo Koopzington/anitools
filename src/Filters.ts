@@ -760,7 +760,7 @@ class Filters extends EventTarget {
         return
       }
 
-      const defaultValMap = (v) => { return {value: v, text: v}}
+      const defaultValMap = (v) => { return {value: v.toString(), text: v.toString()}}
 
       const filterValues = await handleResponse(response)
       if (Object.hasOwn(filterValues, 'format')) {
@@ -878,7 +878,11 @@ class Filters extends EventTarget {
     input.dataset.column = col
     input.placeholder = filterDef.label
     if (this.curFilterValues && this.curFilterValues.and[col]) {
-      input.value = this.curFilterValues.and[col].value
+      if (Object.hasOwn(filterDef, 'regex') && filterDef.regex === true) {
+        input.value = this.curFilterValues.and[col].value
+      } else {
+        input.value = this.curFilterValues.and[col]
+      }
     }
 
     if (Object.hasOwn(filterDef, 'mask') && filterDef.mask !== null) {
@@ -929,6 +933,15 @@ class Filters extends EventTarget {
         }
         // Check values against whitelist
         if (Object.hasOwn(this.filterWhitelists, col)) {
+          if (col === 'year') {
+            // Manually validate and add year ranges is present
+            v[1].filter(val => val.toString().indexOf('-') > -1).map((val) => {
+              const split = val.split('-').map(s => parseInt(s))
+              if (split[0] < split[1]) {
+                values.push(val)
+              }
+            })
+          }
           this.filterWhitelists[col].filter(l => v[1].includes(l.value)).forEach((val) => {
             val.exclude = v[0] === 'not' ? true : false
             values.push(val)
@@ -978,15 +991,22 @@ class Filters extends EventTarget {
     }
 
     let whitelist: any[] = []
-    if (Object.hasOwn(this.filterWhitelists, col)) {
+    if (col === 'tag') {
+      whitelist = this.getTagFilterWhitelist()
+    } else if (col === 'year') {
+      whitelist = this.filterWhitelists[col]
+      if (field.value.length> 0) {
+        JSON.parse(field.value).filter(v => v.indexOf('-') > -1).forEach(v => {
+          whitelist.push(v)
+        });
+      }
+    } else if (Object.hasOwn(this.filterWhitelists, col)) {
       whitelist = this.filterWhitelists[col]
     } else if (field.value.length> 0 && typeof filterDef.urlOrData === 'string' && filterDef.urlOrData !== '*') {
       whitelist = JSON.parse(field.value).map((v) => {
         delete v['exclude']
         return v
       })
-    } else if (col === 'tag') {
-      whitelist = this.getTagFilterWhitelist()
     }
 
     const options = {
@@ -1074,7 +1094,7 @@ class Filters extends EventTarget {
           this.filters.year.dropdown.show(value)
           return
         }
-        const split = value.split('-').map(parseInt)
+        const split = value.split('-').map(v => parseInt(v))
         let newWhitelist: TagifyValue[] = [];
         this.yearCache.forEach(element => {
           if (element.value > split[0]) {
