@@ -996,7 +996,7 @@ class Filters extends EventTarget {
     } else if (col === 'year') {
       whitelist = this.filterWhitelists[col]
       if (field.value.length> 0) {
-        JSON.parse(field.value).filter(v => v.indexOf('-') > -1).forEach(v => {
+        JSON.parse(field.value).filter(v => v.value.indexOf('-') > -1).forEach(v => {
           whitelist.push(v)
         });
       }
