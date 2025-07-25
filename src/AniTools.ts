@@ -24,6 +24,7 @@ class AniTools {
   private readonly AniList: AniList
   private readonly toolSelect: HTMLSelectElement = htmlToNode('<select id="tool-dropdown" class="form-control"></select>')
   private activeModule: string | undefined
+  private curWindowWidth: number = window.innerWidth
 
   private readonly alertElement: HTMLDivElement = htmlToNode(`
   <div class="alert" role="alert">
@@ -152,6 +153,14 @@ class AniTools {
 
   // Function moving elements around depending on screen width
   private readonly handleInputs = (): void => {
+    // The window resize event gets triggered on mobile devices when the soft keyboard is opened
+    // Chrome doesn't like it when focused elements (i.e. the user name input) is being moved during focus and
+    // so we exit early when no change in window width was detected and prevent any moving
+    if (window.innerWidth === this.curWindowWidth) {
+      return
+    }
+    this.curWindowWidth = window.innerWidth
+    
     const movingElements = [
       loadButton,
       userNameField,
