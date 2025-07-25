@@ -24,7 +24,7 @@ class AniTools {
   private readonly AniList: AniList
   private readonly toolSelect: HTMLSelectElement = htmlToNode('<select id="tool-dropdown" class="form-control"></select>')
   private activeModule: string | undefined
-  private curWindowWidth: number = window.innerWidth
+  private curWindowWidth: number = 0
 
   private readonly alertElement: HTMLDivElement = htmlToNode(`
   <div class="alert" role="alert">
