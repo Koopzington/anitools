@@ -592,7 +592,8 @@ class Columns {
       name: 'code',
       title: 'Challenge Code',
       description: 'Displays a button that copies the link title, start and finish date for the media formatted for AWC challenges',
-      render: (_data, _type, row: Media) => '<button data-id="' + row.id.toString() + '" class="btn btn-sm copy-code">Copy Code</button>'
+      render: (_data, _type, row: Media) => '<button data-id="' + row.id.toString() + '" class="btn btn-sm copy-code">Copy Code</button>',
+      orderable: false
     },
     nameFirst: {
       name: 'nameFirst',
