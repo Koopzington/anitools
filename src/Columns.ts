@@ -573,7 +573,7 @@ class Columns {
       name: 'hasReview',
       title: 'Has review',
       data: 'hasReview',
-      render: (data: number) => data === 1 ? '✓' : '✗'
+      render: (data: boolean) => data === true ? '✓' : '✗'
     },
     notes: {
       name: 'notes',
