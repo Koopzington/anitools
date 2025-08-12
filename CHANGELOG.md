@@ -1,5 +1,10 @@
 # Changelog
 
+## 2025-08-12
+- Added new "Is Doujin" column, indicating whether the work was selfpublished or not
+- Changed the "English Title" column's behaviour to not fallback to Romaji if no english title exists
+- Add a new "English Title (with Romaji fallback)" column to behave the old way
+
 ## 2025-06-04
 - Filter values are now stored and reused between sessions
 

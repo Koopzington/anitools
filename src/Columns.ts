@@ -11,6 +11,7 @@ class Columns {
       'rowNum',
       'title',
       'titleEng',
+      'titleEngRom',
       'titleNat',
       'id',
       'seasonYear',
@@ -51,6 +52,7 @@ class Columns {
       'hasReview',
       'notes',
       'isAdult',
+      'isDoujin',
       'references',
       'synonyms',
       'isPrivate',
@@ -61,6 +63,7 @@ class Columns {
       'rowNum',
       'title',
       'titleEng',
+      'titleEngRom',
       'titleNat',
       'id',
       'seasonYear',
@@ -99,6 +102,7 @@ class Columns {
       'hasReview',
       'notes',
       'isAdult',
+      'isDoujin',
       'references',
       'synonyms',
       'isPrivate',
@@ -160,6 +164,7 @@ class Columns {
       cols: [
         'title',
         'titleEng',
+        'titleEngRom',
         'titleNat',
         'synonyms',
         'year',
@@ -183,7 +188,8 @@ class Columns {
         'statusDropped',
         'statusPaused',
         'hasReview',
-        'isAdult'
+        'isAdult',
+        'isDoujin'
       ]
     },
     'Anime columns': {
@@ -280,9 +286,24 @@ class Columns {
       name: 'titleEng',
       title: 'English Title',
       data: 'titleEng',
-      render: (data: string, _type, row: Media) => {
+      render: (data: string | null, _type, row: Media) => {
+        if (data === null) {
+          return null;
+        }
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + (data ?? row.title) + '</a>'
+        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+      }
+    },
+    titleEngRom: {
+      name: 'titleEngRom',
+      title: 'English Title (with Romaji fallback)',
+      data: 'titleEngRom',
+      render: (data: string | null, _type, row: Media) => {
+        if (data === null) {
+          return null;
+        }
+        const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
     },
     titleNat: {
@@ -567,6 +588,13 @@ class Columns {
       description: 'Displays whether the media contains adult content or not',
       data: 'isAdult',
       render: (data: number) => data === 1 ? '✓' : '✗'
+    },
+    isDoujin: {
+      name: 'isDoujin',
+      title: 'Is Doujin',
+      description: 'Displays whether the media is officially licensed or a self-published doujin release',
+      data: 'isDoujin',
+      render: (data: boolean) => data === true ? '✓' : '✗'
     },
     references: {
       name: 'references',
