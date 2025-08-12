@@ -326,7 +326,7 @@ class Columns {
         const t = data.join(',\n')
         return '<span class="custom-tooltip wide" data-title="' + t + '">' + t.substring(0, 50) + (t.length > 50 ? '...' : '') + '</span>'
       },
-      sortable: false
+      orderable: false
     },
     rowNum: {
       name: 'rowNum',
@@ -392,7 +392,7 @@ class Columns {
       title: 'Genres',
       data: 'genres',
       render: (data: string[] | null) => data !== null ? data.join(', ') : null,
-      sortable: false
+      orderable: false
     },
     genreCount: {
       name: 'genreCount',
@@ -412,7 +412,7 @@ class Columns {
         data.forEach(t => tags.push(t.tag))
         return tags.join(', ')
       },
-      sortable: false
+      orderable: false
     },
     tagCount: {
       name: 'tagCount',
@@ -525,14 +525,14 @@ class Columns {
       title: 'Studios',
       data: 'studios',
       render: (data: string[] | null) => data !== null ? data.join(', ') : null,
-      sortable: false
+      orderable: false
     },
     producers: {
       name: 'producers',
       title: 'Producers',
       data: 'producers',
       render: (data: string[] | null) => data !== null ? data.join(', ') : null,
-      sortable: false
+      orderable: false
     },
     statusCurrent: {
       name: 'statusCurrent',
@@ -665,14 +665,14 @@ class Columns {
       title: 'Alternative Names',
       data: 'nameAlternatives',
       render: (data: string[] | null) => data !== null ? data.join(', ') : null,
-      sortable: false
+      orderable: false
     },
     nameAlternativesSpoiler: {
       name: 'nameAlternativesSpoiler',
       title: 'Alternative Spoiler Names',
       data: 'nameAlternativesSpoiler',
       render: (data: string[] | null) => data !== null ? '<span class="spoiler">' + data.join('</span>, <span class="spoiler">') + '</span>' : null,
-      sortable: false
+      orderable: false
     },
     description: {
       name: 'description',
