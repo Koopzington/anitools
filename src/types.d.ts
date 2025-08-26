@@ -1,3 +1,5 @@
+import { ConfigColumns } from "datatables.net"
+
 interface Media {
   title: string
   titleEng: string
@@ -126,4 +128,9 @@ interface FilterDefinition {
   mask: string
   experimental: boolean
   tooltip: string
+}
+
+interface ColumnDef extends ConfigColumns {
+  buttonLabel?: string
+  description?: string
 }

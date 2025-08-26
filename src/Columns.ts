@@ -1,6 +1,7 @@
 /* global localStorage */
 
 import { mediaTypeSelect } from "./GlobalElements"
+import { ColumnDef } from "types"
 
 class Columns {
   private readonly anilistBaseLink: string = 'https://anilist.co/'
@@ -272,7 +273,7 @@ class Columns {
     'format'
   ]
 
-  private readonly columnDefs = {
+  private readonly columnDefs: Record<string, ColumnDef> = {
     title: {
       name: 'title',
       title: 'Romaji Title',
