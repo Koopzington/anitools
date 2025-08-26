@@ -26,33 +26,6 @@ class Filters extends EventTarget {
   private readonly filterTemplate: HTMLDivElement = htmlToNode('<div class="d-flex"></div>')
 
   private readonly filterMap = {
-    MAPPER: [
-      'id',
-      'titleLike',
-      'notesLike',
-      'descriptionLike',
-      'userList',
-      'format',
-      'source',
-      'country',
-      'airStatus',
-      'genre',
-      'tag',
-      'tagPercentage',
-      'year',
-      'airingStart',
-      'airingFinish',
-      'userStartFrom',
-      'userFinishUntil',
-      'externalLink',
-      'staff',
-      'episodes',
-      'volumes',
-      'meanScore',
-      'avgScore',
-      'mcCount',
-      'showAdult',
-    ],
     MANGA: [
       'id',
       'titleLike',

@@ -117,53 +117,6 @@ interface ALUserInfo {
   name: string
 }
 
-interface MangaUpdatesAuthor {
-  name: string
-  type: string
-  author_id: number
-}
-
-interface MangaUpdatesPublisher {
-  type: string
-  notes: string
-  publisher_id: number
-  publisher_name: string
-}
-
-interface MangaUpdatesPublication {
-  publisher_id: number
-  publisher_name: string
-  publication_name: string
-}
-
-interface MapperSuggestion {
-  last_updated: string
-  titles: string[]
-  description: string
-  type: string
-  year: string
-  cover: string
-  genres: string[]
-  categories: string[]
-  latest_chapter: number
-  original_status: string
-  licensed: boolean
-  scanlation_completed: boolean
-  authors: MangaUpdatesAuthor[]
-  publishers: MangaUpdatesPublisher[]
-  publications: MangaUpdatesPublication[]
-  id: number
-  voted: boolean
-  score: number
-  voters: string[]
-  stats: {
-    total_unmapped: number
-    total_mapped: number
-    total_unvoted: number
-    total_unvoted_filtered: number
-  }
-}
-
 interface FilterDefinition {
   type: string
   label: string

@@ -14,8 +14,7 @@ import Settings from './Settings'
 import BetterList from './Tools/BetterList'
 import Filters from './Filters'
 import AniList from './AniList'
-import Mapper from './Tools/Mapper'
-import { htmlToNode } from './commonLib'
+import { generateHash, htmlToNode } from './commonLib'
 import { mediaTypeSelect, userNameField, loadButton } from './GlobalElements'
 
 class AniTools {
@@ -57,7 +56,6 @@ class AniTools {
     const filters = new Filters(this, settings)
     const columns = new Columns()
     this.Tools.BetterList = new BetterList(this, settings, filters, columns, this.AniList)
-    this.Tools.Mapper = new Mapper(this, filters)
     
     settings.initSettings()
     columns.initToggles()
@@ -178,13 +176,34 @@ class AniTools {
     })
   }
 
-  private readonly initChangelog = (): void => {
-    document.querySelector('#show-changelog')?.addEventListener('click', async (): Promise<void> => {
-      // We need to import the markdown file as a module, otherwise it won't make it into the build
-      const changelogRawImport = await import('../CHANGELOG.md')
-      const changelogRaw = await fetch(changelogRawImport.default)
-      document.querySelector('#changelog-content')!.innerHTML = marked.parse(await changelogRaw.text())
-    });
+  private readonly initChangelog = async (): Promise<void> => {
+    // We need to import the markdown file as a module, otherwise it won't make it into the build
+    const changelogRawImport = await import('../CHANGELOG.md')
+    const changelogRaw = await fetch(changelogRawImport.default)
+    const changelogText = await changelogRaw.text()
+    const hash = await generateHash(changelogText)
+    const lastHash = localStorage.getItem('changelog-hash')
+    if (hash !== lastHash) {
+      const badge = htmlToNode(`<span class="notification-badge fa-stack">
+        <i style="color: white" class="fa fa-circle fa-stack-1x"></i>
+        <i style="color: red;" class="fa fa-circle-exclamation fa-stack-1x fa-inverse"></i>
+      </span>`)
+      // Change detected, add notification badge
+      document.querySelectorAll('.show-changelog').forEach((e) => {
+        e.insertAdjacentElement('beforeend', badge?.cloneNode(true))
+      })
+    }
+
+    document.querySelectorAll('.show-changelog').forEach((e) => {
+      e.addEventListener('click', async (): Promise<void> => {
+        document.querySelector('#changelog-content')!.innerHTML = marked.parse(changelogText)
+        // Mark this version of the changelog as "read"
+        localStorage.setItem('changelog-hash', hash)
+        document.querySelectorAll('.show-changelog .notification-badge').forEach((e) => {
+          e.remove()
+        })
+      });
+    })
   }
 
   public readonly isLoggedIn = (): boolean => {

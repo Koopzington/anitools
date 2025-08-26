@@ -273,95 +273,6 @@ img[src="null"] {
     display: none;
 }
 
-.mapper-content {
-    display: grid;
-    grid-template-columns: auto;
-    gap: var(--content-and-card-spacing);
-    margin-top: 1rem;
-}
-
-.mapper-content .card {
-    margin: 0;
-}
-
-.mapper-content .card .content {
-    --content-and-card-spacing-xs: 1rem;
-}
-
-@media (width <= 768px) {
-    .mapper-content .card .content .d-flex {
-        gap: var(--content-and-card-spacing-xs);
-    }
-}
-
-@media (width >= 769px) {
-    .mapper-content {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-.mapper-content .anilist-entry {
-    border-color: var(--primary-color);
-    border-width: 2px;
-}
-
-/* To differentiate between browser CTRL+F and the automatic marking */
-.mapper-content mark.highlight {
-    background-color: #ffa500;
-}
-
-.mapper-content .multi-check {
-    height: 2rem;
-    width: 2rem;
-}
-
-.mapper-content .content-title {
-    font-size: 1.5rem;
-}
-
-.mapper-content img,
-#my-votes img {
-    min-width: 150px;
-    max-height: 233px;
-}
-
-@media (width <= 768px) {
-    .mapper-content img,
-    #my-votes img {
-        min-width: 125px;
-        max-height: 166px;
-    }
-}
-
-.mapper-content .other-titles {
-    display: grid;
-    margin-bottom: 1rem;
-}
-
-.mapper-content .collapse-panel .collapse-header,
-.mapper-content .collapse-panel[open] .collapse-header:not(.without-arrow) {
-    padding: 0.5rem 0.5rem 0.5rem 2rem;
-    background-position: 0.5rem center;
-}
-
-.mapper-content .collapse-content {
-    padding: 0.5rem;
-}
-
-#my-votes.dt-table td {
-    white-space: wrap;
-}
-
-#my-votes.dt-table td.media-col {
-    text-align: left;
-}
-
-#my-votes.dt-table td.media-col a {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
 .loader {
     margin: 0 auto;
     margin-top: 30px;
@@ -427,4 +338,19 @@ span.spoiler {
 /* Show the button when at least one tag is selected */
 #filters tags:has(tag) .clear-filter {
     display: inherit;
+}
+
+/* 
+ * There's a white circle behind the notification icon to make the exclamation mark white
+ * Yes, that's how it's supposed to be done with FontAwesome
+ */
+.notification-badge {
+    width: 1.5rem;
+}
+.notification-badge .fa-circle {
+    color: #ffffff;
+}
+
+.notification-badge .fa-circle-exclamation {
+    color: #ff0000;
 }

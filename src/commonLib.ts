@@ -56,8 +56,16 @@ DataTable.ext.classes.paging.active = 'active'
 /* We still require the dataTable class for the vendor CSS rules */
 DataTable.ext.classes.table = 'dataTable dt-table'
 
+const generateHash = async (message): Promise<string> => {
+  const data = new TextEncoder().encode(message);
+  const hash = await window.crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hash))
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("")
+}
+
 export {
   on,
   handleResponse,
   htmlToNode,
+  generateHash,
 }
