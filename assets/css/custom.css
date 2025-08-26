@@ -347,10 +347,11 @@ span.spoiler {
 .notification-badge {
     width: 1.5rem;
 }
+
 .notification-badge .fa-circle {
-    color: #ffffff;
+    color: #fff;
 }
 
 .notification-badge .fa-circle-exclamation {
-    color: #ff0000;
+    color: #f00;
 }
