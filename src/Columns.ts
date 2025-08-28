@@ -713,7 +713,7 @@ class Columns {
     },
     homeTown: {
       name: 'homeTown',
-      title: 'Home Town',
+      title: 'Hometown',
       data: 'homeTown',
     },
     yearsActiveFrom: {

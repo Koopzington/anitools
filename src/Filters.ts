@@ -107,6 +107,7 @@ class Filters extends EventTarget {
       'bloodType',
       'gender',
       'primaryOccupation',
+      'homeTownLike',
       'birthdayFrom',
       'birthdayUntil',
       'deathdayFrom',
@@ -337,6 +338,12 @@ class Filters extends EventTarget {
       label: 'Primary Occupation',
       urlOrData: [],
     },
+    homeTownLike: {
+      type: 'text',
+      logic: 'AND',
+      label: 'Hometown',
+      regex: true,
+    },
     birthdayFrom: {
       type: 'text',
       logic: 'OR',
@@ -427,6 +434,7 @@ class Filters extends EventTarget {
     bloodType: Tagify | undefined,
     gender: Tagify | undefined,
     primaryOccupation: Tagify | undefined,
+    homeTownLike: HTMLInputElement | undefined,
     birthdayFrom: HTMLInputElement | undefined,
     birthdayUntil: HTMLInputElement | undefined,
     deathdayFrom: HTMLInputElement | undefined,
