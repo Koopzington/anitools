@@ -45,6 +45,8 @@ class Columns {
       'favourites',
       'studios',
       'producers',
+      'dubLanguages',
+      'dubLanguageCount',
       'statusCurrent',
       'statusPlanning',
       'statusCompleted',
@@ -125,6 +127,8 @@ class Columns {
       'age',
       'dateOfBirth',
       'bloodType',
+      'dubLanguages',
+      'dubLanguageCount',
       'favourites',
       'appearances',
     ],
@@ -145,6 +149,8 @@ class Columns {
       'dateOfBirth',
       'dateOfDeath',
       'bloodType',
+      'dubLanguages',
+      'dubLanguageCount',
       'primaryOccupations',
       'favourites',
       'appearances',
@@ -157,7 +163,9 @@ class Columns {
       cols: [
         'rowNum',
         'id',
-        'favourites'
+        'favourites',
+        'dubLanguages',
+        'dubLanguageCount'
       ]
     },
     'Media columns': {
@@ -732,6 +740,19 @@ class Columns {
       description: 'Displays the amount of appearances of this character in media',
       data: 'appearances',
     },
+    dubLanguages: {
+      name: 'dubLanguages',
+      title: 'Languages',
+      description: 'Shows the languages the anime is available in / character was voiced in / staff member has been credited for',
+      data: 'dubLanguages',
+      orderable: false
+    },
+    dubLanguageCount: {
+      name: 'dubLanguageCount',
+      title: '# Languages',
+      description: 'Shows the amount of languages the anime is available in / character was voiced in / staff member has been credited for',
+      data: 'dubLanguageCount'
+    }
   }
 
   constructor () {

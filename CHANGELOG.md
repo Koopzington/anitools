@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-10-08
+- Added new "Language" and "Language #" columns showing which languages an anime was dubbed in and how many dubs exist for it
+- Added new "Dub Language" filter for anime, characters and staff
+
 ## 2025-08-28
 - Added new Hometown filter
 - Changed "Home Town" column title to "Hometown"

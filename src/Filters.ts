@@ -82,6 +82,7 @@ class Filters extends EventTarget {
       'staff',
       'studio',
       'producer',
+      'voiceActorLang',
       'awcCommunityList',
       'episodes',
       'totalRuntime',
@@ -97,6 +98,7 @@ class Filters extends EventTarget {
       'descriptionLike',
       'bloodType',
       'gender',
+      'voiceActorLang',
       'birthdayFrom',
       'birthdayUntil',
     ],
@@ -108,6 +110,7 @@ class Filters extends EventTarget {
       'gender',
       'primaryOccupation',
       'homeTownLike',
+      'voiceActorLang',
       'birthdayFrom',
       'birthdayUntil',
       'deathdayFrom',
@@ -344,6 +347,12 @@ class Filters extends EventTarget {
       label: 'Hometown',
       regex: true,
     },
+    voiceActorLang: {
+      type: 'tagify',
+      logic: 'AND',
+      label: 'Dub Language',
+      urlOrData: [],
+    },
     birthdayFrom: {
       type: 'text',
       logic: 'OR',
@@ -455,7 +464,8 @@ class Filters extends EventTarget {
     relationToAWCCommunityList: [],
     bloodType: [],
     gender: [],
-    primaryOccupation: []
+    primaryOccupation: [],
+    voiceActorLang: []
   }
 
   // Object to hold value ranges for Range filters
@@ -783,6 +793,9 @@ class Filters extends EventTarget {
       }
       if (Object.hasOwn(filterValues, 'primary_occupations')) {
         this.filterWhitelists.primaryOccupation = filterValues.primary_occupations.map(defaultValMap)
+      }
+      if (Object.hasOwn(filterValues, 'voice_actor_lang')) {
+        this.filterWhitelists.voiceActorLang = filterValues.voice_actor_lang.map(defaultValMap)
       }
       if (Object.hasOwn(filterValues, 'tags')) {
         this.tagCache = filterValues.tags
