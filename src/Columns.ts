@@ -1,5 +1,6 @@
 /* global localStorage */
 
+import { escapeSpecialChars } from "./commonLib"
 import { mediaTypeSelect } from "./GlobalElements"
 import { ColumnDef } from "types"
 
@@ -228,7 +229,7 @@ class Columns {
         'nameNative',
         'nameAlternatives',
         'nameAlternativesSpoiler',
-        'description',
+        //'description',
         'gender',
         'dateOfBirth',
         'bloodType',
@@ -287,8 +288,9 @@ class Columns {
       title: 'Romaji Title',
       data: 'title',
       render: (data: string, _type, row: Media) => {
+        data = escapeSpecialChars(data)
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
-        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
+        return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' data-tooltip="' + data + '">' + data.substring(0, 50) + (data.length > 50 ? '...' : '') + '</a>'
       }
     },
     titleEng: {
@@ -299,6 +301,7 @@ class Columns {
         if (data === null) {
           return null;
         }
+        data = escapeSpecialChars(data)
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
         return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
@@ -311,6 +314,7 @@ class Columns {
         if (data === null) {
           return null;
         }
+        data = escapeSpecialChars(data)
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
         return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
@@ -320,6 +324,10 @@ class Columns {
       title: 'Native Title',
       data: 'titleNat',
       render: (data: string, _type, row: Media) => {
+        if (data === null) {
+          return null;
+        }
+        data = escapeSpecialChars(data)
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
         return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
@@ -332,7 +340,7 @@ class Columns {
         if (data === null){
           return null
         }
-        const t = data.join(',\n')
+        const t = escapeSpecialChars(data.join(',\n'))
         return '<span class="custom-tooltip wide" data-title="' + t + '">' + t.substring(0, 50) + (t.length > 50 ? '...' : '') + '</span>'
       },
       orderable: false
@@ -419,7 +427,9 @@ class Columns {
         }
         const tags: string[] = []
         data.forEach(t => tags.push(t.tag))
-        return tags.join(', ')
+
+        const fulltext = tags.join(', ')
+        return '<span class="custom-tooltip wide" data-title="' + fulltext + '">' + fulltext.substring(0, 50) + (fulltext.length > 50 ? '...' : '') + '</span>'
       },
       orderable: false
     },
@@ -589,7 +599,13 @@ class Columns {
       title: 'Notes',
       data: 'notes',
       description: 'Displays the user\'s notes on the media',
-      render: (data: string | null) => data === null ? null : '<span class="custom-tooltip wide" data-title="' + data + '">' + data.substring(0, 50) + (data.length > 50 ? '...' : '') + '</span>'
+      render: (data: string | null) => {
+        if (data === null) {
+          return null
+        }
+        data = escapeSpecialChars(data)
+        return '<span class="custom-tooltip wide" data-title="' + data + '">' + data.substring(0, 50) + (data.length > 50 ? '...' : '') + '</span>'
+      }
     },
     isAdult: {
       name: 'isAdult',
@@ -610,7 +626,13 @@ class Columns {
       title: '# References',
       description: 'Displays how many references to the media exist in other lists of the user',
       data: 'references',
-      render: (data: string[] | null) => data === null ? null : '<span class="custom-tooltip wide" data-title="' + data.join(', ') + '">' + data.length.toString() + '</span>'
+      render: (data: string[] | null) => {
+        if(data === null) {
+          return null
+        }
+        const output: string = escapeSpecialChars(data.join(', '))
+        return '<span class="custom-tooltip wide" data-title="' + output + '">' + data.length.toString() + '</span>'
+      }
     },
     isPrivate: {
       name: 'isPrivate',
@@ -638,6 +660,7 @@ class Columns {
       data: 'nameFirst',
       render: (data: string, _type, row: CharacterStaff) => {
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        data = escapeSpecialChars(data)
         return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
     },
@@ -665,7 +688,11 @@ class Columns {
       title: 'Native Name',
       data: 'nameNative',
       render: (data: string, _type, row: CharacterStaff) => {
+        if (data === null) {
+          return null
+        }
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        data = escapeSpecialChars(data)
         return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
     },
@@ -673,21 +700,33 @@ class Columns {
       name: 'nameAlternatives',
       title: 'Alternative Names',
       data: 'nameAlternatives',
-      render: (data: string[] | null) => data !== null ? data.join(', ') : null,
+      render: (data: string[] | null) => data !== null ? escapeSpecialChars(data.join(', ')) : null,
       orderable: false
     },
     nameAlternativesSpoiler: {
       name: 'nameAlternativesSpoiler',
       title: 'Alternative Spoiler Names',
       data: 'nameAlternativesSpoiler',
-      render: (data: string[] | null) => data !== null ? '<span class="spoiler">' + data.join('</span>, <span class="spoiler">') + '</span>' : null,
+      render: (data: string[] | null) => {
+        if (data === null) {
+          return null
+        }
+        let tmpArr: string[] = []
+        data.forEach((d: string) => {
+          tmpArr.push(escapeSpecialChars(d))
+        })
+        
+        return '<span class="spoiler">' + tmpArr.join('</span>, <span class="spoiler">') + '</span>'
+      },
       orderable: false
     },
+    /*
     description: {
       name: 'description',
       title: 'Description',
       data: 'description',
     },
+    */
     gender: {
       name: 'gender',
       title: 'Gender',

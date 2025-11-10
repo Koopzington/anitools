@@ -63,9 +63,19 @@ const generateHash = async (message): Promise<string> => {
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("")
 }
 
+const escapeSpecialChars = (input: string): string => {
+  return input
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 export {
   on,
   handleResponse,
   htmlToNode,
   generateHash,
+  escapeSpecialChars
 }

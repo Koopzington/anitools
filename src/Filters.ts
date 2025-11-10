@@ -4,7 +4,7 @@ import noUiSlider from 'nouislider'
 import wNumb from 'wnumb'
 import Inputmask from 'inputmask'
 import Settings from './Settings'
-import { handleResponse, htmlToNode } from './commonLib'
+import { escapeSpecialChars, handleResponse, htmlToNode } from './commonLib'
 import { mediaTypeSelect, userNameField, loadButton } from './GlobalElements'
 
 class Filters extends EventTarget {
@@ -611,7 +611,7 @@ class Filters extends EventTarget {
 
       data.forEach(function (list) {
         lists.push({
-          label: list.name,
+          label: escapeSpecialChars(list.name),
           value: list.id,
           customProperties: {
             completion: Object.hasOwn(list, 'amount_completed')
