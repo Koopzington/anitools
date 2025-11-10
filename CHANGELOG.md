@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-11-10
+- Properly escaping titles and various other things that can contain special characters which could cause incorrect data display
+
 ## 2025-10-08
 - Added new "Language" and "Language #" columns showing which languages an anime was dubbed in and how many dubs exist for it
 - Added new "Dub Language" filter for anime, characters and staff
