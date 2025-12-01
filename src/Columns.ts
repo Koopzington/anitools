@@ -659,6 +659,9 @@ class Columns {
       title: 'First Name',
       data: 'nameFirst',
       render: (data: string, _type, row: CharacterStaff) => {
+        if(data === null) {
+          return null
+        }
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
         data = escapeSpecialChars(data)
         return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
@@ -679,7 +682,11 @@ class Columns {
       title: 'Full Name',
       data: 'nameFull',
       render: (data: string, _type, row: CharacterStaff) => {
+        if(data === null) {
+          return null
+        }
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
+        data = escapeSpecialChars(data)
         return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' >' + data + '</a>'
       }
     },

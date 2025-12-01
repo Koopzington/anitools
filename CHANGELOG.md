@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-11-25
+- Escape more column data
+
 ## 2025-11-10
 - Properly escaping titles and various other things that can contain special characters which could cause incorrect data display
 
