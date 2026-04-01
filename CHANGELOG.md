@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-04-01
+- Make the "Activities" columm not sortable
+
 ## 2025-11-25
 - Escape more column data
 
@@ -16,7 +19,7 @@
 
 ## 2025-08-26
 - Moved the Changelog button to a more prominent position. It also now shows a notification icon on the button when new updates roll out
-- The Mapper has been removed from the project due to it's lack of use. The backend has been enriched with mappings from [MangaBaka](https://mangabaka.dev/) not too long ago and all mappings created through the Mapper have been sent to them for review. If you want to contribute to cross-site mappings in the future, you should check them out!
+- The Mapper has been removed from the project due to it's lack of use. The backend has been enriched with mappings from [MangaBaka](https://mangabaka.org/) not too long ago and all mappings created through the Mapper have been sent to them for review. If you want to contribute to cross-site mappings in the future, you should check them out!
 
 ## 2025-08-12
 - Added new "Is Doujin" column, indicating whether the work was selfpublished or not

@@ -645,7 +645,8 @@ class Columns {
       name: 'activity',
       title: 'Activities',
       description: 'Displays a button that shows a popup containing the user\'s activities for the media',
-      render: (_data, _type, row: Media) => '<a role="button" href="#activity-modal" data-id="' + row.id.toString() + '" class="btn btn-sm show-activity">Show Activity</button>'
+      render: (_data, _type, row: Media) => '<a role="button" href="#activity-modal" data-id="' + row.id.toString() + '" class="btn btn-sm show-activity">Show Activity</button>',
+      orderable: false
     },
     code: {
       name: 'code',
