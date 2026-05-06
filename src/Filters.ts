@@ -280,11 +280,11 @@ class Filters extends EventTarget {
     },
     meanScore: {
       type: 'range',
-      label: 'Mean Score',
+      label: 'Mean Score'
     },
     avgScore: {
       type: 'range',
-      label: 'Average Score',
+      label: 'Average Score'
     },
     popularity: {
       type: 'range',
@@ -454,13 +454,13 @@ class Filters extends EventTarget {
   // Object to hold value ranges for Range filters
   private filterRanges = {
     tagPercentage: [0, 100],
-    totalRuntime: [],
-    episodes: [],
-    volumes: [],
-    mcCount: [],
+    totalRuntime: [0],
+    episodes: [0],
+    volumes: [0],
+    mcCount: [0],
     meanScore: [0, 100],
     avgScore: [0, 100],
-    popularity: []
+    popularity: [0]
   }
 
   private abortController: AbortController | undefined
@@ -1278,8 +1278,7 @@ class Filters extends EventTarget {
     })
     whitelist = values
 
-    if (this.ATSettings.shouldGroupTags()) {
-    } else {
+    if (! this.ATSettings.shouldGroupTags()) {
       // Sort values alphabetically
       values.sort((x,y) => { if (x.value < y.value) { return -1 } if (x.value > y.value) { return 1 } return 0 } );
       whitelist = values
@@ -1297,11 +1296,11 @@ class Filters extends EventTarget {
       this.filters.tag.dropdown.createListHTML = (suggestionList) => {
         const categories = suggestionList.reduce((acc, suggestion) => {
           const category = suggestion.category || 'Not Assigned';
-            if( !acc[category] )
-                acc[category] = [suggestion]
-            else
-                acc[category].push(suggestion)
-    
+            if( !acc[category] ) {
+              acc[category] = [suggestion]
+            } else {
+              acc[category].push(suggestion)
+            }
             return acc
           }, {})
       
