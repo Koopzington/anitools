@@ -869,7 +869,6 @@ class Filters extends EventTarget {
     this.filterContainer.insertAdjacentElement('beforeend', container)
     const input = document.createElement('input')
     input.classList.add('column-filter', 'form-control')
-    input.dataset.column = col
     input.placeholder = filterDef.label
     if (this.curFilterValues && this.curFilterValues.and[col]) {
       if (Object.hasOwn(filterDef, 'regex') && filterDef.regex === true) {
@@ -1167,7 +1166,6 @@ class Filters extends EventTarget {
 
     const container = document.createElement('div')
     container.classList.add('column-filter', 'form-control', 'range-filter')
-    container.dataset.column = 'episodes'
     this.filterContainer.insertAdjacentElement('beforeend', container)
 
     const maxField: HTMLInputElement = document.createElement('input')
