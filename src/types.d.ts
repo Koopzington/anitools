@@ -122,15 +122,31 @@ interface ALUserInfo {
 interface FilterDefinition {
   type: string
   label: string
-  logic: 'OR' | 'AND'
-  regex: boolean
-  urlOrData: string | TagifyValue[]
-  mask: string
   experimental: boolean
   tooltip: string
+}
+
+interface TextFilterDefinition extends FilterDefinition {
+  regex: boolean
+  mask: string
+  urlOrData: string | TagifyValue[]
+}
+
+interface TagFilterDefinition extends FilterDefinition {
+  logic: 'OR' | 'AND'
+  urlOrData: string | TagifyValue[]
+}
+
+interface RangeFilterDefinition extends FilterDefinition {
+  disableSlider: boolean
 }
 
 interface ColumnDef extends ConfigColumns {
   buttonLabel?: string
   description?: string
+}
+
+interface ColumnSort {
+  column: string
+  dir: 'ASC' | 'DESC'
 }

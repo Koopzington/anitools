@@ -1,6 +1,7 @@
 /* stylelint-disable selector-class-pattern */
 .noUi-horizontal {
     height: 16px;
+    margin-bottom: 0.5rem;
 }
 
 .noUi-horizontal .noUi-handle {

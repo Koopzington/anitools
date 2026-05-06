@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-05-06
+- Removed Sliders from filters that don't have a 0-100 range because they're hardly usable
+
 ## 2026-04-01
 - Make the "Activities" columm not sortable
 

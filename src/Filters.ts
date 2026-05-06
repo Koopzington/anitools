@@ -6,6 +6,7 @@ import Inputmask from 'inputmask'
 import Settings from './Settings'
 import { escapeSpecialChars, handleResponse, htmlToNode } from './commonLib'
 import { mediaTypeSelect, userNameField, loadButton } from './GlobalElements'
+import { FilterDefinition, RangeFilterDefinition, TagFilterDefinition, TextFilterDefinition } from "types"
 
 class Filters extends EventTarget {
   private readonly filterContainer: HTMLDivElement = document!.createElement('div')!
@@ -134,23 +135,17 @@ class Filters extends EventTarget {
     },
     titleLike: {
       type: 'text',
-      logic: 'AND',
       label: 'Title',
-      urlOrData: [],
       regex: true,
     },
     notesLike: {
       type: 'text',
-      logic: 'AND',
       label: 'Notes',
-      urlOrData: [],
       regex: true,
     },
     descriptionLike: {
       type: 'text',
-      logic: 'AND',
       label: 'Description',
-      urlOrData: [],
       regex: true,
     },
     format: {
@@ -179,18 +174,14 @@ class Filters extends EventTarget {
     },
     airingStart: {
       type: 'text',
-      logic: 'AND',
       label: 'Started Airing',
       mask: this.dateMask,
-      urlOrData: [],
       tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     airingFinish: {
       type: 'text',
-      logic: 'AND',
       label: 'Finished Airing',
       mask: this.dateMask,
-      urlOrData: [],
       tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     genre: {
@@ -268,19 +259,24 @@ class Filters extends EventTarget {
     },
     totalRuntime: {
       type: 'range',
-      label: 'Total Runtime'
+      label: 'Total Runtime',
+      disableSlider: true
+    },
     },
     episodes: {
       type: 'range',
       label: 'Episodes',
+      disableSlider: true
     },
     volumes: {
       type: 'range',
       label: 'Volumes',
+      disableSlider: true
     },
     mcCount: {
       type: 'range',
       label: 'Main Characters',
+      disableSlider: true
     },
     meanScore: {
       type: 'range',
@@ -293,6 +289,7 @@ class Filters extends EventTarget {
     popularity: {
       type: 'range',
       label: 'Popularity',
+      disableSlider: true
     },
     showAdult: {
       type: 'checkbox',
@@ -319,7 +316,6 @@ class Filters extends EventTarget {
     },
     nameLike: {
       type: 'text',
-      logic: 'AND',
       label: 'Name',
       regex: true,
     },
@@ -343,7 +339,6 @@ class Filters extends EventTarget {
     },
     homeTownLike: {
       type: 'text',
-      logic: 'AND',
       label: 'Hometown',
       regex: true,
     },
@@ -355,50 +350,38 @@ class Filters extends EventTarget {
     },
     birthdayFrom: {
       type: 'text',
-      logic: 'OR',
       label: 'Birthday from',
       mask: this.dateMask,
-      urlOrData: [],
       tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     birthdayUntil: {
       type: 'text',
-      logic: 'OR',
       label: 'Birthday until',
       mask: this.dateMask,
-      urlOrData: [],
       tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     deathdayFrom: {
       type: 'text',
-      logic: 'OR',
       label: 'Deathday from',
       mask: this.dateMask,
-      urlOrData: [],
       tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     deathdayUntil: {
       type: 'text',
-      logic: 'OR',
       label: 'Deathday until',
       mask: this.dateMask,
-      urlOrData: [],
       tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     userStartFrom: {
       type: 'text',
-      logic: 'OR',
       label: 'Started on',
       mask: this.dateMask,
-      urlOrData: [],
       tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
     userFinishUntil: {
       type: 'text',
-      logic: 'OR',
       label: 'Completed on',
       mask: this.dateMask,
-      urlOrData: [],
       tooltip: 'You can use "*" instead of numbers as wildcards (1991-*-*, 199*-01-01 however won\'t work)',
     },
   }
@@ -864,7 +847,7 @@ class Filters extends EventTarget {
     e.title = newMode === 'AND' ? 'All values must match' : 'Any values may match'
   }
 
-  private readonly addText = (col: string, filterDef: FilterDefinition) => {
+  private readonly addText = (col: string, filterDef: TextFilterDefinition) => {
     const container = this.filterTemplate.cloneNode(true)
     this.filterContainer.insertAdjacentElement('beforeend', container)
     const input = document.createElement('input')
@@ -909,7 +892,7 @@ class Filters extends EventTarget {
   }
 
   // Function to add a Tagify type filter
-  private readonly addTagify = async (col: string, filterDef: FilterDefinition) => {
+  private readonly addTagify = async (col: string, filterDef: TagFilterDefinition) => {
     const container = this.filterTemplate.cloneNode(true)
     this.filterContainer.insertAdjacentElement('beforeend', container)
     const field = document.createElement('input')
@@ -1151,82 +1134,112 @@ class Filters extends EventTarget {
     this.filters[col] = field
   }
 
-  private readonly addRange = (col: string, filterDef: FilterDefinition): void => {
+  private readonly addRange = (col: string, filterDef: RangeFilterDefinition): void => {
+    const isSliderDisabled = filterDef.disableSlider ?? false;
+    const firstVal = 0
+    const lastVal = this.filterRanges[col][this.filterRanges[col].length - 1]
+
+    let startMin = firstVal
+    let startMax = lastVal
+    // 2026-05-06: Loading previously selected values leads to more confusion than
+    // it being helpful thanks to Chainsaw Man (anime) and Attack on Titan constantly
+    // reaching new popularity heights so we stop doing that in the meantime
+    //if (this.curFilterValues && this.curFilterValues.and[col + 'Min']) {
+    //  startMin = this.curFilterValues.and[col + 'Min']
+    //}
+    //if (this.curFilterValues && this.curFilterValues.and[col + 'Max']) {
+    //  startMax = this.curFilterValues.and[col + 'Max']
+    //}
+
+    const container: HTMLDivElement = document.createElement('div')
+    container.dataset.filterType = 'range'
+
     const formInline = document.createElement('div')
     formInline.classList.add('form-inline')
 
     const labelElement = document.createElement('span')
     labelElement.classList.add('column-filter-label')
     labelElement.innerHTML = filterDef.label + ':'
-    this.filterContainer.insertAdjacentElement('beforeend', labelElement)
+    container.insertAdjacentElement('beforeend', labelElement)
+
+    let sliderContainer
+    if (isSliderDisabled === false) {
+      sliderContainer = document.createElement('div')
+      sliderContainer.classList.add('column-filter', 'form-control', 'range-filter')
+      container.insertAdjacentElement('beforeend', sliderContainer)
+    }
 
     const minField: HTMLInputElement = document.createElement('input')
-    minField.classList.add('column-filter', 'form-control')
+    minField.classList.add('column-filter', 'form-control', 'min-field')
+    minField.type = 'number'
+    minField.min = startMin.toString()
+    minField.max = startMax.toString()
+    minField.value = startMin.toString()
     formInline.insertAdjacentElement('beforeend', minField)
 
-    const container = document.createElement('div')
-    container.classList.add('column-filter', 'form-control', 'range-filter')
-    this.filterContainer.insertAdjacentElement('beforeend', container)
-
     const maxField: HTMLInputElement = document.createElement('input')
-    maxField.classList.add('column-filter', 'form-control')
+    maxField.classList.add('column-filter', 'form-control', 'max-field')
+    maxField.type = 'number'
+    maxField.min = startMin.toString()
+    maxField.max = startMax.toString()
+    maxField.value = startMax.toString()
     formInline.insertAdjacentElement('beforeend', maxField)
 
-    const firstVal = 0
-    const lastVal = this.filterRanges[col][this.filterRanges[col].length - 1]
-
-    let startMin = firstVal
-    let startMax = lastVal
-    if (this.curFilterValues && this.curFilterValues.and[col + 'Min']) {
-      startMin = this.curFilterValues.and[col + 'Min']
-    }
-    if (this.curFilterValues && this.curFilterValues.and[col + 'Max']) {
-      startMax = this.curFilterValues.and[col + 'Max']
-    }
-
-    this.filterContainer.insertAdjacentElement('beforeend', formInline)
-
-    let options = {
-      start: [startMin, startMax],
-      connect: true,
-      format: wNumb({ decimals: 0 }),
-      range: {
-        min: 0,
-        max: lastVal
-      }
-    }
-
-    // Calculate steps
-    for (let i = 0; i < this.filterRanges[col].length - 1; ++i) {
-      options.range[
-        (
-          (this.filterRanges[col][i] / this.filterRanges[col][this.filterRanges[col].length - 1]) * 100
-        ).toString() + '%'
-      ] = this.filterRanges[col][i]
-    }
+    container.insertAdjacentElement('beforeend', formInline)
+    this.filterContainer.insertAdjacentElement('beforeend', container)
 
     this.filters[col] = container
-    noUiSlider.create(container, options)
-    container.noUiSlider.on('set', () => {
-      container.dispatchEvent(new Event('change'))
-      this.filterChangeCallback()
-    })
 
-    container.noUiSlider.on('update', (values, handle) => {
-      const value = Math.round(values[handle])
-      if (handle === 0) {
-        minField.value = value.toString()
-      } else {
-        maxField.value = value.toString()
+    if (isSliderDisabled === false) {
+      let options = {
+        start: [startMin, startMax],
+        connect: true,
+        format: wNumb({ decimals: 0 }),
+        range: {
+          min: 0,
+          max: lastVal
+        }
       }
-    })
+
+      // Calculate steps
+      for (let i = 0; i < this.filterRanges[col].length - 1; ++i) {
+        options.range[
+          (
+            (this.filterRanges[col][i] / this.filterRanges[col][this.filterRanges[col].length - 1]) * 100
+          ).toString() + '%'
+        ] = this.filterRanges[col][i]
+      }
+
+      noUiSlider.create(sliderContainer, options)
+      sliderContainer.noUiSlider.on('set', () => {
+        sliderContainer.dispatchEvent(new Event('change'))
+        this.filterChangeCallback()
+      })
+
+      sliderContainer.noUiSlider.on('update', (values, handle) => {
+        const value = Math.round(values[handle])
+        if (handle === 0) {
+          minField.value = value.toString()
+        } else {
+          maxField.value = value.toString()
+        }
+      })
+    }
 
     let debouncer: number
 
     minField.addEventListener('keyup', () => {
       clearTimeout(debouncer)
       debouncer = setTimeout(() => {
-        container.noUiSlider.set([minField.value, null])
+        if (isSliderDisabled === false) {
+          sliderContainer.noUiSlider.set([minField.value, null])
+        } else {
+          // When the slider is disabled we replicate it's behaviour
+          // of automatically setting the value to the min if the entered value < min
+          if (parseInt(minField.value) < startMin) {
+            minField.value = startMin.toString()
+          }
+        }
         this.filterChangeCallback()
       }, 500);
     })
@@ -1234,7 +1247,15 @@ class Filters extends EventTarget {
     maxField.addEventListener('keyup', () => {
       clearTimeout(debouncer)
       debouncer = setTimeout(() => {
-        container.noUiSlider.set([null, maxField.value])
+        if (isSliderDisabled === false) {
+          sliderContainer.noUiSlider.set([null, maxField.value])
+        } else {
+          // When the slider is disabled we replicate it's behaviour
+          // of automatically setting the value to the max if the entered value > max
+          if (parseInt(maxField.value) > startMax) {
+            maxField.value = startMax
+          }
+        }
         this.filterChangeCallback()
       }, 500);
     })
@@ -1340,9 +1361,9 @@ class Filters extends EventTarget {
         params[f[0]] = f[1].checked
       }
       // Handle Range instances
-      if (Object.hasOwn(f[1], 'noUiSlider')) {
-        params[f[0] + 'Min'] = f[1].noUiSlider.get()[0]
-        params[f[0] + 'Max'] = f[1].noUiSlider.get()[1]
+      if (f[1].dataset && f[1].dataset.filterType === 'range') {
+        params[f[0] + 'Min'] = f[1].querySelector('.min-field').value
+        params[f[0] + 'Max'] = f[1].querySelector('.max-field').value
 
         return
       }
