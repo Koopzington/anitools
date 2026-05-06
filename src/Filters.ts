@@ -87,6 +87,7 @@ class Filters extends EventTarget {
       'awcCommunityList',
       'episodes',
       'totalRuntime',
+      'duration',
       'meanScore',
       'avgScore',
       'popularity',
@@ -262,6 +263,10 @@ class Filters extends EventTarget {
       label: 'Total Runtime',
       disableSlider: true
     },
+    duration: {
+      type: 'range',
+      label: 'Episode Duration',
+      disableSlider: true
     },
     episodes: {
       type: 'range',
@@ -412,6 +417,7 @@ class Filters extends EventTarget {
     awcCommunityList: Tagify | undefined,
     relationToAWCCommunityList: Tagify | undefined,
     totalRuntime: HTMLInputElement,
+    duration: HTMLInputElement,
     episodes: HTMLInputElement,
     volumes: HTMLInputElement,
     mcCount: HTMLInputElement,
@@ -455,6 +461,7 @@ class Filters extends EventTarget {
   private filterRanges = {
     tagPercentage: [0, 100],
     totalRuntime: [0],
+    duration: [0],
     episodes: [0],
     volumes: [0],
     mcCount: [0],
@@ -785,6 +792,9 @@ class Filters extends EventTarget {
       }
       if (Object.hasOwn(filterValues, 'total_runtime')) {
         this.filterRanges.totalRuntime = filterValues.total_runtime
+      }
+      if (Object.hasOwn(filterValues, 'duration')) {
+        this.filterRanges.duration = filterValues.duration
       }
       if (Object.hasOwn(filterValues, 'episodes')) {
         this.filterRanges.episodes = filterValues.episodes
