@@ -496,9 +496,8 @@ class Filters extends EventTarget {
       }
 
       // Handle Range instances
-      if (Object.hasOwn(filter[1], 'noUiSlider')) {
+      if (filter[1].dataset && filter[1].dataset.filterType === 'range') {
         filter[1].remove()
-
         delete this.filters[filter[0]]
       }
 
