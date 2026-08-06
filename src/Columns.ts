@@ -288,6 +288,9 @@ class Columns {
       title: 'Romaji Title',
       data: 'title',
       render: (data: string, _type, row: Media) => {
+        if (data === null) {
+          return null;
+        }
         data = escapeSpecialChars(data)
         const coverData = row.coverImage ? 'style="--cover: url(\'' + row.coverImage + '\')"' : ''
         return '<a target="_blank" href="' + this.anilistBaseLink + mediaTypeSelect.value.toLowerCase() + '/' + row.id.toString() + '"' + coverData + ' data-tooltip="' + data + '">' + data.substring(0, 50) + (data.length > 50 ? '...' : '') + '</a>'

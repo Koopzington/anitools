@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-08-06
+- Fixed a bug where making a request without an AL Username while having the romaji column hidden results in an error, not showing the data
+
 ## 2026-05-06
 - Removed Sliders from filters that don't have a 0-100 range because they're hardly usable
 - Added new Episode duration filter
