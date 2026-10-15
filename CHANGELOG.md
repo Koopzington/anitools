@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-15
+- In case anybody noticed: The backend served old data from around 2026-05 for quite a while but regular updates are back on the menu now
+- Fixed a bug in the ID filter which stripped leading zeros from the search (if you searched for "01" for example)
+- Added three new columns: "Added to list on", "Last update (list)" and "Last update (media)" showing when media was added to the user's list, when it was last updated and when the media itself was last updated by datamods
+
 ## 2026-08-06
 - Fixed a bug where making a request without an AL Username while having the romaji column hidden results in an error, not showing the data
 
