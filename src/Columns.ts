@@ -36,6 +36,8 @@ class Columns {
       'started',
       'completed',
       'daysSpent',
+      'umCreatedAt',
+      'umUpdatedAt',
       'episodes',
       'duration',
       'totalDuration',
@@ -60,6 +62,7 @@ class Columns {
       'references',
       'synonyms',
       'isPrivate',
+      'updatedAt',
       'activity',
       'code',
     ],
@@ -91,6 +94,8 @@ class Columns {
       'started',
       'completed',
       'daysSpent',
+      'umCreatedAt',
+      'umUpdatedAt',
       'episodes',
       'volumes',
       'source',
@@ -110,6 +115,7 @@ class Columns {
       'references',
       'synonyms',
       'isPrivate',
+      'updatedAt',
       'activity',
       'code',
     ],
@@ -199,7 +205,8 @@ class Columns {
         'statusPaused',
         'hasReview',
         'isAdult',
-        'isDoujin'
+        'isDoujin',
+        'updatedAt',
       ]
     },
     'Anime columns': {
@@ -267,6 +274,8 @@ class Columns {
         'notes',
         'references',
         'isPrivate',
+        'umCreatedAt',
+        'umUpdatedAt',
         'activity',
         'code',
       ]
@@ -496,6 +505,36 @@ class Columns {
       data: 'daysSpent',
       description: 'Displays difference between start and completion date in days'
     },
+    umCreatedAt: {
+      name: 'umCreatedAt',
+      title: 'Added to list on',
+      data: 'umCreatedAt',
+      description: 'Date and time when the media was added to the current user\'s list',
+      render: (data: number | null) => {
+        if (data === null) {
+          return null
+        }
+        let t = new Date()
+        // Timestamps don't contain microseconds
+        t.setTime(data * 1000)
+        return t.toISOString().replace('T', ' ').split('.')[0]
+      }
+    },
+    umUpdatedAt: {
+      name: 'umUpdatedAt',
+      title: 'Last update (list)',
+      data: 'umUpdatedAt',
+      description: 'Date and time when the list entry was last updated by the current user',
+      render: (data: number | null) => {
+        if (data === null) {
+          return null
+        }
+        let t = new Date()
+        // Timestamps don't contain microseconds
+        t.setTime(data * 1000)
+        return t.toISOString().replace('T', ' ').split('.')[0]
+      }
+    },
     episodes: {
       name: 'episodes',
       title: 'Episodes',
@@ -643,6 +682,21 @@ class Columns {
       description: 'Displays whether the media was marked as private on the user\'s list',
       data: 'isPrivate',
       render: (data: boolean) => data === true ? '✓' : '✗'
+    },
+    updatedAt: {
+      name: 'updatedAt',
+      title: 'Last update (media)',
+      description: 'Date and time when the media was last updated',
+      data: 'updatedAt',
+      render: (data: number | null) => {
+        if (data === null) {
+          return null
+        }
+        let t = new Date()
+        // Timestamps don't contain microseconds
+        t.setTime(data * 1000)
+        return t.toISOString().replace('T', ' ').split('.')[0]
+      }
     },
     activity: {
       name: 'activity',
