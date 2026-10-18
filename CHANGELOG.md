@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-10-18
+- Show info on when data was last fetched from AniList
+
 ## 2026-10-15
 - In case anybody noticed: The backend served old data from around 2026-05 for quite a while but regular updates are back on the menu now
 - Fixed a bug in the ID filter which stripped leading zeros from the search (if you searched for "01" for example)

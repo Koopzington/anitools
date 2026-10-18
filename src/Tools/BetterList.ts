@@ -98,6 +98,16 @@ class BetterList implements Tool {
 
     await this.request()
 
+    let response: Response
+    response = await this.AniTools.fetch('/scrapeState')
+
+    const json = await response?.json()
+    
+    document.querySelector('.sidebar-content')?.prepend(
+      htmlToNode(`<span style="justify-content: center;text-align: center;" class="d-flex mb-5">
+        Last data refresh:<br>` + json.anime + `</span>`)
+    )
+
     console.log('Module BetterList loaded.')
   }
 
