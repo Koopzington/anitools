@@ -75,7 +75,12 @@ class AniList extends EventTarget {
       variables.userName = userName
     }
 
-    const response = await this.request(query, variables)
+    let response
+    try {
+      response = await this.request(query, variables)
+    } catch (e) {
+      return undefined
+    }
 
     if (! Object.hasOwn(response, 'data')) {
       return undefined
